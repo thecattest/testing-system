@@ -16,8 +16,9 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     nick = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=False)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
-    jobs = orm.relation("Jobs", back_populates='user')
-    departments = orm.relation("Department", back_populates='user')
+    tests = orm.relation("Test",
+                         secondary="users_to_tests",
+                         backref="user")
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

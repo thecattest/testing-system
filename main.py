@@ -1,26 +1,27 @@
 from flask import Flask, render_template, request, redirect, make_response, session, abort, jsonify
 # from flask_ngrok import run_with_ngrok
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+# from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from data import db_session
 db_session.global_init("db/tests.sqlite")
 
 from data.__all_models import *
+# from forms.__all_forms import *
 
 import datetime
 import os
 
 
 app = Flask(__name__)
-login_manager = LoginManager()
-login_manager.init_app(app)
+# login_manager = LoginManager()
+# login_manager.init_app(app)
 # run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'testing_system_key'
 
 
 def main():
     port = int(os.environ.get("PORT", 8000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='127.0.0.1', port=port)
     # app.run()
 
 
@@ -33,28 +34,12 @@ def not_found(error):
 def not_found(error):
     return make_response(jsonify({'error': 'Bad request'}), 400)
 
-
+'''
 @login_manager.user_loader
 def load_user(user_id):
     session = db_session.create_session()
     return session.query(User).get(user_id)
-
-
-def log(error):
-    message = str(type(error)) + ": " + str(error)
-    with open('log.txt', 'a') as file:
-        file.write(message + '\n' + str(datetime.datetime.now()) + '\n-----\n')
-
-
-@app.route("/")
-@app.route("/index")
-def index():
-    session = db_session.create_session()
-    actions = session.query(Jobs).all()
-    return render_template("actions.html",
-                           actions=actions,
-                           title="Works log")
-
+    
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -77,6 +62,18 @@ def login():
 def logout():
     logout_user()
     return redirect("/")
+'''
+
+def log(error):
+    message = str(type(error)) + ": " + str(error)
+    with open('log.txt', 'a') as file:
+        file.write(message + '\n' + str(datetime.datetime.now()) + '\n-----\n')
+
+
+@app.route("/")
+@app.route("/index")
+def index():
+    return "<b>HELL</b>o world"
 
 
 @app.route("/cookie_test")
