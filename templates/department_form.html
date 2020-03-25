@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Adding a new department</h2>
+{% if message %}
+<div class="alert alert-danger">{{message}}</div>
+{% endif %}
+<form method="post">
+    {{form.hidden_tag()}}
+    <div class="form-row">
+        <div class="form-group col-12">
+            {{form.title.label}}
+            {{ form.title(class="form-control", type="text", placeholder="Title", required=True) }}
+            {% for error in form.title.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-7">
+            {{form.chief.label}}
+            {{ form.chief(class="form-control") }}
+            {% for error in form.chief.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
+        <div class="form-group col-md-5">
+            {{form.email.label}}
+            {{ form.email(class="form-control", type="email", placeholder="Email", required=True) }}
+            {% for error in form.email.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-12">
+            {{form.members.label}}
+            {{ form.members(class="form-control", type="text", placeholder="ids, separated with comma (1, 2, 4 etc.)") }}
+            {% for error in form.members.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="buttons">
+        {{ form.submit(class="btn btn-success", type="submit", value=button) }}
+        <a href="/departments_list" class="btn btn-secondary">Back</a>
+    </div>
+
+</form>
+
+{% endblock %}

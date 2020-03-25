@@ -1,0 +1,47 @@
+<class 'sqlalchemy.orm.exc.UnmappedInstanceError'>: Class 'sqlalchemy.ext.declarative.api.DeclarativeMeta' is not mapped; was a class (data.users.User) supplied where an instance was required?
+2020-03-22 16:14:35.934822
+-----
+<class 'sqlalchemy.orm.exc.UnmappedInstanceError'>Class 'sqlalchemy.ext.declarative.api.DeclarativeMeta' is not mapped; was a class (data.users.User) supplied where an instance was required?
+2020-03-22 16:34:10.411305
+-----
+<class 'sqlalchemy.orm.exc.UnmappedInstanceError'>: Class 'sqlalchemy.ext.declarative.api.DeclarativeMeta' is not mapped; was a class (data.users.User) supplied where an instance was required?
+2020-03-22 16:40:00.800138
+-----
+<class 'sqlalchemy.orm.exc.UnmappedInstanceError'>: Class 'sqlalchemy.ext.declarative.api.DeclarativeMeta' is not mapped; was a class (data.users.User) supplied where an instance was required?
+2020-03-22 16:45:46.847682
+-----
+<class 'sqlalchemy.exc.IntegrityError'>: (sqlite3.IntegrityError) UNIQUE constraint failed: users.email
+[SQL: INSERT INTO users (surname, name, age, position, speciality, address, email, hashed_password, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('Vo', 'Il', 16, 'p', 's', 'b', 'xcvxcv@gmail.com', 'pbkdf2:sha256:150000$vYcPNqzD$d59790459b4cb0b8f930b98f7108bbc8e605a1537817f62cce46151f08554735', '2020-03-22 17:20:52.257561')]
+(Background on this error at: http://sqlalche.me/e/gkpj)
+2020-03-22 17:20:52.260070
+-----
+<class 'sqlalchemy.exc.IntegrityError'>: (sqlite3.IntegrityError) UNIQUE constraint failed: users.email
+[SQL: INSERT INTO users (surname, name, age, position, speciality, address, email, hashed_password, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('sdf', 'sdf', 23, 'sdf', 'sdf', 'sdf', 'vodopyanov999@gmail.com', 'pbkdf2:sha256:150000$Ljn1sfH8$e7df0483c1a03ae52cb07f96bf42489884d092ef0ba827c88d6895a65b8f593b', '2020-03-22 18:29:55.521089')]
+(Background on this error at: http://sqlalche.me/e/gkpj)
+2020-03-22 18:29:55.523598
+-----
+<class 'sqlalchemy.exc.IntegrityError'>: (sqlite3.IntegrityError) UNIQUE constraint failed: users.email
+[SQL: INSERT INTO users (surname, name, age, position, speciality, address, email, hashed_password, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('sdf', 'sdf', 23, 'sdf', 'sdf', 'sdf', 'vodopyanov999@gmail.com', 'pbkdf2:sha256:150000$PD8WRn4Z$03cae0d06a3d4bf224cb12f3144469af2bea10707810f89b219c99abc5e58ce9', '2020-03-22 18:30:02.386940')]
+(Background on this error at: http://sqlalche.me/e/gkpj)
+2020-03-22 18:30:02.387943
+-----
+<class 'sqlalchemy.exc.IntegrityError'>: (sqlite3.IntegrityError) UNIQUE constraint failed: users.email
+[SQL: INSERT INTO users (surname, name, age, position, speciality, address, email, hashed_password, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('sdf', 'sdf', 23, 'sdf', 'sdf', 'sdf', 'vodopyanov999@gmail.com', 'pbkdf2:sha256:150000$XyUjLXVE$ac3d3eb5ea8117a8192f1a1dd7fdcbaa5a46312fafbc8d888c077be76ee9a826', '2020-03-22 18:31:03.030587')]
+(Background on this error at: http://sqlalche.me/e/gkpj)
+2020-03-22 18:31:03.034595
+-----
+<class 'sqlalchemy.exc.IntegrityError'>: (sqlite3.IntegrityError) UNIQUE constraint failed: users.email
+[SQL: INSERT INTO users (surname, name, age, position, speciality, address, email, hashed_password, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('sdf', 'sdf', 23, 'sdf', 'sdf', 'sdf', 'vodopyanov999@gmail.com', 'pbkdf2:sha256:150000$AzvZhrEE$827e9523e311cf7bd0ec8003d3c4bc0ca591fb0dad0fe6dac41e2d8cd2626ede', '2020-03-22 18:31:15.751988')]
+(Background on this error at: http://sqlalche.me/e/gkpj)
+2020-03-22 18:31:15.754495
+-----
+<class 'sqlalchemy.exc.StatementError'>: (builtins.TypeError) SQLite DateTime type only accepts Python datetime and date objects as input.
+[SQL: INSERT INTO jobs (team_leader, job, work_size, collaborators, creator, start_date, end_date, is_finished) VALUES (?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: [{'collaborators': '3, 4', 'end_date': '2020-03-23 16:13:22.089719', 'job': 'exploration of mineral resources', 'team_leader': 2, 'creator': 5, 'is_finished': True, 'work_size': 15}]]
+2020-03-23 16:13:22.093260
+-----

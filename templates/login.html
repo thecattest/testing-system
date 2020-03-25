@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Authorization</h2>
+{% if message %}
+<div class="alert alert-danger">{{message}}</div>
+{% endif %}
+<form method="post">
+    {{form.hidden_tag()}}
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            {{form.email.label}}
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">@</div>
+                </div>
+                {{ form.email(class="form-control", type="email", placeholder="Email") }}
+            </div>
+            {% for error in form.email.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
+        <div class="form-group col-md-6">
+            {{form.password.label}}
+            {{ form.password(type="password", class="form-control", placeholder="Password") }}
+            {% for error in form.password.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="custom-control custom-checkbox">
+            {{ form.remember_me(type="checkbox", class="custom-control-input") }}
+            {{form.remember_me.label(class="custom-control-label")}}
+            {% for error in form.password.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
+    </div>
+    {{ form.submit(class="btn btn-primary", type="submit") }}
+
+</form>
+
+{% endblock %}

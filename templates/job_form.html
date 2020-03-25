@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>{{action}}</h2>
+{% if message %}
+<div class="alert alert-danger">{{message}}</div>
+{% endif %}
+<form method="post">
+    {{form.hidden_tag()}}
+    <div class="form-row">
+        <div class="form-group col-12">
+            {{form.name.label}}
+            {{ form.name(class="form-control", type="text", placeholder="Name", required=True) }}
+            {% for error in form.name.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            {{form.team_leader.label}}
+            {{ form.team_leader(class="form-control") }}
+            {% for error in form.team_leader.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
+        <div class="form-group col-md-3">
+            {{form.kind.label}}
+            {{ form.kind(class="form-control") }}
+            {% for error in form.kind.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
+        <div class="form-group col-md-3">
+            {{form.hours.label}}
+            {{ form.hours(class="form-control", type="number", placeholder="Hours", required=True) }}
+            {% for error in form.hours.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-12">
+            {{form.collaborators.label}}
+            {{ form.collaborators(class="form-control", type="text", placeholder="ids, separated with comma (1, 2, 4 etc.)") }}
+            {% for error in form.collaborators.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-12">
+            <div class="custom-control custom-checkbox">
+                {{ form.finished(type="checkbox", class="custom-control-input") }}
+                {{form.finished.label(class="custom-control-label")}}
+                {% for error in form.finished.errors %}
+                <small class="form-text red">
+                    {{ error }}
+                </small>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="buttons">
+        {{ form.submit(class="btn btn-success", type="submit", value=button) }}
+        <a href="/" class="btn btn-secondary">Back</a>
+    </div>
+
+</form>
+
+{% endblock %}
