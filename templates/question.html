@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <form action="/save_answer" method="post">
+        <input type="hidden" name="question_id" value="{{question.id}}">
+        <div class="form-row">
+            <div class="question-header">
+                {{question.text}}
+            </div>
+        </div>
+        <div class="form-row text-center align-items-center">
+            {% for answer in question.answers %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="answer">
+                    <input type="radio" id="{{answer.id}}" value="{{answer.text}}"
+                           name="answer" class="hidden" required>
+                    <label for="{{answer.id}}">
+                        {{answer.text}}
+                    </label>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary" disabled>Next</button>
+    </form>
+</div>
+
+<script>
+    $(".answer").click(function(){
+        $(".answer").removeClass("chosen")
+        $(this).addClass("chosen")
+        $('button[type=submit]').attr('disabled', false)
+    })
+</script>
+{% endblock %}

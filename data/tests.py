@@ -5,12 +5,12 @@ from .db_session import SqlAlchemyBase
 from sqlalchemy_serializer import SerializerMixin
 
 
-association_table = sqlalchemy.Table('users_to_tests', SqlAlchemyBase.metadata,
-    sqlalchemy.Column('user', sqlalchemy.Integer,
-                      sqlalchemy.ForeignKey('users.id')),
-    sqlalchemy.Column('test', sqlalchemy.Integer,
-                      sqlalchemy.ForeignKey('tests.id'))
-)
+#association_table = sqlalchemy.Table('users_to_tests', SqlAlchemyBase.metadata,
+ #   sqlalchemy.Column('user', sqlalchemy.Integer,
+  #                    sqlalchemy.ForeignKey('users.id')),
+   # sqlalchemy.Column('test', sqlalchemy.Integer,
+    #                  sqlalchemy.ForeignKey('tests.id'))
+#)
 
 
 class Test(SqlAlchemyBase, SerializerMixin):
@@ -22,9 +22,9 @@ class Test(SqlAlchemyBase, SerializerMixin):
     description = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     questions = orm.relation("Question", back_populates='test')
-    users = orm.relation("User",
-                         secondary="users_to_tests",
-                         backref="test")
+    #users = orm.relation("User",
+     #                    secondary="users_to_tests",
+      #                   backref="test")
 
     def __repr__(self):
         return f"<Test> {self.id} {self.name}"

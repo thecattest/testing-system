@@ -11,7 +11,7 @@ class Answer(SqlAlchemyBase, SerializerMixin):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     text = sqlalchemy.Column(sqlalchemy.String, nullable=False)
-    correct = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False, default=False)
+    is_correct = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False, default=False)
     question_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("questions.id"))
 
     question = orm.relation("Question")

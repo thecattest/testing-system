@@ -1,0 +1,54 @@
+.test {
+    border: 3px solid darkgoldenrod;
+    padding: 15px;
+    margin: 4px;
+    border-radius: 5px;
+}
+
+.test-header .name {
+    font-weight: 600;
+}
+
+.header {
+    padding: 15px;
+    background-color: bisque;
+    margin-bottom: 10px;
+}
+
+.description {
+    padding-top: 12px;
+}
+
+.answer {
+    z-index: 1000;
+    background-color: darkgray;
+    border-radius: 10px;
+    padding: 4px;
+    margin: 5px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.hidden {
+    display: none;
+}
+
+.answer label {
+    font-weight: 400;
+    font-size: 1.1em;
+    padding: 6px;
+    text-align: start;
+    width: 100%;
+    margin: 0;
+}
+
+.question-header {
+    font-size: 1.2em;
+    font-weight: 600;
+    font-style: italic;
+}
+
+.chosen {
+    background-color: cadetblue;
+    color: white;
+}

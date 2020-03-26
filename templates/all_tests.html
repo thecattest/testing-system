@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row tests">
+        {% for test in tests %}
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="test">
+                <div class="row align-items-center test-header">
+                    <div class="col-8">
+                        <div class="name">
+                            {{test.name}}
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <a href="/tests/{{test.id}}" class="btn-start btn btn-sm btn-primary">
+                            Начать
+                        </a>
+                    </div>
+                </div>
+                {% if test.description%}
+                <div class="row">
+                    <div class="description col-12">{{test.description}}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
