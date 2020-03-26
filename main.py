@@ -144,6 +144,20 @@ def index():
                            tests=tests)
 
 
+@app.route("/statistics")
+def get_statistic():
+    db = db_session.create_session()
+    results = db.query(Result).all()
+    for r in results:
+        all_answers = list(a.answer == a.correct for a in r.rows)
+        r.n_correct_answers = all_answers.count(True)
+        r.n_all_answers = len(all_answers)
+        r.finish_date = datetime.datetime.strftime(r.end_date, "%d %b, %H:%M")
+    return render_template("statistics.html",
+                    title="Статистика",
+                    results=results)
+
+
 @app.route("/tests/<int:test_id>")
 def start_test(test_id):
     if test_started():
@@ -219,6 +233,7 @@ def finish_test():
     db = db_session.create_session()
     st = db.query(Result).filter(Result.is_finished == False).first()
     st.is_finished = True
+    st.end_date = datetime.datetime.now()
     db.commit()
     return redirect("/all_tests")
 

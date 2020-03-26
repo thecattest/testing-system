@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+    {% if results %}
+    {% for result in results %}
+    <div class="container item">
+        <div class="row result-header">
+            <div class="col-8">{{result.name}}</div>
+            <div class="col-2">{{result.finish_date}}</div>
+        </div>
+        <div class="row table-header">
+            <div class="col-4 result-cell">Вопрос</div>
+            <div class="col-4 result-cell">Ваш ответ</div>
+            <div class="col-4 result-cell">Верный ответ</div>
+        </div>
+        {% for row in result.rows %}
+        <div class="row align-items-center result-row">
+            <div class="col-4 result-cell">{{row.text}}</div>
+            <div class="col-4 result-cell {% if row.text == row.correct %}
+                                                    correct
+                                                    {% else %}
+                                                    incorrect
+                                                    {% endif %}">
+                {% if row.answer != "" %}
+                {{row.answer}}
+                {% else %}
+                -
+                {% endif %}
+            </div>
+            <div class="col-4 result-cell correct">{{row.correct}}</div>
+        </div>
+        {% endfor %}
+        <div class="row result">
+            <div class="col-9 result-cell">Итого</div>
+            <div class="col-2 result-cell">
+                {{result.n_correct_answers}}/{{result.n_all_answers}}
+                <small>{{(result.n_correct_answers / result.n_all_answers * 100)|round}}%</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="alert alert-primary">
+        <h3>Пройденных тестов пока нет.</h3>
+        <p>Вы можете найти их <a href="/all_tests" class="alert-link">тут</a></p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

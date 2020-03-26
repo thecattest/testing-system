@@ -1,5 +1,6 @@
 import sqlalchemy
 from sqlalchemy import orm
+import datetime
 
 from .db_session import SqlAlchemyBase
 from sqlalchemy_serializer import SerializerMixin
@@ -12,6 +13,7 @@ class Result(SqlAlchemyBase, SerializerMixin):
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
+    end_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
 
     rows = orm.relation("ResultRow", back_populates="result")
 
