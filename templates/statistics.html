@@ -2,43 +2,39 @@
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="row">
     {% if results %}
     {% for result in results %}
+    <div class="col-md-6">
     <div class="container item">
         <div class="row result-header">
             <div class="col-8">{{result.name}}</div>
-            <div class="col-2">{{result.finish_date}}</div>
-        </div>
-        <div class="row table-header">
-            <div class="col-4 result-cell">Вопрос</div>
-            <div class="col-4 result-cell">Ваш ответ</div>
-            <div class="col-4 result-cell">Верный ответ</div>
+            <div class="col-4">{{result.finish_date}}</div>
         </div>
         {% for row in result.rows %}
-        <div class="row align-items-center result-row">
-            <div class="col-4 result-cell">{{row.text}}</div>
-            <div class="col-4 result-cell {% if row.text == row.correct %}
-                                                    correct
-                                                    {% else %}
-                                                    incorrect
-                                                    {% endif %}">
-                {% if row.answer != "" %}
-                {{row.answer}}
-                {% else %}
-                -
-                {% endif %}
+        <div class="row result-row align-items-center">
+            <div class="col result-cell">
+                {{row.text}}
             </div>
-            <div class="col-4 result-cell correct">{{row.correct}}</div>
+            <div class="col result-cell
+                {% if row.answer == row.correct %} correct
+                {% else %} incorrect
+                {% endif %}">
+                {{row.answer}}
+            </div>
+            <div class="col result-cell correct">
+                {{row.correct}}
+            </div>
         </div>
         {% endfor %}
         <div class="row result">
             <div class="col-9 result-cell">Итого</div>
-            <div class="col-2 result-cell">
+            <div class="col-3 result-cell">
                 {{result.n_correct_answers}}/{{result.n_all_answers}}
                 <small>{{(result.n_correct_answers / result.n_all_answers * 100)|round}}%</small>
             </div>
         </div>
+    </div>
     </div>
     {% endfor %}
     {% else %}

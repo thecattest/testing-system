@@ -5,12 +5,12 @@
 <div class="container-fluid">
     <form action="/save_answer" method="post">
         <input type="hidden" name="question_id" value="{{question.id}}">
-        <div class="form-row">
+        <div class="form-group">
             <div class="question-header">
                 {{question.text}}
             </div>
         </div>
-        <div class="form-row text-center align-items-center">
+        <div class="form-group form-row text-center align-items-center">
             {% for answer in question.answers %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="answer">
@@ -23,7 +23,10 @@
             </div>
             {% endfor %}
         </div>
-        <button type="submit" class="btn btn-primary" disabled>Next</button>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" disabled>Next</button>
+            <a href="/finish_test" class="btn btn-danger">Quit</a>
+        </div>
     </form>
 </div>
 

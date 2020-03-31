@@ -144,10 +144,22 @@ def index():
                            tests=tests)
 
 
+@app.route("/statistics/<int:id>")
+def get_statistic(id):
+    db = db_session.create_session()
+    results = db.query(Result).filter(Result.id == id)
+    return show_statistics(results)
+
+
 @app.route("/statistics")
-def get_statistic():
+def get_statistics():
     db = db_session.create_session()
     results = db.query(Result).all()
+    results.reverse()
+    return show_statistics(results)
+
+
+def show_statistics(results):
     for r in results:
         all_answers = list(a.answer == a.correct for a in r.rows)
         r.n_correct_answers = all_answers.count(True)
@@ -235,7 +247,7 @@ def finish_test():
     st.is_finished = True
     st.end_date = datetime.datetime.now()
     db.commit()
-    return redirect("/all_tests")
+    return redirect("/statistics/{}".format(st.id))
 
 
 @app.route("/cookie_test")
