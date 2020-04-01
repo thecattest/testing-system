@@ -22,6 +22,7 @@ class Test(SqlAlchemyBase, SerializerMixin):
     description = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     questions = orm.relation("Question", back_populates='test')
+    statistics = orm.relation("Result", back_populates='test')
     #users = orm.relation("User",
      #                    secondary="users_to_tests",
       #                   backref="test")

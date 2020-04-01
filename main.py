@@ -24,7 +24,7 @@ app.config['SECRET_KEY'] = 'testing_system_key'
 def fill_db():
     session = db_session.create_session()
     test = Test()
-    test.name = "Arithmetic"
+    test.name = "Arithmetic 1"
     test.description = "The simplest questions for testing"
     session.add(test)
 
@@ -69,6 +69,54 @@ def fill_db():
             answer.is_correct = a["is_correct"]
             answer.question = question
             session.add(answer)
+
+    test = Test()
+    test.name = "Arithmetic 2"
+    test.description = "A bit harder questions for testing"
+    session.add(test)
+
+    questions = [
+        {
+            "text": "14 - 5",
+            "answers": [
+                {"text": "14", "is_correct": False},
+                {"text": "8", "is_correct": False},
+                {"text": "11", "is_correct": True},
+                {"text": "16 ", "is_correct": False}
+            ]
+        },
+        {
+            "text": "23 + 0",
+            "answers": [
+                {"text": "32", "is_correct": False},
+                {"text": "23", "is_correct": True},
+                {"text": "24", "is_correct": False},
+                {"text": "16 ", "is_correct": False}
+            ]
+        },
+        {
+            "text": "5 + 7",
+            "answers": [
+                {"text": "12", "is_correct": True},
+                {"text": "8", "is_correct": False},
+                {"text": "4", "is_correct": False},
+                {"text": "16 ", "is_correct": False}
+            ]
+        }
+    ]
+
+    for q in questions:
+        question = Question()
+        question.text = q["text"]
+        question.test = test
+        session.add(question)
+        for a in q["answers"]:
+            answer = Answer()
+            answer.text = a["text"]
+            answer.is_correct = a["is_correct"]
+            answer.question = question
+            session.add(answer)
+
     session.commit()
 
 
@@ -144,10 +192,10 @@ def index():
                            tests=tests)
 
 
-@app.route("/statistics/<int:id>")
-def get_statistic(id):
+@app.route("/statistics/<int:test_id>")
+def get_statistic(test_id):
     db = db_session.create_session()
-    results = db.query(Result).filter(Result.id == id)
+    results = db.query(Result).filter(Result.test_id == test_id).all()
     return show_statistics(results)
 
 
@@ -182,7 +230,7 @@ def start_test(test_id):
                                button="На главную",
                                link="/all_tests")
     result = Result()
-    result.name = test.name
+    result.test_id = test.id
     db.add(result)
     for q in test.questions:
         row = ResultRow()
@@ -211,7 +259,7 @@ def test():
         question = db.query(Question).get(q_id)
         if question:
             return render_template("question.html",
-                                   title=result.name,
+                                   title=result.test.name,
                                    question=question)
         return render_template("error.html",
                                text="Произошла ошибка. Скорее всего, тест был удалён.",
@@ -247,7 +295,7 @@ def finish_test():
     st.is_finished = True
     st.end_date = datetime.datetime.now()
     db.commit()
-    return redirect("/statistics/{}".format(st.id))
+    return redirect("/statistics/{}".format(st.test_id))
 
 
 @app.route("/cookie_test")

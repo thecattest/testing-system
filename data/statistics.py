@@ -11,10 +11,11 @@ class Result(SqlAlchemyBase, SerializerMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    test_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('tests.id'))
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     end_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
 
+    test = orm.relation("Test")
     rows = orm.relation("ResultRow", back_populates="result")
 
     def __repr__(self):
