@@ -13,8 +13,10 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    nick = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=False)
+    nickname = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=False)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+
+    results = orm.relation("Result", back_populates='user')
 
     #tests = orm.relation("Test",
      #                    secondary="users_to_tests",
@@ -27,4 +29,4 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
         return check_password_hash(self.hashed_password, password)
 
     def __repr__(self):
-        return f"<User> {self.id} {self.nick}"
+        return f"<User> {self.id} {self.nickname}"

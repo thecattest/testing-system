@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, redirect, make_response, session, abort, jsonify
 from flask_ngrok import run_with_ngrok
-# from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from data import db_session
 db_session.global_init("db/tests.sqlite")
 
 from data.__all_models import *
-# from forms.__all_forms import *
+from forms.__all_forms import *
 
 import datetime
 import random
@@ -14,8 +14,9 @@ import os
 
 
 app = Flask(__name__)
-# login_manager = LoginManager()
-# login_manager.init_app(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.unauthorized_handler(callback=(lambda: redirect('/login')))
 # run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'testing_system_key'
 # app.config['DEBUG'] = 'OFF'
@@ -23,6 +24,7 @@ app.config['SECRET_KEY'] = 'testing_system_key'
 
 def fill_db():
     session = db_session.create_session()
+
     test = Test()
     test.name = "Arithmetic 1"
     test.description = "The simplest questions for testing"
@@ -120,51 +122,29 @@ def fill_db():
     session.commit()
 
 
+def add_user(nickname, password):
+    session = db_session.create_session()
+    user = User()
+    user.nickname = nickname
+    user.set_password(password)
+    session.add(user)
+    session.commit()
+
+
 def main():
     # fill_db()
+    # add_user('ilya-vodopyanov', 'password')
+    # add_user('not-ilya-vodopyanov', 'not-password')
     port = int(os.environ.get("PORT", 8000))
     app.run(host='127.0.0.1', port=port)
     # app.run()
 
-'''
-@app.errorhandler(404)
-def not_found(error):
-    return render_template("error_404.html")
 
-
-@app.errorhandler(403)
-def not_found(error):
-    return render_template("error_403.html")
-'''
-'''
 @login_manager.user_loader
 def load_user(user_id):
     session = db_session.create_session()
     return session.query(User).get(user_id)
-    
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        session = db_session.create_session()
-        user = session.query(User).filter(User.email == form.email.data).first()
-        if user and user.check_password(form.password.data):
-            login_user(user, remember=form.remember_me.data)
-            return redirect("/")
-        return render_template("login.html",
-                               title='Log in',
-                               message="Password or login is incorrect",
-                               form=form)
-    return render_template('login.html', title='Log in', form=form)
-
-
-@app.route("/logout")
-@login_required
-def logout():
-    logout_user()
-    return redirect("/")
-'''
 
 def log(error):
     message = str(type(error)) + ": " + str(error)
@@ -179,9 +159,33 @@ def test_started():
     return False
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        user = session.query(User).filter(User.nickname == form.nickname.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            return redirect("/all_tests")
+        return render_template("login.html",
+                               title='Log in',
+                               message="Password or login is incorrect",
+                               form=form)
+    return render_template('login.html', title='Log in', form=form)
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
+
+
 @app.route("/")
 @app.route("/index")
 @app.route("/all_tests")
+@login_required
 def index():
     if test_started():
         return redirect('/test')
@@ -193,21 +197,36 @@ def index():
 
 
 @app.route("/statistics/<int:test_id>")
+@login_required
 def get_statistic(test_id):
     db = db_session.create_session()
-    results = db.query(Result).filter(Result.test_id == test_id).all()
+    results = db.query(Result).filter(Result.test_id == test_id, Result.user_id == current_user.id).all()
     return show_statistics(results)
 
 
+@app.route("/user_statistics/<int:user_id>")
+@login_required
+def get_user_statistics(user_id):
+    code = 0
+    if user_id != current_user.id:
+        code = 2
+    db = db_session.create_session()
+    results = db.query(Result).filter(Result.user_id == user_id).all()
+    return show_statistics(results, code=code)
+
+
 @app.route("/statistics")
+@login_required
 def get_statistics():
     db = db_session.create_session()
-    results = db.query(Result).all()
+    results = db.query(Result).filter(Result.user_id == current_user.id).all()
     results.reverse()
     return show_statistics(results)
 
 
-def show_statistics(results):
+def show_statistics(results, code=0):
+    if not results and code == 0:
+        code = 1
     for r in results:
         all_answers = list(a.answer == a.correct for a in r.rows)
         r.n_correct_answers = all_answers.count(True)
@@ -215,10 +234,12 @@ def show_statistics(results):
         r.finish_date = datetime.datetime.strftime(r.end_date, "%d %b, %H:%M")
     return render_template("statistics.html",
                     title="Статистика",
-                    results=results)
+                    results=results,
+                    code=code)
 
 
 @app.route("/tests/<int:test_id>")
+@login_required
 def start_test(test_id):
     if test_started():
         return redirect('/test')
@@ -231,6 +252,7 @@ def start_test(test_id):
                                link="/all_tests")
     result = Result()
     result.test_id = test.id
+    result.user_id = current_user.id
     db.add(result)
     for q in test.questions:
         row = ResultRow()
@@ -247,6 +269,7 @@ def start_test(test_id):
 
 
 @app.route("/test")
+@login_required
 def test():
     if not test_started():
         return redirect("/all_tests")
@@ -269,6 +292,7 @@ def test():
 
 
 @app.route("/save_answer", methods=["GET", "POST"])
+@login_required
 def save_answer():
     try:
         q_id = request.form["question_id"]
@@ -287,6 +311,7 @@ def save_answer():
 
 
 @app.route("/finish_test")
+@login_required
 def finish_test():
     if not test_started():
         return redirect("/all_tests")
@@ -296,30 +321,6 @@ def finish_test():
     st.end_date = datetime.datetime.now()
     db.commit()
     return redirect("/statistics/{}".format(st.test_id))
-
-
-@app.route("/cookie_test")
-def cookie_test():
-    visits_count = int(request.cookies.get("visits_count", 0))
-    if visits_count:
-        res = make_response(f"Вы пришли на эту страницу {visits_count + 1} раз")
-        res.set_cookie("visits_count", str(visits_count + 1),
-                       max_age=60 * 60 * 24 * 365 * 2)
-    else:
-        res = make_response(
-            "Вы пришли на эту страницу в первый раз за последние 2 года")
-        res.set_cookie("visits_count", '1',
-                       max_age=60 * 60 * 24 * 365 * 2)
-    return res
-
-
-@app.route('/session_test')
-def session_test():
-    if 'visits_count' in session:
-        session['visits_count'] = session.get('visits_count') + 1
-    else:
-        session['visits_count'] = 1
-    return f"Вы пришли на эту страницу {session['visits_count']} раз"
 
 
 if __name__ == '__main__':

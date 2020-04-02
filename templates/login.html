@@ -2,7 +2,6 @@
 
 {% block content %}
 
-<h2>Authorization</h2>
 {% if message %}
 <div class="alert alert-danger">{{message}}</div>
 {% endif %}
@@ -10,14 +9,9 @@
     {{form.hidden_tag()}}
     <div class="form-row">
         <div class="form-group col-md-6">
-            {{form.email.label}}
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">@</div>
-                </div>
-                {{ form.email(class="form-control", type="email", placeholder="Email") }}
-            </div>
-            {% for error in form.email.errors %}
+            {{form.nickname.label}}
+            {{ form.nickname(class="form-control", type="text", placeholder="Nickname") }}
+            {% for error in form.nickname.errors %}
             <small class="form-text red">
                 {{ error }}
             </small>

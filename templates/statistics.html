@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="row">
-    {% if results %}
+    {% if code == 0 %}
     {% for result in results %}
     <div class="col-md-6">
     <div class="container item">
@@ -13,7 +13,7 @@
                 <hr>
             </div>
             <div class="col-9">
-                <h6>Ilya Vodopyanov</h6>
+                <h6>{{result.user.nickname}}</h6>
             </div>
             <div class="col-3">
                 <h6>{{result.finish_date}}</h6>
@@ -45,10 +45,14 @@
     </div>
     </div>
     {% endfor %}
-    {% else %}
+    {% elif code == 1 %}
     <div class="alert alert-primary">
         <h3>Пройденных тестов пока нет.</h3>
         <p>Вы можете найти их <a href="/all_tests" class="alert-link">тут</a></p>
+    </div>
+    {% elif code == 2 %}
+    <div class="alert alert-danger">
+        <h3>You are not supposed to be here. Go <a href="/all_tests" class="alert-link">away</a></h3>
     </div>
     {% endif %}
 </div>

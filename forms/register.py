@@ -1,6 +1,5 @@
 import sys
 sys.path.append("..")
-from validators import validate_email
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField
