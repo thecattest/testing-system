@@ -17,7 +17,7 @@ app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.unauthorized_handler(callback=(lambda: redirect('/login')))
-# run_with_ngrok(app)
+run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'testing_system_key'
 # app.config['DEBUG'] = 'OFF'
 
@@ -135,9 +135,9 @@ def main():
     # fill_db()
     # add_user('ilya-vodopyanov', 'password')
     # add_user('not-ilya-vodopyanov', 'not-password')
-    port = int(os.environ.get("PORT", 8000))
-    app.run(host='127.0.0.1', port=port)
-    # app.run()
+    # port = int(os.environ.get("PORT", 8000))
+    # app.run(host='127.0.0.1', port=port)
+    app.run()
 
 
 @login_manager.user_loader
@@ -154,7 +154,7 @@ def log(error):
 
 def test_started():
     db = db_session.create_session()
-    if db.query(Result).filter(Result.is_finished == False).first():
+    if db.query(Result).filter(Result.is_finished == False, Result.user == current_user).first():
         return True
     return False
 

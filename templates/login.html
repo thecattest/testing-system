@@ -29,7 +29,7 @@
     </div>
     <div class="form-group">
         <div class="custom-control custom-checkbox">
-            {{ form.remember_me(type="checkbox", class="custom-control-input") }}
+            {{ form.remember_me(type="checkbox", class="custom-control-input", checked="true") }}
             {{form.remember_me.label(class="custom-control-label")}}
             {% for error in form.password.errors %}
             <small class="form-text red">
