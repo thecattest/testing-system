@@ -5,6 +5,19 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-8 mx-auto mt-4 p-4 question-container">
+            <div class="question-pre-header mb-3 mx-auto text-success">
+                <div class="row">
+                    <div class="pl-3 question-pre-header-text text-left col-6">
+                        <h3>Вопрос</h3>
+                    </div>
+                    <div class="pr-3 question-pre-header-number text-right col-6">
+                        <h3>{{question.current_n}}/{{question.n_questions}}</h3>
+                    </div>
+                </div>
+                <div class="progress" style="height: 3px;">
+                    <div class="progress-bar bg-success" style="width: {{ 100 / question.n_questions * question.current_n }}%;"></div>
+                </div>
+            </div>
             <form action="/save_answer" class="question-form" method="post">
                 <input type="hidden" name="question_id" value="{{question.id}}">
                 <div class="form-group">

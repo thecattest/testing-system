@@ -93,7 +93,8 @@ body {
 }
 
 .result-row {
-    /* margin-bottom: 10px; */
+    border-right: 4px solid var(--border);
+    border-left: 4px solid var(--border);
 }
 
 .table-header {
@@ -123,14 +124,6 @@ body {
 }
 
 .result .result-cell {
-}
-
-.user_label {
-    text-align: end;
-    margin: auto 20px auto auto;
-    font-family: monospace;
-    font-weight: 600;
-    font-size: 16px;
 }
 
 .question-container {

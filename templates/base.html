@@ -15,12 +15,12 @@
 <body>
 
     <div class="row header align-items-center">
-        <div class="{% if current_user.is_authenticated %} col-sm-8 col-md-10 {% else %} col-12 {% endif %}">
+        <div class="{% if current_user.is_authenticated %} col-sm-8 {% else %} col-12 {% endif %}">
             <h2>{{title}}</h2>
         </div>
         {% if current_user.is_authenticated %}
-        <div class="col-sm-4 col-md-2">
-            <p class="user_label">{{current_user.nickname}}</p>
+        <div class="col-sm-4">
+            <p class="my-auto text-right">{{current_user.nickname}}</p>
         </div>
         {% endif %}
     </div>

@@ -201,6 +201,7 @@ def index():
 def get_statistic(test_id):
     db = db_session.create_session()
     results = db.query(Result).filter(Result.test_id == test_id, Result.user_id == current_user.id).all()
+    results.reverse()
     return show_statistics(results)
 
 
@@ -214,6 +215,7 @@ def get_user_statistics(user_id):
     else:
         db = db_session.create_session()
         results = db.query(Result).filter(Result.user_id == user_id).all()
+    results.reverse()
     return show_statistics(results, code=code)
 
 
@@ -278,10 +280,14 @@ def test():
     db = db_session.create_session()
     result = db.query(Result).filter(Result.is_finished == False).first()
     questions = db.query(ResultRow).filter(ResultRow.result_id == result.id).all()
+    result.n_questions = len(questions)
     questions = list(q for q in questions if q.answer is None)
+    result.current_n = result.n_questions - len(questions) + 1
     if questions:
         q_id = random.choice(questions).q_id
         question = db.query(Question).get(q_id)
+        question.n_questions = result.n_questions
+        question.current_n = result.current_n
         if question:
             return render_template("question.html",
                                    title=result.test.name,
