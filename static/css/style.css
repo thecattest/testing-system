@@ -1,8 +1,27 @@
+:root {
+    --main-dark: #D5B9A4;
+    --main-light: #f1c9ac;
+    --background: #F9FAD1;
+    --border: #473337;
+    --dark-green: #7a9863;
+    --light-green: #72b142;
+}
+
+.custom-link {
+    color: var(--border);
+    text-decoration: underline;
+}
+
+body {
+    background-color: var(--background);
+}
+
 .test {
-    border: 3px solid darkgoldenrod;
+    border: 3px solid var(--border);
     padding: 15px;
     margin: 4px;
     border-radius: 5px;
+    background-color: var(--main-dark);
 }
 
 .test-header .name {
@@ -11,8 +30,9 @@
 
 .header {
     padding: 15px;
-    background-color: bisque;
+    background-color: var(--dark-green);
     margin-bottom: 10px;
+    color: white;
 }
 
 .description {
@@ -20,13 +40,12 @@
 }
 
 .answer {
-    z-index: 1000;
-    background-color: darkgray;
-    border-radius: 10px;
-    padding: 4px;
+    border-radius: 6px;
     margin: 5px;
     font-weight: 600;
     font-size: 14px;
+    border: 3px solid var(--border);
+    background-color: white;
 }
 
 .hidden {
@@ -49,26 +68,23 @@
 }
 
 .chosen {
-    background-color: cadetblue;
+    background-color: var(--light-green);
     color: white;
 }
 
 .item {
-    /* border: 3px solid darkcyan; */
     border-radius: 5px;
-    /* background-color: #899ed4; */
     padding: 10px;
-    /* color: white; */
     font-weight: 600;
     margin-top: 15px;
 }
 
 .result-header {
-    border-bottom: 7px solid white;
+    border: 4px solid var(--border);
+    border-bottom: 7px solid var(--background);
     padding: 10px 5px 12px 5px;
     font-size: 1.4em;
-    /* color: black; */
-    background-color: #b3acd0;
+    background-color: var(--main-dark);
 }
 
 .result-table-header {
@@ -86,21 +102,38 @@
     border: 2px solid white;
 }
 
-.correct{background-color: #93b99c!important;}
+.correct{
+    background-color: var(--light-green)!important;
+    color: white;
+}
 .incorrect{background-color: #d88f8f!important;}
 
 .result-cell {
     font-size: 0.9em;
-    background-color: #b3acd0;
-    border: 1px solid black;
+    background-color: var(--main-dark);
+    border: 1px solid var(--border);
     border-top: 0;
     padding-top: 3px;
 }
 
 .result {
     font-size: 20px;
+    border: 4px solid var(--border);
+    border-top: 7px solid var(--background);
 }
 
 .result .result-cell {
-    background-color: #549ddc;
+}
+
+.user_label {
+    text-align: end;
+    margin: auto 20px auto auto;
+    font-family: monospace;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.question-container {
+    border: 6px solid var(--border);
+    background-color: var(--main-dark);
 }

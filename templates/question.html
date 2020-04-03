@@ -3,31 +3,35 @@
 {% block content %}
 
 <div class="container-fluid">
-    <form action="/save_answer" method="post">
-        <input type="hidden" name="question_id" value="{{question.id}}">
-        <div class="form-group">
-            <div class="question-header">
-                {{question.text}}
-            </div>
-        </div>
-        <div class="form-group form-row text-center align-items-center">
-            {% for answer in question.answers %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="answer">
-                    <input type="radio" id="{{answer.id}}" value="{{answer.text}}"
-                           name="answer" class="hidden" required>
-                    <label for="{{answer.id}}">
-                        {{answer.text}}
-                    </label>
+    <div class="row">
+        <div class="col-lg-8 mx-auto mt-4 p-4 question-container">
+            <form action="/save_answer" class="question-form" method="post">
+                <input type="hidden" name="question_id" value="{{question.id}}">
+                <div class="form-group">
+                    <div class="question-header px-2 text-wrap">
+                        {{question.text}}
+                    </div>
                 </div>
-            </div>
-            {% endfor %}
+                <div class="form-group form-row text-center align-items-center">
+                    {% for answer in question.answers %}
+                    <div class="col-12">
+                        <div class="answer">
+                            <input type="radio" id="{{answer.id}}" value="{{answer.text}}"
+                                   name="answer" class="hidden" required>
+                            <label for="{{answer.id}}" class="text-wrap">
+                                {{answer.text}}
+                            </label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="form-group text-center mb-0">
+                    <button type="submit" class="m-auto px-5 py-1 btn btn-md btn-primary" disabled>Next</button>
+                    <a href="/finish_test" class="m-auto px-5 py-1 btn btn-md btn-danger">Quit</a>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary" disabled>Next</button>
-            <a href="/finish_test" class="btn btn-danger">Quit</a>
-        </div>
-    </form>
+    </div>
 </div>
 
 <script>

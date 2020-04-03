@@ -17,7 +17,7 @@ app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.unauthorized_handler(callback=(lambda: redirect('/login')))
-run_with_ngrok(app)
+# run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'testing_system_key'
 # app.config['DEBUG'] = 'OFF'
 
@@ -135,9 +135,9 @@ def main():
     # fill_db()
     # add_user('ilya-vodopyanov', 'password')
     # add_user('not-ilya-vodopyanov', 'not-password')
-    # port = int(os.environ.get("PORT", 8000))
-    # app.run(host='127.0.0.1', port=port)
-    app.run()
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host='127.0.0.1', port=port)
+    # app.run()
 
 
 @login_manager.user_loader
@@ -164,7 +164,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         session = db_session.create_session()
-        user = session.query(User).filter(User.nickname == form.nickname.data).first()
+        user = session.query(User).filter(User.nickname == form.nickname.data.strip()).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect("/all_tests")
@@ -210,8 +210,10 @@ def get_user_statistics(user_id):
     code = 0
     if user_id != current_user.id:
         code = 2
-    db = db_session.create_session()
-    results = db.query(Result).filter(Result.user_id == user_id).all()
+        results = []
+    else:
+        db = db_session.create_session()
+        results = db.query(Result).filter(Result.user_id == user_id).all()
     return show_statistics(results, code=code)
 
 
@@ -238,7 +240,7 @@ def show_statistics(results, code=0):
                     code=code)
 
 
-@app.route("/tests/<int:test_id>")
+@app.route("/test/<int:test_id>")
 @login_required
 def start_test(test_id):
     if test_started():
