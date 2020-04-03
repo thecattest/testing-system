@@ -237,7 +237,7 @@ def show_statistics(results, code=0):
         r.n_all_answers = len(all_answers)
         r.finish_date = datetime.datetime.strftime(r.end_date, "%d %b, %H:%M")
     return render_template("statistics.html",
-                    title="Статистика",
+                    title="История",
                     results=results,
                     code=code)
 

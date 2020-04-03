@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div class="col-12 col-lg-10 mx-auto mt-4 p-4">
+    <div class="col-12 col-lg-10 mx-auto my-4 px-0 p-lg-4">
         <div class="row tests">
             {% for test in tests %}
             <div class="col-12 col-md-6">
@@ -25,7 +25,7 @@
                             Начать
                         </a>
                         <a href="/statistics/{{test.id}}" class="mr-auto ml-2 px-3 py-1 btn-start btn btn-sm btn-secondary">
-                            Статистика
+                            История
                         </a>
                     </div>
                 </div>
