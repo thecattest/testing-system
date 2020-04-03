@@ -14,16 +14,25 @@
 </head>
 <body>
 
+    {% if current_user.is_authenticated%}
+    <ul class="nav nav-tabs nav-fill m-1">
+        <li class="nav-item">
+            <a class="nav-link {{all_tests}}" href="/all_tests">Тесты</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{statistics}}" href="/statistics">История</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/logout">Выход</a>
+        </li>
+    </ul>
+    {% else %}
     <div class="row header align-items-center">
-        <div class="{% if current_user.is_authenticated %} col-sm-8 {% else %} col-12 {% endif %}">
-            <h2>{{title}}</h2>
+        <div class="col-12 text-left ml-1">
+            <h3>Вход</h3>
         </div>
-        {% if current_user.is_authenticated %}
-        <div class="col-sm-4">
-            <p class="my-auto text-right">{{current_user.nickname}}</p>
-        </div>
-        {% endif %}
     </div>
+    {% endif %}
 
     <main role="main" class="container">
         {% block content %}{% endblock %}

@@ -126,6 +126,33 @@ body {
 .result .result-cell {
 }
 
+.nav-link.active {
+    background-color: var(--background)!important;
+    border: 1px solid var(--border)!important;
+    border-bottom: 1px solid var(--background)!important;
+}
+
+.nav-tabs {
+    background-color: var(--main-dark);
+    color: white;
+    border: none!important;
+    border-bottom: 1px solid var(--border)!important;
+}
+
+.nav-link {
+    color: var(--border);
+}
+
+.nav-link:hover {
+    color: var(--border)!important;
+    border: 1px solid var(--border)!important;
+}
+
+.nav-link.active:hover{
+    color: var(--border);
+    border-bottom-color: var(--background);
+}
+
 .question-container {
     border: 6px solid var(--border);
     background-color: var(--main-dark);

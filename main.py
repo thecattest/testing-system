@@ -193,7 +193,8 @@ def index():
     tests = db.query(Test).all()
     return render_template("all_tests.html",
                            title="Тесты",
-                           tests=tests)
+                           tests=tests,
+                           all_tests='active')
 
 
 @app.route("/statistics/<int:test_id>")
@@ -239,7 +240,8 @@ def show_statistics(results, code=0):
     return render_template("statistics.html",
                     title="История",
                     results=results,
-                    code=code)
+                    code=code,
+                    statistics='active')
 
 
 @app.route("/test/<int:test_id>")
