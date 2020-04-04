@@ -9,7 +9,7 @@
         <div class="card px-3 py-0">
             <div class="card-body">
                 <h3 class="card-title">{{group.name}}</h3>
-                <p class="card-text">Создатель - <b>{{group.creator.nickname}}</b></p>
+                <p class="card-text"><b>{{group.creator.nickname}}</b></p>
             </div>
             <ul class="list list-group pb-3">
                 {% if group.users %}
@@ -20,9 +20,11 @@
                     <li class="list-group-item py-2">Вы пока не создали ни одного пользователя</li>
                 {% endif %}
             </ul>
+            {% if current_user.type_id != 3 %}
             <div class="text-center mb-3">
                 <a href="/register" class="btn btn-success">Создать пользователя</a>
             </div>
+            {% endif %}
         </div>
     </div>
     {% elif code == 1%}

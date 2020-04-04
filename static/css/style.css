@@ -201,3 +201,11 @@ body {
     background-color: var(--background);
     border-color: var(--border);
 }
+
+.close-btn {
+    font-size: 1.3em;
+}
+
+.close-btn:hover {
+    text-decoration: none;
+}

@@ -25,10 +25,22 @@
                 <div id="created_groups" class="collapse list-group-item profile-list-item list-group-item-action py-2">
                     {% if created_groups %}
                     {% for group in created_groups %}
-                    <a href="/groups/{{group.id}}" class="list-group-item profile-list-item list-group-item-action py-2">{{group.name}}</a>
+                    <a href="/groups/{{group.id}}" class="list-group-item profile-list-item list-group-item-action py-2">{{group.name}} ({{group.creator.nickname}})</a>
                     {% endfor %}
                     {% else %}
                     <li class="list-group-item profile-list-item py-2 danger">Вы не создали ни одной группы</li>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% if current_user.type_id == 1 %}
+                <a data-toggle="collapse" href="#all_groups" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">Все группы</a>
+                <div id="all_groups" class="collapse list-group-item profile-list-item list-group-item-action py-2">
+                    {% if all_groups %}
+                    {% for group in all_groups %}
+                    <a href="/groups/{{group.id}}" class="list-group-item profile-list-item list-group-item-action py-2">{{group.name}} ({{group.creator.nickname}})</a>
+                    {% endfor %}
+                    {% else %}
+                    <li class="list-group-item profile-list-item py-2 danger">Пока никто не создал ни одной группы</li>
                     {% endif %}
                 </div>
                 {% endif %}

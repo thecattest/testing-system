@@ -167,6 +167,15 @@ def add_users_to_group(group_id, user_ids):
     db.commit()
 
 
+def delete_group(group_id):
+    db = db_session.create_session()
+    group = db.query(Group).get(group_id)
+    if not group:
+        return
+    db.delete(group)
+    db.commit()
+
+
 def main():
     '''
     fill_db()
@@ -183,8 +192,8 @@ def main():
     add_user('student2', 'password', 3)
     add_user('student3', 'password', 3)
     '''
-    # add_group('Все пользователи', for_all_users=True)
-    # add_users_to_group(1, [3, 4, 5])
+    # add_group('ABF-23', creator_id=2)
+    # add_users_to_group(2, [3, 4])
     port = int(os.environ.get("PORT", 8000))
     app.run(host='127.0.0.1', port=port)
     # app.run()
@@ -283,6 +292,8 @@ def get_all_users_link():
 def create_user():
     form = RegisterForm()
     if form.validate_on_submit():
+        if current_user.type_id == 3:
+            return redirect('/more')
         db = db_session.create_session()
         user = User()
         user.nickname = form.nickname.data
@@ -351,6 +362,18 @@ def show_statistics(results, code=0):
                            results=results,
                            code=code,
                            statistics='active')
+
+
+@app.route("/delete_result/<int:result_id>")
+@login_required
+def delete_result(result_id):
+    db = db_session.create_session()
+    result = db.query(Result).get(result_id)
+    if not result or (not result.user == current_user and current_user.type_id != 1):
+        return redirect('/statistics')
+    db.delete(result)
+    db.commit()
+    return redirect(f'/statistics/{result.test_id}')
 
 
 @app.route("/test/<int:test_id>")
@@ -437,6 +460,10 @@ def finish_test():
         return redirect("/all_tests")
     db = db_session.create_session()
     st = db.query(Result).filter(Result.is_finished == False).first()
+    if all(list(i.answer == None for i in st.rows)):
+        db.delete(st)
+        db.commit()
+        return redirect('/all_tests')
     st.is_finished = True
     st.end_date = datetime.datetime.now()
     db.commit()
@@ -451,12 +478,14 @@ def more():
                                        Group.creator != current_user).all()
     my_groups = list(group for group in my_groups if current_user in group.users)
     created_groups = db.query(Group).filter(~Group.is_service, Group.creator == current_user).all()
+    all_groups = db.query(Group).filter(~Group.is_service).all()
     try:
         return render_template('more.html',
                                title='Дополнительно',
                                more='active',
                                my_groups=my_groups,
-                               created_groups=created_groups)
+                               created_groups=created_groups,
+                               all_groups=all_groups)
     except sa.orm.exc.DetachedInstanceError:
         return redirect('/more')
 

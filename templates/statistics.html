@@ -9,7 +9,12 @@
         <div class="item">
             <div class="row result-header">
                 <div class="col-12 text-wrap">
-                    <h4>{{result.test.name}} #{{result.id}}</h4>
+                    <h4>
+                        {{result.test.name}} #{{result.id}}
+                        <button type="button" class="close">
+                            <a href="/delete_result/{{result.id}}" class="close-btn text-danger">&times;</a>
+                        </button>
+                    </h4>
                     <hr>
                 </div>
                 <div class="col-9">
