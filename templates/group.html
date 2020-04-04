@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div class="row">
+    {% if code == 0%}
+    <div class="group-container col-lg-8 mx-auto px-4 py-3">
+        <div class="card px-3 py-0">
+            <div class="card-body">
+                <h3 class="card-title">{{group.name}}</h3>
+                <p class="card-text">Создатель - <b>{{group.creator.nickname}}</b></p>
+            </div>
+            <ul class="list list-group pb-3">
+                {% if group.users %}
+                    {% for user in group.users %}
+                    <li class="list-group-item py-2 d-flex justify-content-between"><b>{{user.nickname}}</b><span>{{user.user_type.name}}</span></li>
+                    {% endfor %}
+                {% else %}
+                    <li class="list-group-item py-2">Вы пока не создали ни одного пользователя</li>
+                {% endif %}
+            </ul>
+            <div class="text-center mb-3">
+                <a href="/register" class="btn btn-success">Создать пользователя</a>
+            </div>
+        </div>
+    </div>
+    {% elif code == 1%}
+    <div class="alert alert-warning col-10 m-4">
+        <h3>Что-то пошло не так</h3>
+        <p>Кажется, такой группы не существует. Вы попали на эту страницу по ошибке</p>
+    </div>
+    {% elif code == 2%}
+    {% include "go_away.html" %}
+    {% endif %}
+</div>
+
+{% endblock %}

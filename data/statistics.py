@@ -22,4 +22,4 @@ class Result(SqlAlchemyBase, SerializerMixin):
     rows = orm.relation("ResultRow", back_populates="result")
 
     def __repr__(self):
-        return f"<Result> {self.id} {self.name} {self.is_finished}"
+        return f"<Result {self.id} {self.name} {self.is_finished}>"

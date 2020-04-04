@@ -157,3 +157,28 @@ body {
     border: 6px solid var(--border);
     background-color: var(--main-dark);
 }
+
+.profile-list-item {
+    cursor: pointer;
+    color: var(--gray-dark);
+}
+
+.profile-list-item:hover {
+    background-color: var(--main-dark);
+    color: white;
+}
+
+.danger-on-hover:hover {
+    background-color: var(--danger);
+    color: white;
+}
+
+.card {
+    background-color: var(--main-light);
+    border: 2px solid var(--border);
+}
+
+.list-group-item {
+    background-color: var(--background);
+    border-color: var(--border);
+}

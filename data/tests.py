@@ -28,4 +28,4 @@ class Test(SqlAlchemyBase, SerializerMixin):
       #                   backref="test")
 
     def __repr__(self):
-        return f"<Test> {self.id} {self.name}"
+        return f"<Test {self.id} {self.name}>"

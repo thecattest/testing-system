@@ -10,14 +10,9 @@
     {{form.hidden_tag()}}
     <div class="form-row">
         <div class="form-group col-12">
-            {{form.email.label}}
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">@</div>
-                </div>
-                {{ form.email(class="form-control", type="email") }}
-            </div>
-            {% for error in form.email.errors %}
+            {{form.nickname.label}}
+            {{ form.nickname(class="form-control", type="text", placeholder="Логин") }}
+            {% for error in form.nickname.errors %}
             <small class="form-text red">
                 {{ error }}
             </small>
@@ -27,79 +22,35 @@
     <div class="form-row">
         <div class="form-group col-md-6">
             {{form.password.label}}
-            {{ form.password(class="form-control", type="password", placeholder="Password") }}
+            {{form.password(class="form-control", placeholder="Пароль")}}
+            {% for error in form.password.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
         </div>
         <div class="form-group col-md-6">
             {{form.password_confirmation.label}}
-            {{ form.password_confirmation(class="form-control", type="password", placeholder="Password") }}
-        </div>
-        {% for error in form.password.errors %}
-        <small class="form-text red col-12">
-            {{ error }}
-        </small>
-        {% endfor %}
-    </div>
-    <hr>
-    <div class="form-row">
-        <div class="form-group col-md-4">
-            {{form.surname.label}}
-            {{ form.surname(class="form-control", type="text", placeholder="Surname") }}
-            {% for error in form.surname.errors %}
-            <small class="form-text red">
-                {{ error }}
-            </small>
-            {% endfor %}
-        </div>
-        <div class="form-group col-md-4">
-            {{form.name.label}}
-            {{ form.name(class="form-control", type="text", placeholder="Name") }}
-            {% for error in form.name.errors %}
-            <small class="form-text red">
-                {{ error }}
-            </small>
-            {% endfor %}
-        </div>
-        <div class="form-group col-md-4">
-            {{form.age.label}}
-            {{ form.age(class="form-control", type="number", placeholder="Age") }}
-            {% for error in form.age.errors %}
+            {{form.password_confirmation(class="form-control", placeholder="Снова пароль")}}
+            {% for error in form.password_confirmation.errors %}
             <small class="form-text red">
                 {{ error }}
             </small>
             {% endfor %}
         </div>
     </div>
-    <hr>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            {{form.position.label}}
-            {{ form.position(class="form-control", type="text", placeholder="Position") }}
-            {% for error in form.position.errors %}
-            <small class="form-text red">
-                {{ error }}
-            </small>
-            {% endfor %}
-        </div>
-        <div class="form-group col-md-6">
-            {{form.speciality.label}}
-            {{ form.speciality(class="form-control", type="text", placeholder="Speciality") }}
-            {% for error in form.speciality.errors %}
-            <small class="form-text red">
-                {{ error }}
-            </small>
-            {% endfor %}
-        </div>
-    </div>
-    <hr>
     <div class="form-group">
-        {{form.address.label}}
-        {{ form.address(class="form-control", type="text", placeholder="module_1 etc.", required=True) }}
-        {% for error in form.address.errors %}
-        <small class="form-text red">
-            {{ error }}
-        </small>
-        {% endfor %}
+        <div class="custom-control custom-checkbox">
+            {{ form.is_teacher(type="checkbox", class="custom-control-input") }}
+            {{form.is_teacher.label(class="custom-control-label")}}
+            {% for error in form.is_teacher.errors %}
+            <small class="form-text red">
+                {{ error }}
+            </small>
+            {% endfor %}
+        </div>
     </div>
+
     {{ form.submit(class="btn btn-primary", type="submit") }}
 </form>
 

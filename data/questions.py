@@ -17,4 +17,4 @@ class Question(SqlAlchemyBase, SerializerMixin):
     answers = orm.relation("Answer", back_populates='question')
 
     def __repr__(self):
-        return f"<Question> {self.id} {self.text} {self.test_id}"
+        return f"<Question {self.id} {self.text} {self.test_id}>"

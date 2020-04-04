@@ -15,7 +15,7 @@
 <body>
 
     {% if current_user.is_authenticated%}
-    <ul class="nav nav-tabs nav-fill m-1">
+    <ul class="nav nav-tabs px-2 pt-3">
         <li class="nav-item">
             <a class="nav-link {{all_tests}}" href="/all_tests">Тесты</a>
         </li>
@@ -23,7 +23,7 @@
             <a class="nav-link {{statistics}}" href="/statistics">История</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/logout">Выход</a>
+            <a class="nav-link {{more}}" href="/more">Профиль</a>
         </li>
     </ul>
     {% else %}

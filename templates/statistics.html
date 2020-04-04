@@ -6,56 +6,54 @@
     {% if code == 0 %}
     {% for result in results %}
     <div class="col-md-6">
-    <div class="container item">
-        <div class="row result-header">
-            <div class="col-12 text-wrap">
-                <h4>{{result.test.name}} #{{result.id}}</h4>
-                <hr>
+        <div class="item">
+            <div class="row result-header">
+                <div class="col-12 text-wrap">
+                    <h4>{{result.test.name}} #{{result.id}}</h4>
+                    <hr>
+                </div>
+                <div class="col-9">
+                    <h6>{{result.user.nickname}}</h6>
+                </div>
+                <div class="col-3">
+                    <h6>{{result.finish_date}}</h6>
+                </div>
             </div>
-            <div class="col-9">
-                <h6>{{result.user.nickname}}</h6>
+            {% for row in result.rows %}
+            <div class="row result-row align-items-center">
+                <div class="col result-cell text-wrap">
+                    {{row.text}}
+                </div>
+                <div class="col result-cell text-wrap
+                    {% if row.answer == row.correct %} correct
+                    {% else %} incorrect
+                    {% endif %}">
+                    {% if row.answer != None %}{{row.answer}}{% else %} <b>-</b> {% endif %}
+                </div>
+                <div class="col result-cell text-wrap correct">
+                    {{row.correct}}
+                </div>
             </div>
-            <div class="col-3">
-                <h6>{{result.finish_date}}</h6>
+            {% endfor %}
+            <div class="row result">
+                <div class="col-9 result-cell">Итого</div>
+                <div class="col-3 result-cell
+                    {% if result.n_correct_answers == result.n_all_answers%} correct {% endif %}
+                ">
+                    {{result.n_correct_answers}}/{{result.n_all_answers}}
+                    <small>{{(result.n_correct_answers / result.n_all_answers * 100)|round}}%</small>
+                </div>
             </div>
         </div>
-        {% for row in result.rows %}
-        <div class="row result-row align-items-center">
-            <div class="col result-cell text-wrap">
-                {{row.text}}
-            </div>
-            <div class="col result-cell text-wrap
-                {% if row.answer == row.correct %} correct
-                {% else %} incorrect
-                {% endif %}">
-                {% if row.answer != None %}{{row.answer}}{% else %} <b>-</b> {% endif %}
-            </div>
-            <div class="col result-cell text-wrap correct">
-                {{row.correct}}
-            </div>
-        </div>
-        {% endfor %}
-        <div class="row result">
-            <div class="col-9 result-cell">Итого</div>
-            <div class="col-3 result-cell
-                {% if result.n_correct_answers == result.n_all_answers%} correct {% endif %}
-            ">
-                {{result.n_correct_answers}}/{{result.n_all_answers}}
-                <small>{{(result.n_correct_answers / result.n_all_answers * 100)|round}}%</small>
-            </div>
-        </div>
-    </div>
     </div>
     {% endfor %}
     {% elif code == 1 %}
-    <div class="alert alert-primary">
-        <h3>Пройденных тестов пока нет.</h3>
+    <div class="alert alert-primary col-10 m-4">
+        <h4>Пройденных тестов пока нет.</h4>
         <p>Вы можете найти их <a href="/all_tests" class="alert-link">тут</a></p>
     </div>
     {% elif code == 2 %}
-    <div class="alert alert-danger">
-        <h3>You are not supposed to be here. Go <a href="/all_tests" class="alert-link">away</a></h3>
-    </div>
+    {% include "go_away.html" %}
     {% endif %}
 </div>
 

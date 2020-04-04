@@ -122,19 +122,68 @@ def fill_db():
     session.commit()
 
 
-def add_user(nickname, password):
+def add_user(nickname, password, type):
     session = db_session.create_session()
     user = User()
     user.nickname = nickname
+    user.type_id = type
     user.set_password(password)
     session.add(user)
     session.commit()
 
 
+def add_type(name):
+    session = db_session.create_session()
+    type = UserType()
+    type.name = name
+    session.add(type)
+    session.commit()
+
+
+def add_group(name, creator_id=1, for_all_users=False, is_service=False):
+    if for_all_users:
+        is_service = True
+    db = db_session.create_session()
+    group = Group()
+    group.creator_id = creator_id
+    group.name = name
+    group.is_service = is_service
+    group.for_all_users = for_all_users
+    db.add(group)
+    db.commit()
+
+
+def add_users_to_group(group_id, user_ids):
+    db = db_session.create_session()
+    group = db.query(Group).get(group_id)
+    if not group:
+        return
+    for user_id in user_ids:
+        user = db.query(User).get(user_id)
+        if not user:
+            continue
+        group.users.append(user)
+    db.commit()
+
+
 def main():
-    # fill_db()
-    # add_user('ilya-vodopyanov', 'password')
-    # add_user('not-ilya-vodopyanov', 'not-password')
+    '''
+    fill_db()
+
+    add_type('Администратор')
+    add_type('Учитель')
+    add_type('Ученик')
+
+    add_user('ilya-vodopyanov', 'password', 1)
+
+    add_user('teacher', 'password', 2)
+
+    add_user('student1', 'password', 3)
+    add_user('student2', 'password', 3)
+    add_user('student3', 'password', 3)
+    '''
+    # add_group('Все пользователи', for_all_users=True)
+    # add_users_to_group(1, [3, 4, 5])
     port = int(os.environ.get("PORT", 8000))
     app.run(host='127.0.0.1', port=port)
     # app.run()
@@ -150,6 +199,15 @@ def log(error):
     message = str(type(error)) + ": " + str(error)
     with open('log.txt', 'a') as file:
         file.write(message + '\n' + str(datetime.datetime.now()) + '\n-----\n')
+
+
+def get_all_users_id(creator_id):
+    db = db_session.create_session()
+    group = db.query(Group).filter(Group.for_all_users, Group.is_service,
+                                   Group.creator_id == creator_id).first()
+    if not group or not group.id:
+        return 0
+    return group.id
 
 
 def test_started():
@@ -197,6 +255,56 @@ def index():
                            all_tests='active')
 
 
+@app.route("/groups/<int:group_id>")
+@login_required
+def get_group(group_id):
+    code = 0
+    db = db_session.create_session()
+    group = db.query(Group).get(group_id)
+    if not group:
+        code = 1
+    elif group.creator_id != current_user.id and current_user.type_id != 1:
+        code = 2
+    return render_template("group.html",
+                           title='Группа',
+                           group=group,
+                           code=code)
+
+
+@app.route("/all_users")
+@login_required
+def get_all_users_link():
+    return redirect('/groups/{}'.format(str(get_all_users_id(current_user.id))))
+
+
+@app.route("/register", methods=['GET', 'POST'])
+@login_required
+def create_user():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        db = db_session.create_session()
+        user = User()
+        user.nickname = form.nickname.data
+        user.set_password(form.password.data)
+        if form.is_teacher.data:
+            user.type_id = 2
+        else:
+            user.type_id = 3
+        db.add(user)
+        db.commit()
+
+        if current_user.id != 1:
+            add_users_to_group(1, [user.id])
+        add_users_to_group(get_all_users_id(current_user.id), [user.id])
+
+        # если учитель, создаем для него группу всех пользователей
+        if user.type_id == 2:
+            add_group('Все пользователи', user.id, for_all_users=True)
+
+        return redirect('/all_users')
+    return render_template('register.html', title='Создать', form=form)
+
+
 @app.route("/statistics/<int:test_id>")
 @login_required
 def get_statistic(test_id):
@@ -238,10 +346,10 @@ def show_statistics(results, code=0):
         r.n_all_answers = len(all_answers)
         r.finish_date = datetime.datetime.strftime(r.end_date, "%d %b, %H:%M")
     return render_template("statistics.html",
-                    title="История",
-                    results=results,
-                    code=code,
-                    statistics='active')
+                           title="История",
+                           results=results,
+                           code=code,
+                           statistics='active')
 
 
 @app.route("/test/<int:test_id>")
@@ -293,7 +401,8 @@ def test():
         if question:
             return render_template("question.html",
                                    title=result.test.name,
-                                   question=question)
+                                   question=question,
+                                   all_tests="active")
         return render_template("error.html",
                                text="Произошла ошибка. Скорее всего, тест был удалён.",
                                button="На главную",
@@ -331,6 +440,14 @@ def finish_test():
     st.end_date = datetime.datetime.now()
     db.commit()
     return redirect("/statistics/{}".format(st.test_id))
+
+
+@app.route('/more')
+@login_required
+def more():
+    return render_template('more.html',
+                           title='Дополнительно',
+                           more='active')
 
 
 if __name__ == '__main__':

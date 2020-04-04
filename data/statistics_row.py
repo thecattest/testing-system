@@ -19,4 +19,4 @@ class ResultRow(SqlAlchemyBase, SerializerMixin):
     result = orm.relation("Result")
 
     def __repr__(self):
-        return f"<ResultRow> {self.q_id} {self.answer} {self.result}"
+        return f"<ResultRow {self.q_id} {self.answer} {self.result}>"
