@@ -3,6 +3,7 @@ from flask_ngrok import run_with_ngrok
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from data import db_session
+import sqlalchemy as sa
 db_session.global_init("db/tests.sqlite")
 
 from data.__all_models import *
@@ -263,7 +264,7 @@ def get_group(group_id):
     group = db.query(Group).get(group_id)
     if not group:
         code = 1
-    elif group.creator_id != current_user.id and current_user.type_id != 1:
+    elif group.creator_id != current_user.id and current_user.type_id != 1 and not current_user in group.users:
         code = 2
     return render_template("group.html",
                            title='Группа',
@@ -445,9 +446,19 @@ def finish_test():
 @app.route('/more')
 @login_required
 def more():
-    return render_template('more.html',
-                           title='Дополнительно',
-                           more='active')
+    db = db_session.create_session()
+    my_groups = db.query(Group).filter((Group.for_all_users) | (~Group.is_service),
+                                       Group.creator != current_user).all()
+    my_groups = list(group for group in my_groups if current_user in group.users)
+    created_groups = db.query(Group).filter(~Group.is_service, Group.creator == current_user).all()
+    try:
+        return render_template('more.html',
+                               title='Дополнительно',
+                               more='active',
+                               my_groups=my_groups,
+                               created_groups=created_groups)
+    except sa.orm.exc.DetachedInstanceError:
+        return redirect('/more')
 
 
 if __name__ == '__main__':

@@ -10,12 +10,34 @@
                 <p class="card-text">{{current_user.nickname}}</p>
             </div>
             <ul class="list list-group pb-3">
-                <a href="#" class="list-group-item profile-list-item list-group-item-action py-2">Мои группы</a>
-                <a href="#" class="list-group-item profile-list-item list-group-item-action py-2">Мои учителя</a>
+                <a data-toggle="collapse" href="#my_groups" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">Мои группы</a>
+                <div id="my_groups" class="collapse list-group-item profile-list-item list-group-item-action py-2">
+                    {% if my_groups %}
+                    {% for group in my_groups %}
+                    <a href="/groups/{{group.id}}" class="list-group-item profile-list-item list-group-item-action py-2">{{group.name}} ({{group.creator.nickname}})</a>
+                    {% endfor %}
+                    {% else %}
+                    <li class="list-group-item profile-list-item py-2 danger">Вы не находитесь ни в одной группе</li>
+                    {% endif %}
+                </div>
                 {% if current_user.type_id in (1, 2) %}
-                    <a href="/all_users" class="list-group-item profile-list-item list-group-item-action py-2">Пользователи</a>
+                <a data-toggle="collapse" href="#created_groups" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">Созданные группы</a>
+                <div id="created_groups" class="collapse list-group-item profile-list-item list-group-item-action py-2">
+                    {% if created_groups %}
+                    {% for group in created_groups %}
+                    <a href="/groups/{{group.id}}" class="list-group-item profile-list-item list-group-item-action py-2">{{group.name}}</a>
+                    {% endfor %}
+                    {% else %}
+                    <li class="list-group-item profile-list-item py-2 danger">Вы не создали ни одной группы</li>
+                    {% endif %}
+                </div>
                 {% endif %}
-                <a href="/logout" class="danger-on-hover list-group-item profile-list-item list-group-item-action py-2">Выйти из аккаунта</a>
+                {% if current_user.type_id in (1, 2) %}
+                    <a href="/all_users" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">Пользователи</a>
+                {% endif %}
+                <a href="/all_tests" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">Тесты</a>
+                <a href="/statistics" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">История</a>
+                <a href="/logout" class="danger-on-hover danger list-group-item profile-list-item list-group-item-action py-2">Выйти из аккаунта</a>
             </ul>
         </div>
     </div>

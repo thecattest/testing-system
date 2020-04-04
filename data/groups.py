@@ -29,4 +29,4 @@ class Group(SqlAlchemyBase, SerializerMixin):
                          backref="group")
 
     def __repr__(self):
-        return f"<Group {self.id} {self.name} {self.creator.nick}>"
+        return f"<Group {self.id} {self.name} {self.creator.nickname}>"

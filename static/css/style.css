@@ -4,6 +4,7 @@
     --background: #F9FAD1;
     --border: #473337;
     --dark-green: #7a9863;
+
     --light-green: #72b142;
 }
 
@@ -133,14 +134,14 @@ body {
 }
 
 .nav-tabs {
-    background-color: var(--main-dark);
+    background-color: var(--dark-green);
     color: white;
     border: none!important;
     border-bottom: 1px solid var(--border)!important;
 }
 
 .nav-link {
-    color: var(--border);
+    color: white;
 }
 
 .nav-link:hover {
@@ -168,9 +169,27 @@ body {
     color: white;
 }
 
-.danger-on-hover:hover {
-    background-color: var(--danger);
+.list-item-dark {
+    background-color: var(--dark-green)!important;
     color: white;
+}
+
+.list-item-dark:hover {
+    background-color: var(--main-light);
+}
+
+.danger {
+    background-color: var(--danger)!important;
+    color: white!important;
+}
+
+.list-group-item-action:active {
+
+}
+
+.danger-on-hover:hover {
+    background-color: var(--danger)!important;
+    color: white!important;
 }
 
 .card {
