@@ -6,46 +6,59 @@
 <div class="row">
     {% if code == 0%}
     <h2 class="header col-12">Группы</h2>
-    {% for group in groups %}
-    <div class="group-container col-lg-8 mx-auto px-4 py-3">
-        <div class="card px-3 py-0">
-            <div class="card-body align-items-center">
-                <h3 class="card-title">{{group.name}}</h3>
-                <p class="card-text {% if current_user == group.creator %} list-item-dark p-1 rounded {% endif %}"><b>{{group.creator.nickname}}</b></p>
-            </div>
-            <ul class="list list-group pb-3">
-                {% if group.users %}
-                    {% for user in group.users %}
-                    <li class="list-group-item py-2 d-flex justify-content-between align-items-center
-                               {% if current_user == user %} list-item-dark {% endif %}
-                    ">
-                        <b>
-                            {% if group.creator == current_user or current_user.type_id == 1 %}
-                            <a href="/remove_user/{{user.id}}/{{group.id}}" title="Исключить" class="delete-link"><i class="fas fa-minus-square"></i></a>
-                            {% endif %}
-                            {{user.nickname}}
-                        </b>
-                        <span class="badge badge-primary">{{user.user_type.name}}</span>
-                    </li>
-                    {% endfor %}
-                {% else %}
-                    <li class="list-group-item danger py-2">Пользователей ещё нет</li>
-                {% endif %}
-            </ul>
-            {% if current_user.type_id == 1 or current_user == group.creator %}
-            <div class="text-center mb-3">
-                <a href="/add_user" class="btn btn-success">Добавить пользователя <i class="fas fa-plus-square"></i></a>
-            </div>
-            {% endif %}
+    <div class="col-lg-10 mx-auto">
+        {% if current_user.type_id in (1, 2) %}
+        <div class="text-center mb-3">
+            <a href="/create_group" class="m-1 btn btn-success">Создать группу <i class="fas fa-plus-square"></i></a>
         </div>
+        {% endif %}
+        {% for group in groups %}
+        <div class="group-container mx-auto px-4 pb-3">
+            <div class="card px-3 py-0">
+                <div class="card-body align-items-center">
+                    <h3 class="card-title">{{group.name}}</h3>
+                    <p class="card-text {% if current_user == group.creator %} list-item-dark p-1 rounded {% endif %}">
+                        <b>
+                            {{group.creator.nickname}}
+                            {% if current_user == group.creator %}(Вы){% endif %}
+                        </b>
+                    </p>
+                </div>
+                <ul class="list list-group pb-3">
+                    {% if group.users %}
+                        {% for user in group.users %}
+                        <li class="list-group-item py-2 d-flex justify-content-between align-items-center
+                                   {% if current_user == user %} list-item-dark {% endif %}
+                        ">
+                            <b>
+                                {% if group.creator == current_user or current_user.type_id == 1 %}
+                                <a href="/remove_user/{{user.id}}/{{group.id}}" title="Исключить" class="delete-link"><i class="fas fa-minus-square"></i></a>
+                                {% endif %}
+                                {{user.nickname}}
+                            </b>
+                            <span class="badge badge-primary">{{user.user_type.name}}</span>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item danger py-2">Пользователей ещё нет</li>
+                    {% endif %}
+                </ul>
+                {% if current_user.type_id == 1 or current_user == group.creator %}
+                <div class="text-center mb-3">
+                    <a href="/delete_group/{{group.id}}" class="m-1 btn btn-danger">Удалить группу <i class="fas fa-trash-alt"></i></a>
+                    <a href="/add_user" class="m-1 btn btn-success">Добавить пользователя <i class="fas fa-plus-square"></i></a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        {% elif code == 1%}
+        <div class="alert alert-warning col-10 m-4">
+            <h3>Пусто!</h3>
+            <p>Похоже, групп нет</p>
+        </div>
+        {% endif %}
     </div>
-    {% endfor %}
-    {% elif code == 1%}
-    <div class="alert alert-warning col-10 m-4">
-        <h3>Пусто!</h3>
-        <p>Похоже, групп нет</p>
-    </div>
-    {% endif %}
 </div>
 
 {% endblock %}

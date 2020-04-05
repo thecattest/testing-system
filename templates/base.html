@@ -21,13 +21,13 @@
     {% if current_user.is_authenticated%}
     <ul class="nav nav-tabs px-2 pt-3">
         <li class="nav-item">
-            <a class="nav-link {{all_tests}}" href="/all_tests">Тесты</a>
+            <a class="nav-link {{all_tests}}" href="/all_tests">Тесты <i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{statistics}}" href="/statistics">История</a>
+            <a class="nav-link {{statistics}}" href="/statistics">История <i class="fas fa-history"></i></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{more}}" href="/more">Профиль</a>
+            <a class="nav-link {{more}}" href="/more">Профиль <i class="fas fa-user-alt"></i></a>
         </li>
     </ul>
     {% endif %}

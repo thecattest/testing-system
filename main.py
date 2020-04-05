@@ -268,6 +268,12 @@ def get_group():
                            code=code)
 
 
+@app.route("/create_group")
+@login_required
+def create_group():
+    return redirect('/groups')
+
+
 @app.route("/register", methods=['GET', 'POST'])
 @login_required
 def create_user():
@@ -332,6 +338,12 @@ def get_users():
         return redirect('/users')
 
 
+@app.route('/add_user')
+@login_required
+def add_user_to_group():
+    return redirect('/groups')
+
+
 @app.route("/statistics")
 @login_required
 def get_statistics():
@@ -368,6 +380,18 @@ def delete_result(result_id):
     return redirect(f'/statistics/{result.test_id}')
 
 
+@app.route('/delete_group/<int:group_id>')
+@login_required
+def delete_group(group_id):
+    db = db_session.create_session()
+    group = db.query(Group).get(group_id)
+    if group and (group.creator == current_user or current_user.type_id == 1):
+        group.users = []
+        db.delete(group)
+        db.commit()
+    return redirect('/groups')
+
+
 @app.route("/delete_user/<int:user_id>")
 @login_required
 def delete_user(user_id):
@@ -375,8 +399,7 @@ def delete_user(user_id):
     user = db.query(User).get(user_id)
     if user and user in current_user.created or current_user.type_id == 1:
         for group in user.created_groups:
-            group.users = []
-            db.delete(group)
+            delete_group(group.id)
         db.delete(user)
         db.commit()
     return redirect('/users')

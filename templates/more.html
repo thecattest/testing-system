@@ -10,13 +10,13 @@
                 <p class="card-text">{{current_user.nickname}}</p>
             </div>
             <ul class="list list-group pb-3">
-                <a href="/groups" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">Группы</a>
+                <a href="/groups" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">Группы <i class="fas fa-list"></i></a>
                 {% if current_user.type_id in (1, 2) %}
-                    <a href="/users" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">Пользователи</a>
+                    <a href="/users" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">Пользователи <i class="fas fa-users"></i></a>
                 {% endif %}
-                <a href="/all_tests" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">Тесты</a>
-                <a href="/statistics" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">История</a>
-                <a href="/logout" class="danger-on-hover danger list-group-item profile-list-item list-group-item-action py-2">Выйти из аккаунта</a>
+                <a href="/all_tests" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">Тесты <i class="fas fa-bars"></i></a>
+                <a href="/statistics" class="list-group-item profile-list-item list-item-dark list-group-item-action py-2">История <i class="fas fa-history"></i></a>
+                <a href="/logout" class="danger-on-hover danger list-group-item profile-list-item list-group-item-action py-2">Выйти из аккаунта <i class="fas fa-sign-out-alt"></i></a>
             </ul>
         </div>
     </div>
