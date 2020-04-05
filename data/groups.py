@@ -24,8 +24,8 @@ class Group(SqlAlchemyBase, SerializerMixin):
 
     creator = orm.relation("User")
     users = orm.relation("User",
-                         secondary="groups_to_users",
-                         backref="group")
+                         secondary="groups_to_users",)
+                         # backref="group")
 
     def __repr__(self):
         return f"<Group {self.id} {self.name} {self.creator.nickname}>"

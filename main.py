@@ -371,7 +371,15 @@ def delete_result(result_id):
 @app.route("/delete_user/<int:user_id>")
 @login_required
 def delete_user(user_id):
-    pass
+    db = db_session.create_session()
+    user = db.query(User).get(user_id)
+    if user and user in current_user.created:
+        for group in user.created_groups:
+            group.users = []
+            db.delete(group)
+        db.delete(user)
+        db.commit()
+    return redirect('/users')
 
 
 @app.route('/remove_user/<int:user_id>/<int:group_id>')

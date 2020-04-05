@@ -24,8 +24,8 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     created = orm.relation("User")
     created_groups = orm.relation("Group", back_populates='creator')
     groups = orm.relation("Group",
-                          secondary="groups_to_users",
-                          backref="user")
+                          secondary="groups_to_users",)
+                          # backref="user")
 
     #tests = orm.relation("Test",
      #                    secondary="users_to_tests",
