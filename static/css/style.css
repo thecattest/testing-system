@@ -30,6 +30,7 @@ body {
 }
 
 .header {
+    margin-top: 20px;
     padding: 15px;
     background-color: var(--dark-green);
     margin-bottom: 10px;

@@ -20,8 +20,7 @@ class Group(SqlAlchemyBase, SerializerMixin):
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.Text, nullable=True)
     creator_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
-    is_service = sqlalchemy.Column(sqlalchemy.Boolean, default=0)
-    for_all_users = sqlalchemy.Column(sqlalchemy.Boolean, default=0)
+    # is_service = sqlalchemy.Column(sqlalchemy.Boolean, default=0)
 
     creator = orm.relation("User")
     users = orm.relation("User",

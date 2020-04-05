@@ -141,15 +141,11 @@ def add_type(name):
     session.commit()
 
 
-def add_group(name, creator_id=1, for_all_users=False, is_service=False):
-    if for_all_users:
-        is_service = True
+def add_group(name, creator_id=1):
     db = db_session.create_session()
     group = Group()
     group.creator_id = creator_id
     group.name = name
-    group.is_service = is_service
-    group.for_all_users = for_all_users
     db.add(group)
     db.commit()
 
@@ -211,15 +207,6 @@ def log(error):
         file.write(message + '\n' + str(datetime.datetime.now()) + '\n-----\n')
 
 
-def get_all_users_id(creator_id):
-    db = db_session.create_session()
-    group = db.query(Group).filter(Group.for_all_users, Group.is_service,
-                                   Group.creator_id == creator_id).first()
-    if not group or not group.id:
-        return 0
-    return group.id
-
-
 def test_started():
     db = db_session.create_session()
     if db.query(Result).filter(Result.is_finished == False, Result.user == current_user).first():
@@ -265,56 +252,43 @@ def index():
                            all_tests='active')
 
 
-@app.route("/groups/<int:group_id>")
+@app.route("/groups")
 @login_required
-def get_group(group_id):
+def get_group():
     code = 0
     db = db_session.create_session()
-    group = db.query(Group).get(group_id)
-    if not group:
+    groups = db.query(Group).all()
+    if current_user.type_id == 3:
+        groups = list(group for group in groups if current_user in group.users)
+    if not groups:
         code = 1
-    elif group.creator_id != current_user.id and current_user.type_id != 1 and not current_user in group.users:
-        code = 2
     return render_template("group.html",
-                           title='Группа',
-                           group=group,
+                           title='Группы',
+                           groups=groups,
                            code=code)
-
-
-@app.route("/all_users")
-@login_required
-def get_all_users_link():
-    return redirect('/groups/{}'.format(str(get_all_users_id(current_user.id))))
 
 
 @app.route("/register", methods=['GET', 'POST'])
 @login_required
 def create_user():
+    code = 0
     form = RegisterForm()
-    if form.validate_on_submit():
-        if current_user.type_id == 3:
-            return redirect('/more')
-        db = db_session.create_session()
-        user = User()
-        user.nickname = form.nickname.data
-        user.set_password(form.password.data)
-        if form.is_teacher.data:
-            user.type_id = 2
-        else:
-            user.type_id = 3
-        db.add(user)
-        db.commit()
-
-        if current_user.id != 1:
-            add_users_to_group(1, [user.id])
-        add_users_to_group(get_all_users_id(current_user.id), [user.id])
-
-        # если учитель, создаем для него группу всех пользователей
-        if user.type_id == 2:
-            add_group('Все пользователи', user.id, for_all_users=True)
-
-        return redirect('/all_users')
-    return render_template('register.html', title='Создать', form=form)
+    if current_user.type_id == 3:
+        code = 1
+    else:
+        if form.validate_on_submit():
+            db = db_session.create_session()
+            user = User()
+            user.nickname = form.nickname.data
+            user.set_password(form.password.data)
+            if form.is_teacher.data:
+                user.type_id = 2
+            else:
+                user.type_id = 3
+            db.add(user)
+            db.commit()
+            return redirect('/users')
+    return render_template('register.html', title='Создать', form=form, code=code)
 
 
 @app.route("/statistics/<int:test_id>")
@@ -338,6 +312,20 @@ def get_user_statistics(user_id):
         results = db.query(Result).filter(Result.user_id == user_id).all()
     results.reverse()
     return show_statistics(results, code=code)
+
+
+@app.route('/users')
+@login_required
+def get_users():
+    code = 0
+    if current_user.type_id == 3:
+        code = 1
+    db = db_session.create_session()
+    users = db.query(User).order_by(User.type_id).all()
+    return render_template('users.html',
+                           title='Пользователи',
+                           users=users,
+                           code=code)
 
 
 @app.route("/statistics")
@@ -473,19 +461,10 @@ def finish_test():
 @app.route('/more')
 @login_required
 def more():
-    db = db_session.create_session()
-    my_groups = db.query(Group).filter((Group.for_all_users) | (~Group.is_service),
-                                       Group.creator != current_user).all()
-    my_groups = list(group for group in my_groups if current_user in group.users)
-    created_groups = db.query(Group).filter(~Group.is_service, Group.creator == current_user).all()
-    all_groups = db.query(Group).filter(~Group.is_service).all()
     try:
         return render_template('more.html',
                                title='Дополнительно',
-                               more='active',
-                               my_groups=my_groups,
-                               created_groups=created_groups,
-                               all_groups=all_groups)
+                               more='active')
     except sa.orm.exc.DetachedInstanceError:
         return redirect('/more')
 

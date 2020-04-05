@@ -2,44 +2,44 @@
 
 {% block content %}
 
-{% if message %}
-<div class="alert alert-danger">{{message}}</div>
-{% endif %}
-<div class="col-lg-8 mx-auto my-4">
-    <form method="post">
-    {{form.hidden_tag()}}
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                {{form.nickname.label}}
-                {{ form.nickname(class="form-control", type="text", placeholder="Nickname") }}
-                {% for error in form.nickname.errors %}
-                <small class="form-text red">
-                    {{ error }}
-                </small>
-                {% endfor %}
+<div class="row">
+    <h2 class="header col-12">Вход</h2>
+    <div class="col-lg-8 mx-auto my-4">
+        <form method="post">
+        {{form.hidden_tag()}}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{form.nickname.label}}
+                    {{ form.nickname(class="form-control", type="text", placeholder="Nickname") }}
+                    {% for error in form.nickname.errors %}
+                    <small class="form-text red">
+                        {{ error }}
+                    </small>
+                    {% endfor %}
+                </div>
+                <div class="form-group col-md-6">
+                    {{form.password.label}}
+                    {{ form.password(type="password", class="form-control", placeholder="Password") }}
+                    {% for error in form.password.errors %}
+                    <small class="form-text red">
+                        {{ error }}
+                    </small>
+                    {% endfor %}
+                </div>
             </div>
-            <div class="form-group col-md-6">
-                {{form.password.label}}
-                {{ form.password(type="password", class="form-control", placeholder="Password") }}
-                {% for error in form.password.errors %}
-                <small class="form-text red">
-                    {{ error }}
-                </small>
-                {% endfor %}
+            <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                    {{ form.remember_me(type="checkbox", class="custom-control-input", checked="true") }}
+                    {{form.remember_me.label(class="custom-control-label")}}
+                    {% for error in form.password.errors %}
+                    <small class="form-text red">
+                        {{ error }}
+                    </small>
+                    {% endfor %}
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <div class="custom-control custom-checkbox">
-                {{ form.remember_me(type="checkbox", class="custom-control-input", checked="true") }}
-                {{form.remember_me.label(class="custom-control-label")}}
-                {% for error in form.password.errors %}
-                <small class="form-text red">
-                    {{ error }}
-                </small>
-                {% endfor %}
-            </div>
-        </div>
-        {{ form.submit(class="btn btn-primary", type="submit") }}
-    </form>
+            {{ form.submit(class="btn btn-primary", type="submit") }}
+        </form>
+    </div>
 </div>
 {% endblock %}

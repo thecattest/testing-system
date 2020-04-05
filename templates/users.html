@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div class="row">
+    {% if code == 0%}
+    <h2 class="header col-12">Пользователи</h2>
+    <div class="col-lg-10 mx-auto">
+    <ul class="list list-group pb-3">
+        {% for user in users %}
+        <li class="list-group-item py-2 d-flex justify-content-between
+                   {% if current_user == user %} list-item-dark {% endif %}
+        ">
+            <b>{{user.nickname}}</b><span>{{user.user_type.name}}</span>
+        </li>
+        {% endfor %}
+    </ul>
+    {% if current_user.type_id in (1, 2) %}
+    <div class="text-center mb-3">
+        <a href="/register" class="btn btn-success">Создать пользователя</a>
+    </div>
+    {% endif %}
+    </div>
+    {% elif code == 1%}
+    <div class="alert alert-danger col-10 m-4">
+        <h3>Вообще-то</h3>
+        <p>Вам сюда нельзя</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
