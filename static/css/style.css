@@ -193,6 +193,10 @@ body {
     color: white!important;
 }
 
+.delete-link {
+    color: red;
+}
+
 .card {
     background-color: var(--main-light);
     border: 2px solid var(--border);
@@ -201,6 +205,7 @@ body {
 .list-group-item {
     background-color: var(--background);
     border-color: var(--border);
+    margin: 0;
 }
 
 .close-btn {

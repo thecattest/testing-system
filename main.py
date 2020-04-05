@@ -280,6 +280,7 @@ def create_user():
             db = db_session.create_session()
             user = User()
             user.nickname = form.nickname.data
+            user.creator_id = current_user.id
             user.set_password(form.password.data)
             if form.is_teacher.data:
                 user.type_id = 2
@@ -317,15 +318,18 @@ def get_user_statistics(user_id):
 @app.route('/users')
 @login_required
 def get_users():
-    code = 0
-    if current_user.type_id == 3:
-        code = 1
-    db = db_session.create_session()
-    users = db.query(User).order_by(User.type_id).all()
-    return render_template('users.html',
-                           title='Пользователи',
-                           users=users,
-                           code=code)
+    try:
+        code = 0
+        if current_user.type_id == 3:
+            code = 1
+        db = db_session.create_session()
+        users = db.query(User).order_by(User.type_id).all()
+        return render_template('users.html',
+                               title='Пользователи',
+                               users=users,
+                               code=code)
+    except sa.orm.exc.DetachedInstanceError:
+        return redirect('/users')
 
 
 @app.route("/statistics")
@@ -362,6 +366,25 @@ def delete_result(result_id):
     db.delete(result)
     db.commit()
     return redirect(f'/statistics/{result.test_id}')
+
+
+@app.route("/delete_user/<int:user_id>")
+@login_required
+def delete_user(user_id):
+    pass
+
+
+@app.route('/remove_user/<int:user_id>/<int:group_id>')
+@login_required
+def remove_user(user_id, group_id):
+    db = db_session.create_session()
+    user = db.query(User).get(user_id)
+    group = db.query(Group).get(group_id)
+    if user and group and user in group.users and (current_user.type_id == 1 or group.creator == current_user):
+        group.users.remove(user)
+        db.commit()
+    return redirect('/groups')
+
 
 
 @app.route("/test/<int:test_id>")

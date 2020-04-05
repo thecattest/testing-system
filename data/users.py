@@ -15,11 +15,13 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
                            primary_key=True, autoincrement=True)
     nickname = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=False)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    creator_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     type_id = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey("user_types.id"), default=3)
 
     results = orm.relation("Result", back_populates='user')
     user_type = orm.relation("UserType")
+    created = orm.relation("User")
     created_groups = orm.relation("Group", back_populates='creator')
     groups = orm.relation("Group",
                           secondary="groups_to_users",
