@@ -373,7 +373,7 @@ def delete_result(result_id):
 def delete_user(user_id):
     db = db_session.create_session()
     user = db.query(User).get(user_id)
-    if user and user in current_user.created:
+    if user and user in current_user.created or current_user.type_id == 1:
         for group in user.created_groups:
             group.users = []
             db.delete(group)
