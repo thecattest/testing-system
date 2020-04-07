@@ -256,6 +256,7 @@ def index():
 @login_required
 def get_group():
     code = 0
+    form = CreateGroupForm()
     db = db_session.create_session()
     groups = db.query(Group).all()
     if current_user.type_id == 3:
@@ -265,13 +266,21 @@ def get_group():
     return render_template("group.html",
                            title='Группы',
                            groups=groups,
+                           form=form,
                            code=code)
 
 
-@app.route("/create_group")
+@app.route("/create_group", methods=['GET', 'POST'])
 @login_required
 def create_group():
-    return redirect('/groups')
+    if current_user.type_id != 3:
+        form = CreateGroupForm()
+        if form.validate_on_submit():
+            name = form.name.data
+            add_group(name, current_user.id)
+        return redirect('/groups')
+    else:
+        return redirect('/profile')
 
 
 @app.route("/register", methods=['GET', 'POST'])

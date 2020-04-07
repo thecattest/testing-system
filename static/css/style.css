@@ -3,7 +3,9 @@
     --main-light: #f1c9ac;
     --background: #F9FAD1;
     --border: #473337;
-    --dark-green: #7a9863;
+    --nav-dark: #515f46;
+    --font-light: #fff;
+    --font-dark: #000;
 
     --light-green: #72b142;
 }
@@ -32,9 +34,9 @@ body {
 .header {
     margin-top: 20px;
     padding: 15px;
-    background-color: var(--dark-green);
+    background-color: var(--nav-dark);
     margin-bottom: 10px;
-    color: white;
+    color: var(--font-light);
 }
 
 .description {
@@ -71,7 +73,7 @@ body {
 
 .chosen {
     background-color: var(--light-green);
-    color: white;
+    color: var(--font-light);
 }
 
 .item {
@@ -107,7 +109,7 @@ body {
 
 .correct{
     background-color: var(--light-green)!important;
-    color: white;
+    color: var(--font-light);
 }
 .incorrect{background-color: #d88f8f!important;}
 
@@ -132,27 +134,30 @@ body {
     background-color: var(--background)!important;
     border: 1px solid var(--border)!important;
     border-bottom: 1px solid var(--background)!important;
+    color: var(--font-dark)!important;
 }
 
 .nav-tabs {
-    background-color: var(--dark-green);
-    color: white;
+    background-color: var(--nav-dark);
+    color: var(--font-light);
     border: none!important;
     border-bottom: 1px solid var(--border)!important;
 }
 
 .nav-link {
-    color: white;
+    color: var(--font-light);
 }
 
 .nav-link:hover {
-    color: var(--border)!important;
-    border: 1px solid var(--border)!important;
+    color: var(--font-dark);
+    border-color: var(--nav-dark)!important;
+    background-color: var(--background);
 }
 
 .nav-link.active:hover{
-    color: var(--border);
+    color: var(--font-light)!important;
     border-bottom-color: var(--background);
+    background-color: var(--nav-dark)!important;
 }
 
 .question-container {
@@ -167,12 +172,12 @@ body {
 
 .profile-list-item:hover {
     background-color: var(--main-dark);
-    color: white;
+    color: var(--font-light);
 }
 
 .list-item-dark {
-    background-color: var(--dark-green)!important;
-    color: white;
+    background-color: var(--nav-dark)!important;
+    color: var(--font-light);
 }
 
 .list-item-dark:hover {
@@ -181,7 +186,7 @@ body {
 
 .danger {
     background-color: var(--danger)!important;
-    color: white!important;
+    color: var(--font-light)!important;
 }
 
 .list-group-item-action:active {
@@ -190,7 +195,7 @@ body {
 
 .danger-on-hover:hover {
     background-color: var(--danger)!important;
-    color: white!important;
+    color: var(--font-light)!important;
 }
 
 .delete-link {
@@ -215,3 +220,10 @@ body {
 .close-btn:hover {
     text-decoration: none;
 }
+
+.group-adder {
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    background-color: var(--main-light);
+}
+
