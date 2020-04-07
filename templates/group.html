@@ -6,17 +6,22 @@
 <div class="row">
     {% if code == 0%}
     <h2 class="header col-12">Группы</h2>
-    <div class="col-lg-10 mx-auto">
+    <div class="col-12 dcol-lg-10 mx-auto">
         {% if current_user.type_id in (1, 2) %}
         <div class="text-center mb-3">
             <a href="/create_group" class="m-1 btn btn-success">Создать группу <i class="fas fa-plus-square"></i></a>
         </div>
         {% endif %}
         {% for group in groups %}
-        <div class="group-container mx-auto px-4 pb-3">
+        <div class="group-container mx-auto px-4 pb-3" id="{{group.id}}">
             <div class="card px-3 py-0">
                 <div class="card-body align-items-center">
-                    <h3 class="card-title">{{group.name}}</h3>
+                    <h4 class="card-title d-flex justify-content-between align-items-center">
+                        {{group.name}}
+                        {% if group.creator == current_user or current_user.type_id == 1 %}
+                        <a class="edit-access" target="{{group.id}}"><i class="fas fa-edit"></i></a>
+                        {% endif %}
+                    </h4>
                     <p class="card-text {% if current_user == group.creator %} list-item-dark p-1 rounded {% endif %}">
                         <b>
                             {{group.creator.nickname}}
@@ -32,7 +37,7 @@
                         ">
                             <b>
                                 {% if group.creator == current_user or current_user.type_id == 1 %}
-                                <a href="/remove_user/{{user.id}}/{{group.id}}" title="Исключить" class="delete-link"><i class="fas fa-minus-square"></i></a>
+                                <a href="/remove_user/{{user.id}}/{{group.id}}" title="Исключить" class="edit-btn delete-link hidden"><i class="fas fa-minus-square"></i></a>
                                 {% endif %}
                                 {{user.nickname}}
                             </b>
@@ -45,13 +50,19 @@
                 </ul>
                 {% if current_user.type_id == 1 or current_user == group.creator %}
                 <div class="text-center mb-3">
-                    <a href="/delete_group/{{group.id}}" class="m-1 btn btn-danger">Удалить группу <i class="fas fa-trash-alt"></i></a>
-                    <a href="/add_user" class="m-1 btn btn-success">Добавить пользователя <i class="fas fa-plus-square"></i></a>
+                    <a href="/delete_group/{{group.id}}" class="edit-btn m-1 btn btn-danger hidden">Удалить группу <i class="fas fa-trash-alt"></i></a>
+                    <a href="/add_user" class="edit-btn m-1 btn btn-success hidden">Добавить пользователя <i class="fas fa-plus-square"></i></a>
                 </div>
                 {% endif %}
             </div>
         </div>
         {% endfor %}
+        <script>
+            $(".edit-access").click(function(){
+                id = $(this).attr("target")
+                $("#" + id + " .edit-btn").toggleClass('hidden')
+            })
+        </script>
         {% elif code == 1%}
         <div class="alert alert-warning col-10 m-4">
             <h3>Пусто!</h3>

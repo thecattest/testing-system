@@ -300,9 +300,14 @@ def create_user():
 
 @app.route("/statistics/<int:test_id>")
 @login_required
-def get_statistic(test_id):
+def get_test_statistics(test_id):
     db = db_session.create_session()
-    results = db.query(Result).filter(Result.test_id == test_id, Result.user_id == current_user.id).all()
+    if current_user.type_id == 3:
+        results = db.query(Result).filter(Result.test_id == test_id,
+                                          Result.user_id == current_user.id,
+                                          ~Result.is_deleted).all()
+    else:
+        results = db.query(Result).filter(Result.test_id == test_id).all()
     results.reverse()
     return show_statistics(results)
 
@@ -311,14 +316,41 @@ def get_statistic(test_id):
 @login_required
 def get_user_statistics(user_id):
     code = 0
-    if user_id != current_user.id:
+    if user_id != current_user.id and current_user.type_id == 3:
         code = 2
         results = []
     else:
         db = db_session.create_session()
-        results = db.query(Result).filter(Result.user_id == user_id).all()
+        if current_user.type_id == 3:
+            results = db.query(Result).filter(Result.user_id == user_id, ~Result.is_deleted).all()
+        else:
+            results = db.query(Result).filter(Result.user_id == user_id).all()
     results.reverse()
     return show_statistics(results, code=code)
+
+
+@app.route("/statistics")
+@login_required
+def get_statistics():
+    db = db_session.create_session()
+    results = db.query(Result).filter(Result.user_id == current_user.id, ~Result.is_deleted).all()
+    results.reverse()
+    return show_statistics(results)
+
+
+def show_statistics(results, code=0):
+    if not results and code == 0:
+        code = 1
+    for r in results:
+        all_answers = list(a.answer == a.correct for a in r.rows)
+        r.n_correct_answers = all_answers.count(True)
+        r.n_all_answers = len(all_answers)
+        r.finish_date = datetime.datetime.strftime(r.end_date, "%d %b, %H:%M")
+    return render_template("statistics.html",
+                           title="История",
+                           results=results,
+                           code=code,
+                           statistics='active')
 
 
 @app.route('/users')
@@ -344,30 +376,6 @@ def add_user_to_group():
     return redirect('/groups')
 
 
-@app.route("/statistics")
-@login_required
-def get_statistics():
-    db = db_session.create_session()
-    results = db.query(Result).filter(Result.user_id == current_user.id).all()
-    results.reverse()
-    return show_statistics(results)
-
-
-def show_statistics(results, code=0):
-    if not results and code == 0:
-        code = 1
-    for r in results:
-        all_answers = list(a.answer == a.correct for a in r.rows)
-        r.n_correct_answers = all_answers.count(True)
-        r.n_all_answers = len(all_answers)
-        r.finish_date = datetime.datetime.strftime(r.end_date, "%d %b, %H:%M")
-    return render_template("statistics.html",
-                           title="История",
-                           results=results,
-                           code=code,
-                           statistics='active')
-
-
 @app.route("/delete_result/<int:result_id>")
 @login_required
 def delete_result(result_id):
@@ -375,7 +383,7 @@ def delete_result(result_id):
     result = db.query(Result).get(result_id)
     if not result or (not result.user == current_user and current_user.type_id != 1):
         return redirect('/statistics')
-    db.delete(result)
+    result.is_deleted = True
     db.commit()
     return redirect(f'/statistics/{result.test_id}')
 
@@ -415,7 +423,6 @@ def remove_user(user_id, group_id):
         group.users.remove(user)
         db.commit()
     return redirect('/groups')
-
 
 
 @app.route("/test/<int:test_id>")
