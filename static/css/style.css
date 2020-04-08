@@ -225,6 +225,10 @@ body {
     color: red;
 }
 
+.add-link {
+    color: var(--correct-dark);
+}
+
 .card {
     background-color: var(--main-light);
     border: 2px solid var(--border);

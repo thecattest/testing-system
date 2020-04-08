@@ -123,53 +123,12 @@ def fill_db():
     session.commit()
 
 
-def add_user(nickname, password, type):
-    session = db_session.create_session()
-    user = User()
-    user.nickname = nickname
-    user.type_id = type
-    user.set_password(password)
-    session.add(user)
-    session.commit()
-
-
 def add_type(name):
     session = db_session.create_session()
     type = UserType()
     type.name = name
     session.add(type)
     session.commit()
-
-
-def add_group(name, creator_id=1):
-    db = db_session.create_session()
-    group = Group()
-    group.creator_id = creator_id
-    group.name = name
-    db.add(group)
-    db.commit()
-
-
-def add_users_to_group(group_id, user_ids):
-    db = db_session.create_session()
-    group = db.query(Group).get(group_id)
-    if not group:
-        return
-    for user_id in user_ids:
-        user = db.query(User).get(user_id)
-        if not user:
-            continue
-        group.users.append(user)
-    db.commit()
-
-
-def delete_group(group_id):
-    db = db_session.create_session()
-    group = db.query(Group).get(group_id)
-    if not group:
-        return
-    db.delete(group)
-    db.commit()
 
 
 def main():
@@ -188,8 +147,6 @@ def main():
     add_user('student2', 'password', 3)
     add_user('student3', 'password', 3)
     '''
-    # add_group('ABF-23', creator_id=2)
-    # add_users_to_group(2, [3, 4])
     port = int(os.environ.get("PORT", 8000))
     app.run(host='127.0.0.1', port=port)
     # app.run()
@@ -222,7 +179,7 @@ def login():
         user = session.query(User).filter(User.nickname == form.nickname.data.strip()).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect("/all_tests")
+            return redirect("/more")
         return render_template("login.html",
                                title='Log in',
                                message="Password or login is incorrect",
@@ -254,19 +211,39 @@ def index():
 
 @app.route("/groups")
 @login_required
-def get_group():
+def get_groups():
     code = 0
-    form = CreateGroupForm()
     db = db_session.create_session()
     groups = db.query(Group).all()
     if current_user.type_id == 3:
         groups = list(group for group in groups if current_user in group.users)
     if not groups:
         code = 1
-    return render_template("group.html",
+    return render_template("all_groups.html",
                            title='Группы',
                            groups=groups,
-                           form=form,
+                           code=code)
+
+
+@app.route("/groups/<int:group_id>")
+@login_required
+def get_group(group_id):
+    code = 0
+    db = db_session.create_session()
+    group = db.query(Group).get(group_id)
+    users = []
+    if not group:
+        code = 1
+    elif current_user.type_id != 1 and current_user != group.creator:
+        code = 2
+    else:
+        users = db.query(User).filter(User.type_id != 1,
+                                      User != current_user).order_by(User.type_id).all()
+        users = list(user for user in users if not user in group.users and user != group.creator)
+    return render_template("group.html",
+                           title='Редактирование',
+                           group=group,
+                           users=users,
                            code=code)
 
 
@@ -277,12 +254,43 @@ def create_group():
         form = CreateGroupForm()
         if form.validate_on_submit():
             name = form.name.data
-            add_group(name, current_user.id)
-            return redirect('/groups')
+            db = db_session.create_session()
+            group = Group()
+            group.creator_id = current_user.id
+            group.name = name
+            db.add(group)
+            db.commit()
+            return redirect(f'/groups/{group.id}')
         return render_template("create_group.html",
                                form=form)
     else:
-        return redirect('/profile')
+        return redirect('/more')
+
+
+@app.route('/remove_user/<int:user_id>/<int:group_id>')
+@login_required
+def remove_user(user_id, group_id):
+    db = db_session.create_session()
+    user = db.query(User).get(user_id)
+    group = db.query(Group).get(group_id)
+    if user and group and user in group.users and (current_user.type_id == 1 or group.creator == current_user):
+        group.users.remove(user)
+        db.commit()
+    return redirect(f'/groups/{group_id}')
+
+
+@app.route('/add_user/<int:user_id>/<int:group_id>')
+@login_required
+def add_user(user_id, group_id):
+    db = db_session.create_session()
+    group = db.query(Group).get(group_id)
+    if group and (current_user.type_id == 1 or current_user == group.creator):
+        user = db.query(User).get(user_id)
+        if not user:
+            return
+        group.users.append(user)
+        db.commit()
+    return redirect(f'/groups/{group_id}')
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -416,18 +424,6 @@ def delete_user(user_id):
         db.delete(user)
         db.commit()
     return redirect('/users')
-
-
-@app.route('/remove_user/<int:user_id>/<int:group_id>')
-@login_required
-def remove_user(user_id, group_id):
-    db = db_session.create_session()
-    user = db.query(User).get(user_id)
-    group = db.query(Group).get(group_id)
-    if user and group and user in group.users and (current_user.type_id == 1 or group.creator == current_user):
-        group.users.remove(user)
-        db.commit()
-    return redirect('/groups')
 
 
 @app.route("/test/<int:test_id>")

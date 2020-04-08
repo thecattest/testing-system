@@ -7,6 +7,12 @@
     {% if code == 0%}
     <h2 class="header col-12">{{title}}</h2>
     <div class="col-12 col-lg-10 mx-auto">
+        {% if current_user.type_id in (1, 2) %}
+        <div class="text-center mb-3">
+            <a href="/create_group" class="m-1 btn btn-success">Создать группу <i class="fas fa-plus-square"></i></a>
+        </div>
+        {% endif %}
+        {% for group in groups %}
         <div class="group-container mx-auto px-1 pb-3" id="{{group.id}}">
             <div class="card px-3 py-0">
                 <div class="card-body align-items-center">
@@ -21,16 +27,12 @@
                     </p>
                 </div>
                 <ul class="list list-group pb-3">
-                    <h5>В группе</h5>
                     {% if group.users %}
                         {% for user in group.users %}
                         <li class="list-group-item py-2 d-flex justify-content-between align-items-center
                                    {% if current_user == user %} list-item-dark {% endif %}
                         ">
-                            <b>
-                                <a href="/remove_user/{{user.id}}/{{group.id}}" title="Исключить" class="delete-link"><i class="fas fa-user-minus"></i></a>
-                                {{user.nickname}}
-                            </b>
+                            <b>{{user.nickname}}</b>
                             <span class="badge badge-primary">{{user.user_type.name}}</span>
                         </li>
                         {% endfor %}
@@ -38,37 +40,20 @@
                         <li class="list-group-item danger py-2">Пользователей ещё нет</li>
                     {% endif %}
                 </ul>
-                <hr>
-                <ul class="list list-group pb-3">
-                    <h5>Добавить</h5>
-                    {% if users %}
-                        {% for user in users %}
-                        <li class="list-group-item py-2 d-flex justify-content-between align-items-center
-                                   {% if current_user == user %} list-item-dark {% endif %}
-                        ">
-                            <b>
-                                <a href="/add_user/{{user.id}}/{{group.id}}" title="Добавить" class="add-link"><i class="fas fa-user-plus"></i></a>
-                                {{user.nickname}}
-                            </b>
-                            <span class="badge badge-primary">{{user.user_type.name}}</span>
-                        </li>
-                        {% endfor %}
-                    {% else %}
-                        <li class="list-group-item danger py-2">Все пользователи уже в группе</li>
-                    {% endif %}
-                </ul>
+                {% if current_user.type_id == 1 or current_user == group.creator %}
                 <div class="text-center mb-3">
-                    <a href="/groups" class="m-1 btn btn-primary"><i class="fas fa-chevron-left"></i> Вернуться</a>
+                    <a href="/delete_group/{{group.id}}" class="m-1 btn btn-danger">Удалить группу <i class="fas fa-trash-alt"></i></a>
+                    <a href="/groups/{{group.id}}" class="m-1 btn btn-success">Редактировать <i class="fas fa-edit"></i></a>
                 </div>
+                {% endif %}
             </div>
         </div>
+        {% endfor %}
         {% elif code == 1%}
         <div class="alert alert-danger col-10 m-4">
             <h3>Пусто!</h3>
-            <p>Похоже, такой группы нет</p>
+            <p>Похоже, групп нет</p>
         </div>
-        {% elif code == 2 %}
-        {% include "go_away.html" %}
         {% endif %}
     </div>
 </div>
