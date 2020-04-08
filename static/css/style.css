@@ -12,6 +12,18 @@
     --incorrect: #da6060;
 }
 
+.font-light {
+    color: var(--font-light)!important;
+}
+
+.font-dark {
+    color: var(--font-dark)!important;
+}
+
+.link {
+    text-decoration: underline;
+}
+
 .btn {
     padding: .44rem 1.4rem;
 }

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, make_response, session, abort, jsonify
+from flask import Flask, render_template, request, redirect
 from flask_ngrok import run_with_ngrok
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
@@ -155,6 +155,7 @@ def main():
 @login_manager.user_loader
 def load_user(user_id):
     session = db_session.create_session()
+    session.expire_on_commit = False
     return session.query(User).get(user_id)
 
 
@@ -320,44 +321,60 @@ def create_user():
 @app.route("/statistics/<int:test_id>")
 @login_required
 def get_test_statistics(test_id):
-    db = db_session.create_session()
-    if current_user.type_id == 3:
-        results = db.query(Result).filter(Result.test_id == test_id,
-                                          Result.user_id == current_user.id,
-                                          ~Result.is_deleted).all()
-    else:
-        results = db.query(Result).filter(Result.test_id == test_id).all()
-    results.reverse()
-    return show_statistics(results)
+    try:
+        db = db_session.create_session()
+        if current_user.type_id == 3:
+            results = db.query(Result).filter(Result.test_id == test_id,
+                                              Result.user_id == current_user.id,
+                                              ~Result.is_deleted).all()
+        else:
+            results = db.query(Result).filter(Result.test_id == test_id).all()
+        test = db.query(Test).get(test_id)
+        results.reverse()
+        return show_statistics(results, title=f"История по {test.name}")
+    except sa.orm.exc.DetachedInstanceError:
+        return 'Обновите страницу' # show_statistics(results, title=f"История по {test.name}")
 
 
 @app.route("/user_statistics/<int:user_id>")
 @login_required
 def get_user_statistics(user_id):
-    code = 0
-    if user_id != current_user.id and current_user.type_id == 3:
-        code = 2
+    try:
+        code = 0
         results = []
-    else:
+        nickname = ""
         db = db_session.create_session()
-        if current_user.type_id == 3:
-            results = db.query(Result).filter(Result.user_id == user_id, ~Result.is_deleted).all()
+        user = db.query(User).get(user_id)
+        if not user:
+            code = 3
+        elif (current_user.type_id == 3 and user_id != current_user.id) or \
+                (current_user.type_id == 2 and not user in current_user.created):
+            code = 2
         else:
-            results = db.query(Result).filter(Result.user_id == user_id).all()
-    results.reverse()
-    return show_statistics(results, code=code)
+            nickname = user.nickname
+            if current_user.type_id == 3:
+                results = db.query(Result).filter(Result.user_id == user_id, ~Result.is_deleted).all()
+            else:
+                results = db.query(Result).filter(Result.user_id == user_id).all()
+        results.reverse()
+        return show_statistics(results, title=f"История {nickname}", code=code)
+    except sa.orm.exc.DetachedInstanceError:
+        return 'Обновите страницу' # show_statistics(results, title=f"История по {test.name}")
 
 
 @app.route("/statistics")
 @login_required
 def get_statistics():
-    db = db_session.create_session()
-    results = db.query(Result).filter(Result.user_id == current_user.id, ~Result.is_deleted).all()
-    results.reverse()
-    return show_statistics(results)
+    try:
+        db = db_session.create_session()
+        results = db.query(Result).filter(Result.user_id == current_user.id, ~Result.is_deleted).all()
+        results.reverse()
+        return show_statistics(results, title="Ваша история")
+    except sa.orm.exc.DetachedInstanceError:
+        return 'Обновите страницу' # show_statistics(results, title=f"История по {test.name}")
 
 
-def show_statistics(results, code=0):
+def show_statistics(results, title, code=0):
     if not results and code == 0:
         code = 1
     for r in results:
@@ -366,7 +383,7 @@ def show_statistics(results, code=0):
         r.n_all_answers = len(all_answers)
         r.finish_date = datetime.datetime.strftime(r.end_date, "%d %b, %H:%M")
     return render_template("statistics.html",
-                           title="История",
+                           title=title,
                            results=results,
                            code=code,
                            statistics='active')
@@ -528,7 +545,7 @@ def more():
                                title='Дополнительно',
                                more='active')
     except sa.orm.exc.DetachedInstanceError:
-        return redirect('/more')
+        return 'Обновите страницу' # redirect('/more')
 
 
 if __name__ == '__main__':

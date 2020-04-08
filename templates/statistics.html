@@ -4,6 +4,7 @@
 
 <div class="row">
     {% if code == 0 %}
+    <h2 class="header col-12">{{title}}</h2>
     {% for result in results %}
     <div class="col-md-6">
         <div class="item">
@@ -57,12 +58,16 @@
     </div>
     {% endfor %}
     {% elif code == 1 %}
+    <h2 class="header col-12">{{title}}</h2>
     <div class="alert alert-primary col-10 m-4">
-        <h4>Пройденных тестов пока нет.</h4>
-        <p>Вы можете найти их <a href="/all_tests" class="alert-link">тут</a></p>
+        <h2>Пройденных тестов пока нет.</h2>
     </div>
     {% elif code == 2 %}
     {% include "go_away.html" %}
+    {% elif code == 3 %}
+    <div class="alert alert-danger col-10 m-4">
+        <h2>Такого пользователя нет</h2>
+    </div>
     {% endif %}
 </div>
 

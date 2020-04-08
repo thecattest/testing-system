@@ -16,10 +16,18 @@
             {% for user in users %}
             <li class="list-group-item py-2 d-flex justify-content-between align-items-center {% if current_user == user %}list-item-dark{% endif %}">
                 <b>
-                    {% if (user in current_user.created or current_user.type_id == 1) and user.type_id != 1 %}
-                    <a href="/delete_user/{{user.id}}" class="delete-link" title="Удалить"><i class="fas fa-trash-alt"></i></a>
+                    {% if user in current_user.created or current_user.type_id == 1 %}
+                        <a class="{% if current_user == user %} font-light {% else %} font-dark {% endif %}"
+                            href="/user_statistics/{{user.id}}">
+                            {{user.nickname}}
+                        </a>
+                        {% if (user in current_user.created or current_user.type_id == 1) and user.type_id != 1 %}
+                            <a href="/delete_user/{{user.id}}" class="delete-link" title="Удалить"><i class="fas fa-trash-alt"></i></a>
+                        {% endif %}
+                    {% else %}
+                        {{user.nickname}}
                     {% endif %}
-                    {{user.nickname}}
+
                     {% if current_user == user %}(Вы){% endif %}
                 </b>
                 <span class="badge badge-primary">
