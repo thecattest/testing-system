@@ -21,7 +21,7 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 {{form.password.label}}
-                {{form.password(class="form-control", placeholder="Пароль")}}
+                {{form.password(class="form-control", placeholder="Пароль", autocomplete="new-password")}}
                 {% for error in form.password.errors %}
                 <small class="form-text text-danger">
                     {{ error }}
@@ -30,7 +30,7 @@
             </div>
             <div class="form-group col-md-6">
                 {{form.password_confirmation.label}}
-                {{form.password_confirmation(class="form-control", placeholder="Снова пароль")}}
+                {{form.password_confirmation(class="form-control", placeholder="Снова пароль", autocomplete="new-password")}}
                 {% for error in form.password_confirmation.errors %}
                 <small class="form-text text-danger">
                     {{ error }}
