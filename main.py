@@ -278,7 +278,9 @@ def create_group():
         if form.validate_on_submit():
             name = form.name.data
             add_group(name, current_user.id)
-        return redirect('/groups')
+            return redirect('/groups')
+        return render_template("create_group.html",
+                               form=form)
     else:
         return redirect('/profile')
 
@@ -377,12 +379,6 @@ def get_users():
                                code=code)
     except sa.orm.exc.DetachedInstanceError:
         return redirect('/users')
-
-
-@app.route('/add_user')
-@login_required
-def add_user_to_group():
-    return redirect('/groups')
 
 
 @app.route("/delete_result/<int:result_id>")
