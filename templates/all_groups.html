@@ -6,7 +6,7 @@
 <div class="row">
     {% if code == 0%}
     <h2 class="header col-12">{{title}}</h2>
-    <div class="col-12 col-lg-10 mx-auto">
+    <div class="col-12 col-md-10 col-lg-8 col-xl-6 mx-auto">
         {% if current_user.type_id in (1, 2) %}
         <div class="text-center mb-3">
             <a href="/create_group" class="m-1 btn btn-success">Создать группу <i class="fas fa-plus-square"></i></a>
