@@ -5,8 +5,10 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from data import db_session
 import sqlalchemy as sa
 import os
-cwd = os.getcwd()
-db_session.global_init(os.path.join(cwd, "db/tests.sqlite"))
+try:
+    db_session.global_init(os.path.join(os.getcwd(), "db", "tests.sqlite"))
+except sa.exc.OperationalError:
+    db_session.global_init("/home/ilyav/testing-system/db/tests.sqlite")
 
 from data.__all_models import *
 from forms.__all_forms import *
