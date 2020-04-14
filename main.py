@@ -333,7 +333,7 @@ def get_test_statistics(test_id):
         results.reverse()
         return show_statistics(results, title=f"История по {test.name}")
     except sa.orm.exc.DetachedInstanceError:
-        return 'Обновите страницу' # show_statistics(results, title=f"История по {test.name}")
+        return show_statistics(results, title=f"История по {test.name}")
 
 
 @app.route("/user_statistics/<int:user_id>")
@@ -359,7 +359,7 @@ def get_user_statistics(user_id):
         results.reverse()
         return show_statistics(results, title=f"История {nickname}", code=code)
     except sa.orm.exc.DetachedInstanceError:
-        return 'Обновите страницу' # show_statistics(results, title=f"История по {test.name}")
+        return show_statistics(results, title=f"История по {test.name}")
 
 
 @app.route("/statistics")
@@ -371,7 +371,7 @@ def get_statistics():
         results.reverse()
         return show_statistics(results, title="Ваша история")
     except sa.orm.exc.DetachedInstanceError:
-        return 'Обновите страницу' # show_statistics(results, title=f"История по {test.name}")
+        return show_statistics(results, title=f"История по {test.name}")
 
 
 def show_statistics(results, title, code=0):
@@ -436,10 +436,15 @@ def delete_user(user_id):
     db = db_session.create_session()
     user = db.query(User).get(user_id)
     if user and user in current_user.created or current_user.type_id == 1:
-        for group in user.created_groups:
-            delete_group(group.id)
-        db.delete(user)
-        db.commit()
+       if user.created_groups == []:
+            db.delete(user)
+            db.commit()
+       else:
+           return render_template("error.html",
+                                  text=f"Вы не можете удалить пользователя {user.nickname}, "
+                                       "так как он является администратором одной или нескольких групп",
+                                  link="/users",
+                                  button="Вернуться")
     return redirect('/users')
 
 
@@ -545,7 +550,7 @@ def more():
                                title='Дополнительно',
                                more='active')
     except sa.orm.exc.DetachedInstanceError:
-        return 'Обновите страницу' # redirect('/more')
+        return redirect('/more')
 
 
 if __name__ == '__main__':
