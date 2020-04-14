@@ -3,10 +3,9 @@ from sqlalchemy import orm
 import datetime
 
 from .db_session import SqlAlchemyBase
-from sqlalchemy_serializer import SerializerMixin
 
 
-class Result(SqlAlchemyBase, SerializerMixin):
+class Result(SqlAlchemyBase):
     __tablename__ = 'result'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,

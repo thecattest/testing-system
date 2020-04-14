@@ -3,10 +3,9 @@ from sqlalchemy import orm
 
 from .db_session import SqlAlchemyBase
 from flask_login import UserMixin
-from sqlalchemy_serializer import SerializerMixin
 
 
-class UserType(SqlAlchemyBase, UserMixin, SerializerMixin):
+class UserType(SqlAlchemyBase, UserMixin):
     __tablename__ = 'user_types'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,

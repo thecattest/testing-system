@@ -2,7 +2,6 @@ import sqlalchemy
 from sqlalchemy import orm
 
 from .db_session import SqlAlchemyBase
-from sqlalchemy_serializer import SerializerMixin
 
 
 association_table = sqlalchemy.Table('groups_to_users', SqlAlchemyBase.metadata,
@@ -13,7 +12,7 @@ association_table = sqlalchemy.Table('groups_to_users', SqlAlchemyBase.metadata,
 )
 
 
-class Group(SqlAlchemyBase, SerializerMixin):
+class Group(SqlAlchemyBase):
     __tablename__ = 'groups'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,

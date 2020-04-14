@@ -2,7 +2,6 @@ import sqlalchemy
 from sqlalchemy import orm
 
 from .db_session import SqlAlchemyBase
-from sqlalchemy_serializer import SerializerMixin
 
 
 #association_table = sqlalchemy.Table('users_to_tests', SqlAlchemyBase.metadata,
@@ -13,7 +12,7 @@ from sqlalchemy_serializer import SerializerMixin
 #)
 
 
-class Test(SqlAlchemyBase, SerializerMixin):
+class Test(SqlAlchemyBase):
     __tablename__ = 'tests'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,

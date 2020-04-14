@@ -2,10 +2,9 @@ import sqlalchemy
 from sqlalchemy import orm
 
 from .db_session import SqlAlchemyBase
-from sqlalchemy_serializer import SerializerMixin
 
 
-class Answer(SqlAlchemyBase, SerializerMixin):
+class Answer(SqlAlchemyBase):
     __tablename__ = 'answers'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
