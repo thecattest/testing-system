@@ -264,3 +264,19 @@ body {
 .question-pre-header {
     color: var(--correct-dark);
 }
+
+.contacts {
+    background-color: #333333;
+    position: fixed;
+    bottom: 0;
+}
+
+.contacts a {
+    font-size: 1.5em;
+    color: white;
+    padding: 7px;
+}
+
+.contacts a:hover {
+    color: #aaa;
+}
