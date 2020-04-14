@@ -12,6 +12,10 @@
     --incorrect: #da6060;
 }
 
+main {
+    margin-bottom: 4em;
+}
+
 .font-light {
     color: var(--font-light)!important;
 }
@@ -267,12 +271,10 @@ body {
 
 .contacts {
     background-color: #333333;
-    position: fixed;
-    bottom: 0;
 }
 
 .contacts a {
-    font-size: 1.5em;
+    font-size: 1em;
     color: white;
     padding: 7px;
 }

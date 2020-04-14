@@ -436,19 +436,22 @@ def delete_group(group_id):
 @app.route("/delete_user/<int:user_id>")
 @login_required
 def delete_user(user_id):
-    db = db_session.create_session()
-    user = db.query(User).get(user_id)
-    if user and user in current_user.created or current_user.type_id == 1:
-       if user.created_groups == []:
-            db.delete(user)
-            db.commit()
-       else:
-           return render_template("error.html",
-                                  text=f"Вы не можете удалить пользователя {user.nickname}, "
-                                       "так как он является администратором одной или нескольких групп",
-                                  link="/users",
-                                  button="Вернуться")
-    return redirect('/users')
+    try:
+        db = db_session.create_session()
+        user = db.query(User).get(user_id)
+        if user and user in current_user.created or current_user.type_id == 1:
+           if user.created_groups == []:
+                db.delete(user)
+                db.commit()
+           else:
+               return render_template("error.html",
+                                      text=f"Вы не можете удалить пользователя {user.nickname}, "
+                                            "так как он является администратором одной или нескольких групп",
+                                      link="/users",
+                                      button="Вернуться")
+        return redirect('/users')
+    except sa.orm.exc.DetachedInstanceError:
+        return redirect(f'/delete_user/{user_id}')
 
 
 @app.route("/test/<int:test_id>")
