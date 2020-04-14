@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from flask_ngrok import run_with_ngrok
+# from flask_ngrok import run_with_ngrok
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from data import db_session
