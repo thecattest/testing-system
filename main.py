@@ -4,14 +4,15 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 
 from data import db_session
 import sqlalchemy as sa
-db_session.global_init("db/tests.sqlite")
+import os
+cwd = os.getcwd()
+db_session.global_init(os.path.join(cwd, "db/tests.sqlite"))
 
 from data.__all_models import *
 from forms.__all_forms import *
 
 import datetime
 import random
-import os
 
 
 app = Flask(__name__)
