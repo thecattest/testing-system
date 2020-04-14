@@ -147,8 +147,8 @@ def main():
     add_user('student2', 'password', 3)
     add_user('student3', 'password', 3)
     '''
-    port = int(os.environ.get("PORT", 8000))
-    app.run(host='127.0.0.1', port=port)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
     # app.run()
 
 
