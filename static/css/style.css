@@ -12,10 +12,6 @@
     --incorrect: #da6060;
 }
 
-main {
-    margin-bottom: 4em;
-}
-
 .font-light {
     color: var(--font-light)!important;
 }
@@ -178,6 +174,7 @@ body {
     color: var(--font-light);
     border: none!important;
     border-bottom: 1px solid var(--border)!important;
+    /* height: 8.9vh; */
 }
 
 .nav-link {
@@ -271,6 +268,13 @@ body {
 
 .contacts {
     background-color: #333333;
+    margin-top: 1em;
+    /* height: 10vh; */
+}
+
+.wrapper {
+    min-height: 84vh;
+    overflow-y: auto;
 }
 
 .contacts a {
