@@ -4,6 +4,13 @@
     --background: #F9FAD1;
     --border: #473337;
 
+    --font-light: red;
+    --font-dark: red;
+
+    --correct: #72b142;
+    --correct-dark: #4a9213;
+    --incorrect: #da6060;
+
     /*========== Navbar ==========*/
     --nav-border: #473337;
     --nav-border-hover: #F9FAD1;
@@ -38,14 +45,14 @@
     --header-background: #637951;
     --header-font: white;
 
-    /*==========  ==========*/
+    /*========== Utilities ==========*/
+
+    --success: #4a9213;
+    --btn-danger: #dc3545;
+    --delete-link: red;
+
+    --card-background: #f1c9ac;
+    --card-border: #473337;
 
     /**/
-
-    --font-light: #fff;
-    --font-dark: #000;
-
-    --correct: #72b142;
-    --correct-dark: #4a9213;
-    --incorrect: #da6060;
 }

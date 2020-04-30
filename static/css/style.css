@@ -1,6 +1,14 @@
+html {
+    overflow: auto;
+}
+
 body {
     background-color: var(--background);
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
+
+/*========== Tests ==========*/
 
 .test {
     border: 3px solid var(--border);
@@ -144,7 +152,7 @@ body {
     background-color: var(--nav-background-hover);
 }
 
-/*========== List groups ==========*/
+/*========== Lists ==========*/
 
 .list-group-item {
     background-color: var(--list-item-background);
@@ -157,12 +165,14 @@ body {
     text-decoration: underline;
 }
 
-.list-group-item a.font-light {
-    color: var(--list-item-font-light);
+.list-group-item a.font-light,
+.list-item-dark.font-light{
+    color: var(--list-item-font-light)!important;
 }
 
-.list-group-item a.font-dark {
-    color: var(--list-item-font-dark);
+.list-group-item a.font-dark,
+.list-item-dark.font-dark {
+    color: var(--list-item-font-dark)!important;
 }
 
 .profile-list-item:hover {
@@ -172,7 +182,7 @@ body {
 
 .list-item-dark {
     background-color: var(--list-item-background-dark);
-    color: var(--list-item-font-light)!important;
+    color: var(--list-item-font-light);
 }
 
 .list-item-dark:hover {
@@ -198,76 +208,6 @@ body {
     color: var(--list-item-font-light)!important;
 }
 
-/*========== Utilities ==========*/
-
-.card-text {
-    cursor: default;
-}
-
-.incorrect{
-    background-color: var(--incorrect)!important;
-}
-
-.link {
-    text-decoration: underline;
-}
-
-.btn {
-    padding: .44rem 1.4rem;
-}
-
-.btn-danger {
-    background-color: var(--danger)!important;
-}
-
-.btn-success {
-    background-color: var(--correct-dark)!important;
-    border: var(--correct-dark)!important;
-}
-
-.bg-success {
-    background-color: var(--correct-dark)!important;
-}
-
-.text-success {
-    color: var(--correct-dark)!important;
-}
-
-.custom-link {
-    color: var(--border);
-    text-decoration: underline;
-}
-
-.hidden {
-    display: none;
-}
-
-.delete-link {
-    color: red;
-}
-
-.add-link {
-    color: var(--correct-dark);
-}
-
-.card {
-    background-color: var(--main-light);
-    border: 2px solid var(--border);
-}
-
-.close-btn {
-    font-size: 1.3em;
-}
-
-.close-btn:hover {
-    text-decoration: none;
-}
-
-.wrapper {
-    min-height: 86vh;
-    overflow-y: auto;
-}
-
 /*========== Contacts ==========*/
 .contacts {
     background-color: #333333;
@@ -284,15 +224,68 @@ body {
     color: #aaa;
 }
 
-/*========== Scrollbar ==========*/
+/*========== Utilities ==========*/
 
-html {
-    overflow: auto;
+.card-text {
+    cursor: default;
 }
-body {
-    overflow-y: scroll;
-    overflow-x: hidden;
+
+.incorrect {
+    background-color: var(--incorrect)!important;
 }
+
+.btn {
+    padding: .44rem 1.4rem;
+}
+
+.btn-danger {
+    background-color: var(--btn-danger)!important;
+}
+
+.btn-success {
+    background-color: var(--success)!important;
+    border: var(--success)!important;
+}
+
+.bg-success {
+    background-color: var(--success)!important;
+}
+
+.text-success {
+    color: var(--success)!important;
+}
+
+.hidden {
+    display: none;
+}
+
+.delete-link {
+    color: var(--delete-link);
+}
+
+.add-link {
+    color: var(--success);
+}
+
+.card {
+    background-color: var(--card-background);
+    border: 2px solid var(--card-border);
+}
+
+.close-btn {
+    font-size: 1.3em;
+}
+
+.close-btn:hover {
+    text-decoration: none;
+}
+
+.wrapper {
+    min-height: 86vh;
+    overflow-y: auto;
+}
+
+/*========== Scrollbar ==========*/
 
 ::-webkit-scrollbar {
     width: 5px;
