@@ -1,0 +1,56 @@
+/*========== Lists ==========*/
+
+.list-group-item {
+    background-color: var(--list-item-background);
+    border-color: var(--list-item-border);
+    margin: 0;
+    cursor: default;
+}
+
+.list-group-item a {
+    text-decoration: underline;
+}
+
+.list-group-item a.font-light,
+.list-item-dark.font-light{
+    color: var(--list-item-font-light)!important;
+}
+
+.list-group-item a.font-dark,
+.list-item-dark.font-dark {
+    color: var(--list-item-font-dark)!important;
+}
+
+.profile-list-item:hover {
+    background-color: var(--list-item-profile-background-hover);
+    color: var(--list-item-profile-font-hover);
+}
+
+.list-item-dark {
+    background-color: var(--list-item-background-dark);
+    color: var(--list-item-font-light);
+}
+
+.list-item-dark:hover {
+    background-color: var(--list-item-background-dark-hover);
+    color: var(--list-item-font-dark);
+    border-left-color: var(--list-item-background-dark-hover);
+    border-right-color: var(--list-item-background-dark-hover);
+}
+
+.list-item-dark.no-hover:hover {
+    background-color: var(--list-item-background-dark);
+    color: var(--list-item-font-light)!important;
+    border-color: var(--list-item-border);
+}
+
+.danger {
+    background-color: var(--list-item-danger)!important;
+    color: var(--list-item-font-light)!important;
+}
+
+.danger-on-hover:hover {
+    background-color: var(--list-item-danger)!important;
+    color: var(--list-item-font-light)!important;
+}
+

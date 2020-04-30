@@ -1,0 +1,48 @@
+/*========== Result table ==========*/
+
+.result-header {
+    border: 4px solid var(--result-border);
+    border-bottom: none;
+    font-size: 1.4em;
+    background-color: var(--result-background-dark);
+}
+
+.result-table-header {
+    color: #333333;
+    padding: 5px;
+}
+
+.result-row {
+    border-right: 4px solid var(--result-border);
+    border-left: 4px solid var(--result-border);
+}
+
+.table-header {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border: 2px solid white;
+}
+
+.correct{
+    background-color: var(--result-correct)!important;
+    color: var(--result-font-light);
+}
+
+.result-cell {
+    font-size: 1em;
+    background-color: var(--result-background-light);
+    border: 1px solid var(--result-border);
+    border-top: 0;
+    padding-top: 3px;
+}
+
+.result {
+    font-size: 20px;
+    border: 4px solid var(--result-border);
+    border-top: none;
+}
+
+.incorrect {
+    background-color: var(--result-incorrect)!important;
+}
+

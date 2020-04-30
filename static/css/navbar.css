@@ -1,0 +1,37 @@
+/*========== Navbar ==========*/
+
+.header {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--header-background);
+    margin-bottom: 10px;
+    color: var(--header-font);
+}
+
+.nav-tabs {
+    background-color: var(--nav-background);
+    color: var(--nav-font);
+    border-bottom: var(--nav-border-width) solid var(--nav-border);
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: -2px;
+}
+
+.nav-link.active, .nav-link.active:hover {
+    background-color: var(--nav-background-active)!important;
+    border: var(--nav-border-width) solid var(--nav-border)!important;
+    border-bottom: var(--nav-border-width) solid var(--nav-background-active)!important;
+    color: var(--nav-font-active)!important;
+}
+
+.nav-link {
+    color: var(--nav-font);
+}
+
+.nav-link:hover {
+    color: var(--nav-font-hover);
+    border-color: var(--nav-border-hover)!important;
+    background-color: var(--nav-background-hover);
+}
+
