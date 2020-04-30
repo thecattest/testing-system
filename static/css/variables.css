@@ -4,7 +4,7 @@
     --background: #F9FAD1;
     --border: #473337;
 
-    /*Navbar vars*/
+    /*========== Navbar ==========*/
     --nav-border: #473337;
     --nav-border-hover: #F9FAD1;
     --nav-border-width: 2px;
@@ -17,7 +17,7 @@
     --nav-font-active: black;
     --nav-font-hover: black;
 
-    /*List vars*/
+    /*========== List items ==========*/
     --list-item-border: #473337;
 
     --list-item-font-light: white;
@@ -32,6 +32,13 @@
     --list-item-profile-background-hover: #f1c9ac;
 
     --list-item-danger: #dc3545;
+
+    /*========== Header ==========*/
+
+    --header-background: #637951;
+    --header-font: white;
+
+    /*==========  ==========*/
 
     /**/
 

@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="row">
+    <h2 class="header col-12">{{title}}</h2>
     <div class="col-12 col-lg-10 col-xl-12 mx-auto my-4">
         <div class="row tests">
             {% for test in tests %}
@@ -32,4 +34,5 @@
             {% endfor %}
         </div>
     </div>
+</div>
 {% endblock %}

@@ -19,14 +19,6 @@ body {
     margin-top: 15px;
 }
 
-.header {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: var(--nav-dark);
-    margin-bottom: 10px;
-    color: var(--font-light);
-}
-
 .description {
     padding-top: 12px;
 }
@@ -117,6 +109,14 @@ body {
 
 /*========== Navbar ==========*/
 
+.header {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--header-background);
+    margin-bottom: 10px;
+    color: var(--header-font);
+}
+
 .nav-tabs {
     background-color: var(--nav-background);
     color: var(--nav-font);
@@ -150,7 +150,7 @@ body {
     background-color: var(--list-item-background);
     border-color: var(--list-item-border);
     margin: 0;
-    cursor: pointer;
+    cursor: default;
 }
 
 .list-group-item a {
@@ -201,7 +201,7 @@ body {
 /*========== Utilities ==========*/
 
 .card-text {
-    cursor: pointer;
+    cursor: default;
 }
 
 .incorrect{
