@@ -2,10 +2,10 @@
 
 {% block content %}
 
+<h2 class="header col-12">Добавить группу</h2>
 <div class="col-12 col-md-10 col-lg-8 col-xl-6 mx-auto my-2 py-2 group-adder">
     <form action="/create_group" method="post">
         {{form.hidden_tag()}}
-        <h2 class="header m-2 mb-3">Добавить группу</h2>
         <div class="form-row align-items-end">
             <div class="form-group col-8 mx-auto">
                 {{form.name.label}}

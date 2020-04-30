@@ -1,0 +1,71 @@
+:root {
+    --background: #F9FAD1;
+
+    /*========== Tests ==========*/
+    --test-border: #473337;
+    --test-background: #f1c9ac;
+
+    /*========== Question ==========*/
+    --question-border: #473337;
+    --question-background-dark: #D5B9A4;
+    --question-chosen: #659e3a;
+
+    --question-font-light: white;
+    --question-font-header: black;
+    --question-answer-font: #2f2f2f;
+
+    /*========== Result table ==========*/
+    --result-border: #473337;
+    --result-background-dark: #D5B9A4;
+    --result-background-light: #f1c9ac;
+
+    --result-correct: #72b142;
+    --result-incorrect: #da6060;
+
+    --result-font-light: white;
+    --result-font-dark: black;
+
+
+    /*========== Navbar ==========*/
+    --nav-border: #473337;
+    --nav-border-hover: #F9FAD1;
+    --nav-border-width: 2px;
+
+    --nav-background: #637951;
+    --nav-background-active: #F9FAD1;
+    --nav-background-hover: #F9FAD1;
+
+    --nav-font: white;
+    --nav-font-active: black;
+    --nav-font-hover: black;
+
+    /*========== List items ==========*/
+    --list-item-border: #473337;
+
+    --list-item-font-light: white;
+    --list-item-font-dark: black;
+
+    --list-item-background: #F9FAD1;
+    --list-item-background-dark: #637951;
+
+    --list-item-background-dark-hover: #f1c9ac;
+
+    --list-item-profile-font-hover: white;
+    --list-item-profile-background-hover: #f1c9ac;
+
+    --list-item-danger: #dc3545;
+
+    /*========== Header ==========*/
+    --header-background: #637951;
+    --header-font: white;
+
+    /*========== Utilities ==========*/
+    --success: #4a9213;
+    --btn-danger: #dc3545;
+    --delete-link: red;
+
+    --card-background: #f1c9ac;
+    --card-border: #473337;
+
+    /**/
+}

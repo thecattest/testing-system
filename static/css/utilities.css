@@ -1,0 +1,103 @@
+/*========== Utilities ==========*/
+
+html {
+    overflow: auto;
+}
+
+body {
+    background-color: var(--background);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.card-text {
+    cursor: default;
+}
+
+.btn {
+    padding: .44rem 1.4rem;
+}
+
+.btn-danger {
+    background-color: var(--btn-danger)!important;
+}
+
+.btn-success {
+    background-color: var(--success)!important;
+    border: var(--success)!important;
+}
+
+.bg-success {
+    background-color: var(--success)!important;
+}
+
+.text-success {
+    color: var(--success)!important;
+}
+
+.hidden {
+    display: none;
+}
+
+.delete-link {
+    color: var(--delete-link);
+}
+
+.add-link {
+    color: var(--success);
+}
+
+.card {
+    background-color: var(--card-background);
+    border: 2px solid var(--card-border);
+}
+
+.close-btn {
+    font-size: 1.3em;
+}
+
+.close-btn:hover {
+    text-decoration: none;
+}
+
+.wrapper {
+    min-height: 86vh;
+    overflow-y: auto;
+}
+
+/*========== Contacts ==========*/
+.contacts {
+    background-color: #333333;
+    margin-top: 1em;
+}
+
+.contacts a {
+    font-size: 1em;
+    color: white;
+    padding: 7px;
+}
+
+.contacts a:hover {
+    color: #aaa;
+}
+
+/*========== Scrollbar ==========*/
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 13px;
+    background: rgba(200, 200, 200, 0.6);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(200, 200, 200, 0.4);
+}

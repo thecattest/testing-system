@@ -1,0 +1,43 @@
+/*========== Question ==========*/
+
+.answer {
+    border-radius: 6px;
+    margin: 5px;
+    font-weight: 600;
+    font-size: 14px;
+    border: 3px solid var(--question-border);
+    background-color: white;
+}
+
+.answer label {
+    color: var(--question-answer-font);
+    font-size: 1.1em;
+    padding: 6px;
+    text-align: start;
+    width: 100%;
+    margin: 0;
+}
+
+.question-header {
+    font-size: 1.2em;
+    font-weight: 600;
+    font-style: italic;
+}
+
+.question-container {
+    border: 6px solid var(--question-border);
+    background-color: var(--question-background-dark);
+}
+
+.question-pre-header {
+    color: var(--question-font-header);
+}
+
+.chosen {
+    background-color: var(--question-chosen);
+}
+
+.chosen label {
+    color: var(--question-font-light);
+}
+

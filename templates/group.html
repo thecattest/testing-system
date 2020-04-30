@@ -13,7 +13,7 @@
                     <h2 class="card-title d-flex justify-content-between align-items-center">
                         {{group.name}}
                     </h2>
-                    <p class="card-text {% if current_user == group.creator %} list-item-dark p-1 rounded {% endif %}">
+                    <p class="card-text {% if current_user == group.creator %}list-item-dark font-light no-hover p-1 rounded {% endif %}">
                         <b>
                             {{group.creator.nickname}}
                             {% if current_user == group.creator %}(Вы){% endif %}
