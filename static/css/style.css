@@ -11,10 +11,10 @@ body {
 /*========== Tests ==========*/
 
 .test {
-    border: 3px solid var(--border);
+    border: 3px solid var(--test-border);
     padding: 15px;
     border-radius: 5px;
-    background-color: var(--main-light);
+    background-color: var(--test-background);
 }
 
 .test-header .name {
@@ -38,12 +38,12 @@ body {
     margin: 5px;
     font-weight: 600;
     font-size: 14px;
-    border: 3px solid var(--border);
+    border: 3px solid var(--question-border);
     background-color: white;
 }
 
 .answer label {
-    font-weight: 400;
+    color: var(--question-answer-font);
     font-size: 1.1em;
     padding: 6px;
     text-align: start;
@@ -58,17 +58,20 @@ body {
 }
 
 .question-container {
-    border: 6px solid var(--border);
-    background-color: var(--main-dark);
+    border: 6px solid var(--question-border);
+    background-color: var(--question-background-dark);
 }
 
 .question-pre-header {
-    color: var(--correct-dark);
+    color: var(--question-font-header);
 }
 
 .chosen {
-    background-color: var(--correct-dark);
-    color: var(--font-light);
+    background-color: var(--question-chosen);
+}
+
+.chosen label {
+    color: var(--question-font-light);
 }
 
 /*========== Result table ==========*/

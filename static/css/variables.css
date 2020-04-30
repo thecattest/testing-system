@@ -11,6 +11,19 @@
     --correct-dark: #4a9213;
     --incorrect: #da6060;
 
+    /*========== Tests ==========*/
+    --test-border: #473337;
+    --test-background: #f1c9ac;
+
+    /*========== Question ==========*/
+    --question-border: #473337;
+    --question-background-dark: #D5B9A4;
+    --question-chosen: #659e3a;
+
+    --question-font-light: white;
+    --question-font-header: black;
+    --question-answer-font: #2f2f2f;
+
     /*========== Navbar ==========*/
     --nav-border: #473337;
     --nav-border-hover: #F9FAD1;
@@ -41,12 +54,10 @@
     --list-item-danger: #dc3545;
 
     /*========== Header ==========*/
-
     --header-background: #637951;
     --header-font: white;
 
     /*========== Utilities ==========*/
-
     --success: #4a9213;
     --btn-danger: #dc3545;
     --delete-link: red;
