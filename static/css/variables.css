@@ -1,15 +1,5 @@
 :root {
-    --main-dark: #D5B9A4;
-    --main-light: #f1c9ac;
     --background: #F9FAD1;
-    --border: #473337;
-
-    --font-light: red;
-    --font-dark: red;
-
-    --correct: #72b142;
-    --correct-dark: #4a9213;
-    --incorrect: #da6060;
 
     /*========== Tests ==========*/
     --test-border: #473337;
@@ -23,6 +13,18 @@
     --question-font-light: white;
     --question-font-header: black;
     --question-answer-font: #2f2f2f;
+
+    /*========== Result table ==========*/
+    --result-border: #473337;
+    --result-background-dark: #D5B9A4;
+    --result-background-light: #f1c9ac;
+
+    --result-correct: #72b142;
+    --result-incorrect: #da6060;
+
+    --result-font-light: white;
+    --result-font-dark: black;
+
 
     /*========== Navbar ==========*/
     --nav-border: #473337;
