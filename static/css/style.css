@@ -1,31 +1,3 @@
-:root {
-    --main-dark: #D5B9A4;
-    --main-light: #f1c9ac;
-    --background: #F9FAD1;
-    --border: #473337;
-
-    /*Navbar styles*/
-    --nav-border: #473337;
-    --nav-border-hover: #F9FAD1;
-    --nav-border-width: 2px;
-
-    --nav-background: #637951;
-    --nav-background-active: #F9FAD1;
-    --nav-background-hover: #F9FAD1;
-
-    --nav-font: white;
-    --nav-font-active: black;
-    --nav-font-hover: black;
-
-
-    --font-light: #fff;
-    --font-dark: #000;
-
-    --correct: #72b142;
-    --correct-dark: #4a9213;
-    --incorrect: #da6060;
-}
-
 body {
     background-color: var(--background);
 }
@@ -175,41 +147,62 @@ body {
 /*========== List groups ==========*/
 
 .list-group-item {
-    background-color: var(--background);
-    border-color: var(--border);
+    background-color: var(--list-item-background);
+    border-color: var(--list-item-border);
     margin: 0;
+    cursor: pointer;
 }
 
-.profile-list-item {
-    cursor: pointer;
-    color: var(--gray-dark);
+.list-group-item a {
+    text-decoration: underline;
+}
+
+.list-group-item a.font-light {
+    color: var(--list-item-font-light);
+}
+
+.list-group-item a.font-dark {
+    color: var(--list-item-font-dark);
 }
 
 .profile-list-item:hover {
-    background-color: var(--main-dark);
-    color: var(--font-light);
+    background-color: var(--list-item-profile-background-hover);
+    color: var(--list-item-profile-font-hover);
 }
 
 .list-item-dark {
-    background-color: var(--nav-background);
-    color: var(--font-light);
+    background-color: var(--list-item-background-dark);
+    color: var(--list-item-font-light)!important;
 }
 
 .list-item-dark:hover {
-    background-color: var(--main-light);
+    background-color: var(--list-item-background-dark-hover);
+    color: var(--list-item-font-dark);
+    border-left-color: var(--list-item-background-dark-hover);
+    border-right-color: var(--list-item-background-dark-hover);
+}
+
+.list-item-dark.no-hover:hover {
+    background-color: var(--list-item-background-dark);
+    color: var(--list-item-font-light)!important;
+    border-color: var(--list-item-border);
 }
 
 .danger {
-    background-color: var(--danger)!important;
-    color: var(--font-light)!important;
+    background-color: var(--list-item-danger)!important;
+    color: var(--list-item-font-light)!important;
 }
 
 .danger-on-hover:hover {
-    background-color: var(--danger)!important;
-    color: var(--font-light)!important;
+    background-color: var(--list-item-danger)!important;
+    color: var(--list-item-font-light)!important;
 }
 
 /*========== Utilities ==========*/
+
+.card-text {
+    cursor: pointer;
+}
 
 .incorrect{
     background-color: var(--incorrect)!important;

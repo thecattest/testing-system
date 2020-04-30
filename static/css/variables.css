@@ -1,0 +1,44 @@
+:root {
+    --main-dark: #D5B9A4;
+    --main-light: #f1c9ac;
+    --background: #F9FAD1;
+    --border: #473337;
+
+    /*Navbar vars*/
+    --nav-border: #473337;
+    --nav-border-hover: #F9FAD1;
+    --nav-border-width: 2px;
+
+    --nav-background: #637951;
+    --nav-background-active: #F9FAD1;
+    --nav-background-hover: #F9FAD1;
+
+    --nav-font: white;
+    --nav-font-active: black;
+    --nav-font-hover: black;
+
+    /*List vars*/
+    --list-item-border: #473337;
+
+    --list-item-font-light: white;
+    --list-item-font-dark: black;
+
+    --list-item-background: #F9FAD1;
+    --list-item-background-dark: #637951;
+
+    --list-item-background-dark-hover: #f1c9ac;
+
+    --list-item-profile-font-hover: white;
+    --list-item-profile-background-hover: #f1c9ac;
+
+    --list-item-danger: #dc3545;
+
+    /**/
+
+    --font-light: #fff;
+    --font-dark: #000;
+
+    --correct: #72b142;
+    --correct-dark: #4a9213;
+    --incorrect: #da6060;
+}
