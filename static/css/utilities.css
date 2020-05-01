@@ -8,6 +8,26 @@ body {
     background-color: var(--background);
     overflow-y: scroll;
     overflow-x: hidden;
+    font-family: "Roboto",sans-serif;
+    font-weight: 300;
+    transition:all 0s !important;
+}
+
+label {
+    color: var(--font-light);
+}
+
+input, input:focus {
+    background-color: var(--a)!important;
+    color: var(--font-light)!important;
+}
+
+.header {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--header-background);
+    margin-bottom: 10px;
+    color: var(--header-font);
 }
 
 .card-text {
@@ -47,6 +67,10 @@ body {
     color: var(--success);
 }
 
+.card-title, .card-text {
+    color: var(--card-font)!important;
+}
+
 .card {
     background-color: var(--card-background);
     border: 2px solid var(--card-border);
@@ -67,18 +91,19 @@ body {
 
 /*========== Contacts ==========*/
 .contacts {
-    background-color: #333333;
+    background-color: var(--contacts-background);
+    border-top: 2px solid var(--b);
     margin-top: 1em;
 }
 
 .contacts a {
     font-size: 1em;
-    color: white;
+    color: var(--contacts-font);
     padding: 7px;
 }
 
 .contacts a:hover {
-    color: #aaa;
+    color: var(--contacts-font-hover);
 }
 
 /*========== Scrollbar ==========*/

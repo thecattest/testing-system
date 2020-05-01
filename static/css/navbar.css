@@ -1,13 +1,5 @@
 /*========== Navbar ==========*/
 
-.header {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: var(--header-background);
-    margin-bottom: 10px;
-    color: var(--header-font);
-}
-
 .nav-tabs {
     background-color: var(--nav-background);
     color: var(--nav-font);
@@ -32,6 +24,7 @@
 .nav-link:hover {
     color: var(--nav-font-hover);
     border-color: var(--nav-border-hover)!important;
+    border-bottom-color: var(--nav-background-hover)!important;
     background-color: var(--nav-background-hover);
 }
 

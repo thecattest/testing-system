@@ -1,5 +1,9 @@
 /*========== Result table ==========*/
 
+.text-danger {
+    color: var(--result-incorrect)!important;
+}
+
 .result-header {
     border: 4px solid var(--result-border);
     border-bottom: none;
@@ -7,9 +11,8 @@
     background-color: var(--result-background-dark);
 }
 
-.result-table-header {
-    color: #333333;
-    padding: 5px;
+.result-header {
+    color: var(--result-font);
 }
 
 .result-row {
@@ -25,7 +28,7 @@
 
 .correct{
     background-color: var(--result-correct)!important;
-    color: var(--result-font-light);
+    color: var(--result-font-correct);
 }
 
 .result-cell {
@@ -34,6 +37,7 @@
     border: 1px solid var(--result-border);
     border-top: 0;
     padding-top: 3px;
+    color: var(--result-font)
 }
 
 .result {

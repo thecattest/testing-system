@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect
-# from flask_ngrok import run_with_ngrok
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from data import db_session
@@ -21,9 +20,7 @@ app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.unauthorized_handler(callback=(lambda: redirect('/login')))
-# run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'testing_system_key'
-# app.config['DEBUG'] = 'OFF'
 
 
 def fill_db():
@@ -135,24 +132,8 @@ def add_type(name):
 
 
 def main():
-    '''
-    fill_db()
-
-    add_type('Администратор')
-    add_type('Учитель')
-    add_type('Ученик')
-
-    add_user('ilya-vodopyanov', 'password', 1)
-
-    add_user('teacher', 'password', 2)
-
-    add_user('student1', 'password', 3)
-    add_user('student2', 'password', 3)
-    add_user('student3', 'password', 3)
-    '''
-    port = int(os.environ.get("PORT", 8080))
+    port = int(os.environ.get("PORT", 8000))
     app.run(host='0.0.0.0', port=port)
-    # app.run()
 
 
 @login_manager.user_loader

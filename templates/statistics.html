@@ -23,7 +23,7 @@
                     <hr>
                 </div>
                 <div class="col-8 col-sm-9 text-wrap">
-                    <h6>{{result.user.nickname}}</h6>
+                    <h6>{% if result.user.nickname %}{{result.user.nickname}}{% else %}DELETED{% endif %}</h6>
                 </div>
                 <div class="col-4 col-sm-3 text-wrap">
                     <h6>{{result.finish_date}}</h6>

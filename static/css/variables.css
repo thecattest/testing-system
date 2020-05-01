@@ -1,71 +1,69 @@
 :root {
-    --background: #F9FAD1;
+    --a: #26292e;
+    --b: #ff5564;
+    --c: #36383e;
+    --d: #60636a;
+    --e: #51535c;
+    --f: #82848a;
+    --g: #43474f;
 
-    /*========== Tests ==========*/
-    --test-border: #473337;
-    --test-background: #f1c9ac;
+    --background: var(--g);
+    --font-dark: #000;
+    --font-light: #fff;
 
-    /*========== Question ==========*/
-    --question-border: #473337;
-    --question-background-dark: #D5B9A4;
+    --test-border: var(--a);
+    --test-font: #fff;
+    --test-background: var(--d);
+
+    --question-border: var(--a);
+    --question-border-chosen: var(--b); /*#57c700;*/
+    --question-background: var(--c);
+    --question-answer-background: var(--f);
     --question-chosen: #659e3a;
+    --question-font: #fff;
+    --question-font-header: #e0e0e0;
+    --question-answer-font: #000;
 
-    --question-font-light: white;
-    --question-font-header: black;
-    --question-answer-font: #2f2f2f;
+    --result-border: var(--f);
+    --result-background-dark: var(--a);
+    --result-background-light: var(--c);
+    --result-font: #fff;
+    --result-correct: #5bab45;
+    --result-incorrect: #ab4545;
+    --result-font-correct: #fff;
 
-    /*========== Result table ==========*/
-    --result-border: #473337;
-    --result-background-dark: #D5B9A4;
-    --result-background-light: #f1c9ac;
-
-    --result-correct: #72b142;
-    --result-incorrect: #da6060;
-
-    --result-font-light: white;
-    --result-font-dark: black;
-
-
-    /*========== Navbar ==========*/
-    --nav-border: #473337;
-    --nav-border-hover: #F9FAD1;
+    --nav-border: var(--b);
+    --nav-border-hover: var(--a);
     --nav-border-width: 2px;
+    --nav-background: var(--a);
+    --nav-background-active: var(--g);
+    --nav-background-hover: var(--c);
+    --nav-font: #fff;
+    --nav-font-active: #fff;
+    --nav-font-hover: #fff;
 
-    --nav-background: #637951;
-    --nav-background-active: #F9FAD1;
-    --nav-background-hover: #F9FAD1;
-
-    --nav-font: white;
-    --nav-font-active: black;
-    --nav-font-hover: black;
-
-    /*========== List items ==========*/
-    --list-item-border: #473337;
-
-    --list-item-font-light: white;
-    --list-item-font-dark: black;
-
-    --list-item-background: #F9FAD1;
-    --list-item-background-dark: #637951;
-
-    --list-item-background-dark-hover: #f1c9ac;
-
-    --list-item-profile-font-hover: white;
-    --list-item-profile-background-hover: #f1c9ac;
-
+    --list-item-border: var(--c);
+    --list-item-font: #fff;
+    --list-item-dark-font-hover: #000;
+    --list-item-background: var(--f);
+    --list-item-background-dark: var(--e);
+    --list-item-background-dark-hover: var(--f);
+    --list-item-profile-font-hover: #fff;
+    --list-item-profile-background-hover: var(--f);
     --list-item-danger: #dc3545;
 
-    /*========== Header ==========*/
-    --header-background: #637951;
-    --header-font: white;
+    --header-background: var(--a);
+    --header-font: #fff;
 
-    /*========== Utilities ==========*/
-    --success: #4a9213;
-    --btn-danger: #dc3545;
-    --delete-link: red;
+    --success: #3c7510;
+    --btn-danger: #c11324;
+    --delete-link: #b70000;
 
-    --card-background: #f1c9ac;
-    --card-border: #473337;
+    --contacts-background: var(--a);
+    --contacts-font: #fff;
+    --contacts-font-hover: #aaa;
 
-    /**/
+    --card-background: var(--c);
+    --card-border: var(--b);
+    --card-font: #fff;
 }
