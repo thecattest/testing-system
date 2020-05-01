@@ -164,7 +164,7 @@ def login():
         user = session.query(User).filter(User.nickname == form.nickname.data.strip()).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect("/more")
+            return redirect("/")
         return render_template("login.html",
                                title='Log in',
                                message="Password or login is incorrect",
