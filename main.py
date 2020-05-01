@@ -207,6 +207,8 @@ def get_groups():
     return render_template("all_groups.html",
                            title='Группы',
                            groups=groups,
+                           other="/groups",
+                           other_title='Группы',
                            code=code)
 
 
@@ -228,6 +230,8 @@ def get_group(group_id):
     return render_template("group.html",
                            title='Редактирование',
                            group=group,
+                           other="/groups",
+                           other_title='Группы',
                            users=users,
                            code=code)
 
@@ -247,6 +251,8 @@ def create_group():
             db.commit()
             return redirect(f'/groups/{group.id}')
         return render_template("create_group.html",
+                               other="/groups",
+                               other_title='Группы',
                                form=form)
     else:
         return redirect('/more')
@@ -299,7 +305,12 @@ def create_user():
             db.add(user)
             db.commit()
             return redirect('/users')
-    return render_template('register.html', title='Создать', form=form, code=code)
+    return render_template('register.html',
+                           title='Создать',
+                           form=form,
+                           other="/register",
+                           other_title='Регистрация',
+                           code=code)
 
 
 @app.route("/statistics/<int:test_id>")
@@ -385,6 +396,8 @@ def get_users():
         return render_template('users.html',
                                title='Пользователи',
                                users=users,
+                               other="/users",
+                               other_title='Пользователи',
                                code=code)
     except sa.orm.exc.DetachedInstanceError:
         return redirect('/users')

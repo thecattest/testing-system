@@ -33,9 +33,15 @@
         <li class="nav-item">
             <a class="nav-link {{all_tests}}" href="/all_tests">Тесты <i class="fas fa-bars"></i></a>
         </li>
+        {% if other %}
+        <li class="nav-item">
+            <a class="nav-link active" href="{{other}}">{{other_title}}</a>
+        </li>
+        {% else %}
         <li class="nav-item">
             <a class="nav-link {{statistics}}" href="/statistics">История <i class="fas fa-history"></i></a>
         </li>
+        {% endif %}
         <li class="nav-item">
             <a class="nav-link {{more}}" href="/more">Профиль <i class="fas fa-user-alt"></i></a>
         </li>
