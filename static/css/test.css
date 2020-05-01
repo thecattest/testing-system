@@ -2,21 +2,18 @@
 
 .test {
     border: 3px solid var(--test-border);
+    color: var(--test-font);
     padding: 15px;
     border-radius: 5px;
     background-color: var(--test-background);
 }
 
 .test-header .name {
-    font-weight: 600;
+    /*font-weight: 600;*/
 }
 
 .item {
     border-radius: 5px;
     padding: 10px;
     margin-top: 15px;
-}
-
-.description {
-    padding-top: 12px;
 }

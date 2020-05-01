@@ -6,7 +6,7 @@
     font-weight: 600;
     font-size: 14px;
     border: 3px solid var(--question-border);
-    background-color: white;
+    background-color: var(--question-answer-background);
 }
 
 .answer label {
@@ -19,6 +19,7 @@
 }
 
 .question-header {
+    color: var(--question-font-header);
     font-size: 1.2em;
     font-weight: 600;
     font-style: italic;
@@ -26,7 +27,7 @@
 
 .question-container {
     border: 6px solid var(--question-border);
-    background-color: var(--question-background-dark);
+    background-color: var(--question-background);
 }
 
 .question-pre-header {
@@ -34,10 +35,6 @@
 }
 
 .chosen {
-    background-color: var(--question-chosen);
-}
-
-.chosen label {
-    color: var(--question-font-light);
+    border-color: var(--question-border-chosen);
 }
 
