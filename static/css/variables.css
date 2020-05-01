@@ -28,8 +28,8 @@
     --result-background-dark: var(--a);
     --result-background-light: var(--c);
     --result-font: #fff;
-    --result-correct: #5bab45;
-    --result-incorrect: #ab4545;
+    --result-correct: #629c53;
+    --result-incorrect: #7d4949;
     --result-font-correct: #fff;
 
     --nav-border: var(--b);
