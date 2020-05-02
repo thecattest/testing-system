@@ -28,8 +28,12 @@
                                    {% if current_user == user %} list-item-dark {% endif %}
                         ">
                             <b>
-                                <a href="/remove_user/{{user.id}}/{{group.id}}" title="Исключить" class="delete-link"><i class="fas fa-user-minus"></i></a>
-                                {{user.nickname}}
+                                {% if edit %}
+                                <a href="/remove_user/{{user.id}}/{{group.id}}" title="Исключить" class="delete-link">
+                                    <i class="fas fa-user-minus"></i>
+                                </a>
+                                {% endif %}
+                                {{user.nickname}}{% if current_user == user %} (Вы){% endif %}
                             </b>
                             <span class="badge badge-primary">{{user.user_type.name}}</span>
                         </li>
@@ -40,15 +44,23 @@
                 </ul>
                 <hr>
                 <ul class="list list-group pb-3">
+                    {% if edit %}
                     <h5>Добавить</h5>
+                    {% else %}
+                    <h5>Не в группе</h5>
+                    {% endif %}
                     {% if users %}
                         {% for user in users %}
                         <li class="list-group-item py-2 d-flex justify-content-between align-items-center
                                    {% if current_user == user %} list-item-dark {% endif %}
                         ">
                             <b>
-                                <a href="/add_user/{{user.id}}/{{group.id}}" title="Добавить" class="add-link"><i class="fas fa-user-plus"></i></a>
-                                {{user.nickname}}
+                                {% if edit %}
+                                <a href="/add_user/{{user.id}}/{{group.id}}" title="Добавить" class="add-link">
+                                    <i class="fas fa-user-plus"></i>
+                                </a>
+                                {% endif %}
+                                {{user.nickname}}{% if current_user == user %} (Вы){% endif %}
                             </b>
                             <span class="badge badge-primary">{{user.user_type.name}}</span>
                         </li>
@@ -67,8 +79,8 @@
             <h3>Пусто!</h3>
             <p>Похоже, такой группы нет</p>
         </div>
-        {% elif code == 2 %}
-        {% include "go_away.html" %}
+        {% else %}
+        {% include 'go_away.html' %}
         {% endif %}
     </div>
 </div>

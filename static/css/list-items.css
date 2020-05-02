@@ -30,7 +30,7 @@
     background-color: var(--list-item-background-dark);
     color: var(--list-item-font);
 }
-
+/*
 .list-item-dark:hover,
 .list-group-item-action:active {
     background-color: var(--list-item-background-dark-hover);
@@ -38,7 +38,7 @@
     border-left-color: var(--card-background);
     border-right-color: var(--card-background);
 }
-
+*/
 .list-item-dark.no-hover:hover {
     background-color: var(--list-item-background-dark);
     color: var(--list-item-font)!important;

@@ -22,7 +22,7 @@
                     <p class="card-text {% if current_user == group.creator %}list-item-dark font-light no-hover p-1 rounded {% endif %}">
                         <b>
                             {{group.creator.nickname}}
-                            {% if current_user == group.creator %}(Вы){% endif %}
+                            {% if current_user == group.creator %} (Вы){% endif %}
                         </b>
                     </p>
                 </div>
@@ -32,7 +32,7 @@
                         <li class="list-group-item py-2 d-flex justify-content-between align-items-center
                                    {% if current_user == user %} list-item-dark {% endif %}
                         ">
-                            <b>{{user.nickname}}</b>
+                            <b>{{user.nickname}}{% if current_user == user %}(Вы){% endif %}</b>
                             <span class="badge badge-primary">{{user.user_type.name}}</span>
                         </li>
                         {% endfor %}
@@ -44,6 +44,10 @@
                 <div class="text-center mb-3">
                     <a href="/delete_group/{{group.id}}" class="m-1 btn btn-danger">Удалить группу <i class="fas fa-trash-alt"></i></a>
                     <a href="/groups/{{group.id}}" class="m-1 btn btn-success">Редактировать <i class="fas fa-edit"></i></a>
+                </div>
+                {% elif current_user.type_id != 3 %}
+                <div class="text-center mb-3">
+                    <a href="/groups/{{group.id}}" class="m-1 btn btn-primary">Просмотреть <i class="fas fa-eye"></i></a>
                 </div>
                 {% endif %}
             </div>

@@ -243,23 +243,29 @@ def get_groups():
 @login_required
 def get_group(group_id):
     code = 0
+    edit = True
+    title = 'Редактирование'
     db = db_session.create_session()
     group = db.query(Group).get(group_id)
     users = []
     if not group:
         code = 1
-    elif current_user.type_id != 1 and current_user != group.creator:
+    elif current_user.type_id == 3:
         code = 2
     else:
+        if current_user.type_id != 1 and current_user != group.creator:
+            edit = False
+            title = 'Просмотр'
         users = db.query(User).filter(User.type_id != 1,
                                       User != current_user).order_by(User.type_id).all()
         users = list(user for user in users if not user in group.users and user != group.creator)
     return render_template("group.html",
-                           title='Редактирование',
+                           title=title,
                            group=group,
                            other="/groups",
                            other_title='Группы',
                            users=users,
+                           edit=edit,
                            code=code)
 
 
@@ -285,7 +291,7 @@ def create_group():
         return redirect('/more')
 
 
-@app.route("/add_group_to_test")
+# @app.route("/add_group_to_test")
 @login_required
 def add_group():
     add_group_to_test(3, 1)
@@ -293,7 +299,7 @@ def add_group():
     return redirect('/')
 
 
-@app.route("/remove_group_from_test")
+# @app.route("/remove_group_from_test")
 @login_required
 def remove_group():
     remove_group_from_test(3, 1)
