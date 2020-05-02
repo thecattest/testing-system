@@ -4,12 +4,12 @@ from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
 
 
-#association_table = sqlalchemy.Table('users_to_tests', SqlAlchemyBase.metadata,
- #   sqlalchemy.Column('user', sqlalchemy.Integer,
-  #                    sqlalchemy.ForeignKey('users.id')),
-   # sqlalchemy.Column('test', sqlalchemy.Integer,
-    #                  sqlalchemy.ForeignKey('tests.id'))
-#)
+association_table = sqlalchemy.Table('groups_to_tests', SqlAlchemyBase.metadata,
+    sqlalchemy.Column('group', sqlalchemy.Integer,
+                      sqlalchemy.ForeignKey('groups.id')),
+    sqlalchemy.Column('test', sqlalchemy.Integer,
+                      sqlalchemy.ForeignKey('tests.id'))
+)
 
 
 class Test(SqlAlchemyBase):
@@ -22,9 +22,9 @@ class Test(SqlAlchemyBase):
 
     questions = orm.relation("Question", back_populates='test')
     statistics = orm.relation("Result", back_populates='test')
-    #users = orm.relation("User",
-     #                    secondary="users_to_tests",
-      #                   backref="test")
+    groups = orm.relation("Group",
+                          secondary="groups_to_tests",
+                          backref="test")
 
     def __repr__(self):
         return f"<Test {self.id} {self.name}>"

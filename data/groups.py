@@ -22,9 +22,9 @@ class Group(SqlAlchemyBase):
     # is_service = sqlalchemy.Column(sqlalchemy.Boolean, default=0)
 
     creator = orm.relation("User")
-    users = orm.relation("User",
-                         secondary="groups_to_users",)
-                         # backref="group")
+    groups = orm.relation("Test",
+                          secondary="groups_to_tests",
+                          backref="group")
 
     def __repr__(self):
         return f"<Group {self.id} {self.name} {self.creator.nickname}>"
