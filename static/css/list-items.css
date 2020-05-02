@@ -11,16 +11,6 @@
     text-decoration: none;
 }
 
-.list-group-item a.font-light,
-.list-item-dark.font-light{
-    color: var(--font-light)!important;
-}
-
-.list-group-item a.font-dark,
-.list-item-dark.font-dark {
-    color: var(--font-dark)!important;
-}
-
 .profile-list-item:hover {
     background-color: var(--list-item-profile-background-hover);
     color: var(--list-item-profile-font-hover)!important;

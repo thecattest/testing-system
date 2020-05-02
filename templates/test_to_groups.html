@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div class="row">
+    {% if code == 0%}
+    <h2 class="header col-12">{{title}}</h2>
+    <div class="col-12 col-md-10 col-lg-8 col-xl-6 mx-auto">
+        <div class="group-container mx-auto px-1 pb-3" id="{{test.id}}">
+            <div class="card px-3 py-0">
+                <div class="card-body align-items-center">
+                    <h2 class="card-title d-flex justify-content-between align-items-center">
+                        {{test.name}}
+                    </h2>
+                    <p class="card-text {% if current_user == test.creator %}list-item-dark font-light no-hover p-1 rounded {% endif %}">
+                        <b>
+                            {{test.creator.nickname}}
+                            {% if current_user == test.creator %}(Вы){% endif %}
+                        </b>
+                    </p>
+                </div>
+                <ul class="list list-group pb-3">
+                    <h5>Доступ разрешён</h5>
+                    {% if test.groups %}
+                        {% for group in test.groups %}
+                        <li class="list-group-item py-2 d-flex justify-content-between align-items-center">
+                            <b>
+                                {% if edit %}
+                                <a href="/remove_group_from_test/{{test.id}}/{{group.id}}" title="Закрыть доступ" class="delete-link">
+                                    <i class="fas fa-minus-square"></i>
+                                </a>
+                                {% endif %}
+                                {{group.name}}
+                            </b>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item danger py-2">Ни у одной группы нет доступа</li>
+                    {% endif %}
+                </ul>
+                <hr>
+                <ul class="list list-group pb-3">
+                    {% if edit %}
+                    <h5>Разрешить доступ</h5>
+                    {% else %}
+                    <h5>Доступ запрещён</h5>
+                    {% endif %}
+                    {% if groups %}
+                        {% for group in groups %}
+                        <li class="list-group-item py-2 d-flex justify-content-between align-items-center">
+                            <b>
+                                {% if edit %}
+                                <a href="/add_group_to_test/{{test.id}}/{{group.id}}" title="Добавить" class="add-link">
+                                    <i class="fas fa-plus-square"></i>
+                                </a>
+                                {% endif %}
+                                {{group.name}}
+                            </b>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item danger py-2">У всех групп есть доступ</li>
+                    {% endif %}
+                </ul>
+                <div class="text-center mb-3">
+                    <a href="/" class="m-1 btn btn-primary"><i class="fas fa-chevron-left"></i> Вернуться</a>
+                </div>
+            </div>
+        </div>
+        {% elif code == 1%}
+        <div class="alert alert-danger col-10 m-4">
+            <h3>Пусто!</h3>
+            <p>Похоже, такого теста нет</p>
+        </div>
+        {% else %}
+        {% include 'go_away.html' %}
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

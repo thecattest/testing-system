@@ -12,6 +12,14 @@ body {
     font-weight: 300;
 }
 
+.font-light{
+    color: var(--font-light)!important;
+}
+
+.font-dark {
+    color: var(--font-dark)!important;
+}
+
 label {
     color: var(--font-light);
 }

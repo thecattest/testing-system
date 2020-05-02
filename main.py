@@ -149,6 +149,13 @@ def log(error):
         file.write(message + '\n' + str(datetime.datetime.now()) + '\n-----\n')
 
 
+def is_allowed(test, user):
+    return any(list(group.id in list(i.id for i in test.groups)
+                    for group in user.groups)) \
+           or test.creator == current_user \
+           or current_user.type_id == 1
+
+
 def test_started():
     db = db_session.create_session()
     if db.query(Result).filter(Result.is_finished == False, Result.user == current_user).first():
@@ -160,7 +167,7 @@ def add_group_to_test(group_id, test_id):
     db = db_session.create_session()
     group = db.query(Group).get(group_id)
     test = db.query(Test).get(test_id)
-    if group and test:
+    if group and test and (current_user.type_id == 1 or current_user == test.creator):
         test.groups.append(group)
         db.commit()
 
@@ -169,7 +176,7 @@ def remove_group_from_test(group_id, test_id):
     db = db_session.create_session()
     group = db.query(Group).get(group_id)
     test = db.query(Test).get(test_id)
-    if group and test and group in test.groups:
+    if group and test and group in test.groups and (current_user.type_id == 1 or current_user == test.creator):
         test.groups.remove(group)
         db.commit()
 
@@ -207,12 +214,7 @@ def index():
             return redirect('/test')
         db = db_session.create_session()
         tests = db.query(Test).all()
-        tests = list(test for test in tests
-                     if test.creator == current_user or
-                     current_user.type_id == 1 or
-                     any(list(group.id in list(i.id for i in test.groups)
-                              for group in current_user.groups))
-                     )
+        tests = list(test for test in tests if is_allowed(test, current_user))
         return render_template("all_tests.html",
                                title="Тесты",
                                tests=tests,
@@ -269,6 +271,30 @@ def get_group(group_id):
                            code=code)
 
 
+@app.route('/test_to_groups/<int:test_id>')
+def show_test_to_groups(test_id):
+    code = 0
+    groups = []
+    edit = False
+    db = db_session.create_session()
+    test = db.query(Test).get(test_id)
+    if not test:
+        code = 1
+    elif not is_allowed(test, current_user) and current_user.type_id != 1 or current_user.type_id == 3:
+        code = 2
+    else:
+        groups = db.query(Group).filter(~Group.id.in_(list(group.id for group in test.groups))).all()
+        edit = test.creator == current_user or current_user.type_id == 1
+    return render_template("test_to_groups.html",
+                           title="Группы с доступом",
+                           test=test,
+                           edit=edit,
+                           groups=groups,
+                           other=f"/test_to_groups/{test_id}",
+                           other_title="Доступ",
+                           code=code)
+
+
 @app.route("/create_group", methods=['GET', 'POST'])
 @login_required
 def create_group():
@@ -291,20 +317,18 @@ def create_group():
         return redirect('/more')
 
 
-# @app.route("/add_group_to_test")
+@app.route("/add_group_to_test/<int:test_id>/<int:group_id>")
 @login_required
-def add_group():
-    add_group_to_test(3, 1)
-    add_group_to_test(3, 2)
-    return redirect('/')
+def add_group(test_id, group_id):
+    add_group_to_test(group_id, test_id)
+    return redirect(f'/test_to_groups/{test_id}')
 
 
-# @app.route("/remove_group_from_test")
+@app.route("/remove_group_from_test/<int:test_id>/<int:group_id>")
 @login_required
-def remove_group():
-    remove_group_from_test(3, 1)
-    remove_group_from_test(3, 2)
-    return redirect('/')
+def remove_group(test_id, group_id):
+    remove_group_from_test(group_id, test_id)
+    return redirect(f'/test_to_groups/{test_id}')
 
 
 @app.route('/remove_user/<int:user_id>/<int:group_id>')
@@ -366,18 +390,25 @@ def create_user():
 @login_required
 def get_test_statistics(test_id):
     try:
+        code = 0
+        results = []
         db = db_session.create_session()
-        if current_user.type_id == 3:
+        test = db.query(Test).get(test_id)
+        if not test:
+            code = 1
+            return show_statistics(results, title=f"Такого теста нет", code=code)
+        elif current_user.type_id == 3:
             results = db.query(Result).filter(Result.test_id == test_id,
                                               Result.user_id == current_user.id,
                                               ~Result.is_deleted).all()
-        else:
+        elif current_user.type_id == 1 or test.creator == current_user:
             results = db.query(Result).filter(Result.test_id == test_id).all()
-        test = db.query(Test).get(test_id)
+        else:
+            code = 2
         results.reverse()
-        return show_statistics(results, title=f"История по {test.name}")
+        return show_statistics(results, title=f"История по {test.name}", code=code)
     except sa.orm.exc.DetachedInstanceError:
-        return show_statistics(results, title=f"История по {test.name}")
+        return show_statistics(results, title=f"История по {test.name}", code=code)
 
 
 @app.route("/user_statistics/<int:user_id>")
@@ -507,9 +538,9 @@ def start_test(test_id):
         return redirect('/test')
     db = db_session.create_session()
     test = db.query(Test).get(test_id)
-    if not test:
+    if not test or not is_allowed(test, current_user):
         return render_template("error.html",
-                               text="Произошла ошибка. Скорее всего, тест не существует или был удалён.",
+                               text="Теста не существует или у вас нет прав доступа.",
                                button="На главную",
                                link="/all_tests")
     result = Result()
