@@ -25,8 +25,7 @@ class Test(SqlAlchemyBase):
     questions = orm.relation("Question", back_populates='test')
     statistics = orm.relation("Result", back_populates='test')
     groups = orm.relation("Group",
-                          secondary="groups_to_tests",
-                          backref="test")
+                          secondary="groups_to_tests")
 
     def __repr__(self):
         return f"<Test {self.id} {self.name}>"

@@ -16,7 +16,7 @@
                         </div>
                         <div class="col-12 col-sm-4 text-right">
                             <div class="name">
-                                {{test.creator.nickname}}
+                                {% if test.creator %}{{test.creator.nickname}}{% else %}DELETED{% endif %}
                             </div>
                         </div>
                     </div>

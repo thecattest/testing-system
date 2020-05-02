@@ -23,8 +23,7 @@ class Group(SqlAlchemyBase):
 
     creator = orm.relation("User")
     users = orm.relation("User",
-                          secondary="groups_to_users",
-                          backref="group")
+                          secondary="groups_to_users")
     groups = orm.relation("Test",
                           secondary="groups_to_tests",
                           backref="group")

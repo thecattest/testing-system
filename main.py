@@ -184,14 +184,23 @@ def logout():
 @app.route("/all_tests")
 @login_required
 def index():
-    if test_started():
-        return redirect('/test')
-    db = db_session.create_session()
-    tests = db.query(Test).all()
-    return render_template("all_tests.html",
-                           title="Тесты",
-                           tests=tests,
-                           all_tests='active')
+    try:
+        if test_started():
+            return redirect('/test')
+        db = db_session.create_session()
+        tests = db.query(Test).all()
+        tests = list(test for test in tests
+                     if test.creator == current_user or
+                     current_user.type_id == 1 or
+                     any(list(group.id in list(i.id for i in test.groups)
+                              for group in current_user.groups))
+                     )
+        return render_template("all_tests.html",
+                               title="Тесты",
+                               tests=tests,
+                               all_tests='active')
+    except sa.orm.exc.DetachedInstanceError:
+        return redirect('/')
 
 
 @app.route("/groups")
@@ -422,6 +431,7 @@ def delete_group(group_id):
     group = db.query(Group).get(group_id)
     if group and (group.creator == current_user or current_user.type_id == 1):
         group.users = []
+        group.tests = []
         db.delete(group)
         db.commit()
     return redirect('/groups')
@@ -443,6 +453,8 @@ def delete_user(user_id):
                                             "так как он является администратором одной или нескольких групп",
                                       link="/users",
                                       button="Вернуться")
+           if user.groups != []:
+               user.groups = []
         return redirect('/users')
     except sa.orm.exc.DetachedInstanceError:
         return redirect(f'/delete_user/{user_id}')
