@@ -13,6 +13,7 @@
 
     --test-border: var(--a);
     --test-font: #fff;
+    --test-description-font: #d8d8d8;
     --test-background: var(--d);
 
     --question-border: var(--a);

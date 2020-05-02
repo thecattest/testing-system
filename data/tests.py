@@ -19,7 +19,9 @@ class Test(SqlAlchemyBase):
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     description = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    creator_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
 
+    creator = orm.relation("User")
     questions = orm.relation("Question", back_populates='test')
     statistics = orm.relation("Result", back_populates='test')
     groups = orm.relation("Group",

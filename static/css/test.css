@@ -17,3 +17,7 @@
     padding: 10px;
     margin-top: 15px;
 }
+
+.description {
+    color: var(--test-description-font);
+}
