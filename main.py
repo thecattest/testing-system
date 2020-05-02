@@ -534,31 +534,34 @@ def delete_user(user_id):
 @app.route("/test/<int:test_id>")
 @login_required
 def start_test(test_id):
-    if test_started():
-        return redirect('/test')
-    db = db_session.create_session()
-    test = db.query(Test).get(test_id)
-    if not test or not is_allowed(test, current_user):
-        return render_template("error.html",
-                               text="Теста не существует или у вас нет прав доступа.",
-                               button="На главную",
-                               link="/all_tests")
-    result = Result()
-    result.test_id = test.id
-    result.user_id = current_user.id
-    db.add(result)
-    for q in test.questions:
-        row = ResultRow()
-        row.result = result
-        row.text = q.text
-        row.q_id = q.id
-        for a in q.answers:
-            if a.is_correct:
-                row.correct = a.text
-                break
-        db.add(row)
-    db.commit()
-    return redirect("/test")
+    try:
+        if test_started():
+            return redirect('/test')
+        db = db_session.create_session()
+        test = db.query(Test).get(test_id)
+        if not test or not is_allowed(test, current_user):
+            return render_template("error.html",
+                                   text="Теста не существует или у вас нет прав доступа.",
+                                   button="На главную",
+                                   link="/all_tests")
+        result = Result()
+        result.test_id = test.id
+        result.user_id = current_user.id
+        db.add(result)
+        for q in test.questions:
+            row = ResultRow()
+            row.result = result
+            row.text = q.text
+            row.q_id = q.id
+            for a in q.answers:
+                if a.is_correct:
+                    row.correct = a.text
+                    break
+            db.add(row)
+        db.commit()
+        return redirect("/test")
+    except sa.orm.exc.DetachedInstanceError:
+        return redirect(f'/test/{test_id}')
 
 
 @app.route("/test")
