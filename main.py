@@ -156,6 +156,24 @@ def test_started():
     return False
 
 
+def add_group_to_test(group_id, test_id):
+    db = db_session.create_session()
+    group = db.query(Group).get(group_id)
+    test = db.query(Test).get(test_id)
+    if group and test:
+        test.groups.append(group)
+        db.commit()
+
+
+def remove_group_from_test(group_id, test_id):
+    db = db_session.create_session()
+    group = db.query(Group).get(group_id)
+    test = db.query(Test).get(test_id)
+    if group and test and group in test.groups:
+        test.groups.remove(group)
+        db.commit()
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
@@ -265,6 +283,22 @@ def create_group():
                                form=form)
     else:
         return redirect('/more')
+
+
+@app.route("/add_group_to_test")
+@login_required
+def add_group():
+    add_group_to_test(3, 1)
+    add_group_to_test(3, 2)
+    return redirect('/')
+
+
+@app.route("/remove_group_from_test")
+@login_required
+def remove_group():
+    remove_group_from_test(3, 1)
+    remove_group_from_test(3, 2)
+    return redirect('/')
 
 
 @app.route('/remove_user/<int:user_id>/<int:group_id>')
