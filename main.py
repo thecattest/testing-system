@@ -12,7 +12,7 @@ except sa.exc.OperationalError:
 from data.__all_models import *
 from forms.__all_forms import *
 
-from notifications import check_messages
+from notifications import bot
 
 import datetime
 import random
@@ -210,8 +210,15 @@ def logout():
 @login_required
 def check():
     db = db_session.create_session()
-    check_messages.check_updates(db, User)
+    bot.check_updates(db, User)
     return "Ok"
+
+
+@app.route('/notify/<str:text>')
+def notify_users(text):
+    db = db_session.create_session()
+    users = db.query(User).all()
+    bot.notify(users, text)
 
 
 @app.route("/")
