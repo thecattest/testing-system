@@ -12,6 +12,8 @@ except sa.exc.OperationalError:
 from data.__all_models import *
 from forms.__all_forms import *
 
+from notifications import check_messages
+
 import datetime
 import random
 
@@ -202,6 +204,13 @@ def login():
 def logout():
     logout_user()
     return redirect("/")
+
+
+@app.route("/check")
+@login_required
+def check():
+    db = db_session.create_session()
+    check_messages.check_updates(db)
 
 
 @app.route("/")

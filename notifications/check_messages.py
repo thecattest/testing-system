@@ -26,12 +26,12 @@ def check_updates(db):
         bot = updater.bot
         updates = bot.get_updates()
         for update in updates:
-            e = check(db, logger, update)
+            e = check_update(db, logger, update)
             if e:
                 bot.send_message(888848705, f"{type(e)}: {str(e)}")
 
 
-def check(db, logger, update):
+def check_update(db, logger, update):
     code = update.message.text.strip()
     user = db.query(User).filter(User.code == code).first()
     chat_id = update.message.chat.id
