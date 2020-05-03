@@ -24,8 +24,12 @@ def check_updates(db, User):
     else:
         updater = Updater(TOKEN, use_context=True)
         bot = updater.bot
-        bot.send_message(888848705, "bot")
-        updates = bot.get_updates()
+        try:
+            with open('last.txt', 'r') as f:
+                update_id = int(f.read().strip())
+        except FileNotFoundError:
+            update_id = None
+        updates = bot.get_updates(offset=update_id)
         for update in updates:
             e = check_update(db, logger, User, update)
             if e:
@@ -45,6 +49,8 @@ def check_update(db, logger, User, update):
             db.commit()
             update.message.reply_text(f"Аккаунт {user.nickname} привязан")
             logger.info(f"Аккаунт {user.nickname} привязан к {chat_id}")
+            with open('last.txt', 'w') as f:
+                f.write(str(update.update_id))
         except Exception as e:
             logger.error(f"{type(e)}: {str(e)}")
             update.message.reply_text(f"Произошла ошибка")
