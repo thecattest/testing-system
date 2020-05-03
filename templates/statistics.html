@@ -6,8 +6,8 @@
     {% if code == 0 %}
     <h2 class="header col-12">{{title}}</h2>
     {% for result in results %}
-    <div class="col-xl-10 mx-auto">
-        <div class="item">
+    <div class="result-item col-12 col-md-6 col-lg-4 mx-auto" result-id="{{result.id}}">
+        <div class="item" id="{{result.id}}">
             <div class="row mb-2 py-3 result-header">
                 <div class="col-12 text-wrap">
                     <h4>
@@ -22,6 +22,9 @@
                         {% endif %}
                         -->
                     </h4>
+                    <a href="#{{result.id}}" class="toggle-info" target-id="{{result.id}}">
+                        [<span class="spoiler">Нажмите, чтобы раскрыть +</span>]
+                    </a>
                     <hr>
                 </div>
                 <div class="col-8 col-sm-9 text-wrap">
@@ -32,7 +35,7 @@
                 </div>
             </div>
             {% for row in result.rows %}
-            <div class="row result-row mb-2 mb-md-0">
+            <div class="row result-row mb-2 mb-md-0 hidden" result-id="{{result.id}}">
                 <div class="col-12 col-md result-cell text-wrap">
                     <small>Вопрос</small>
                     <br>
@@ -75,5 +78,18 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+    $(".toggle-info").click(function() {
+        let res_id = $(this).attr("target-id");
+        $(".result-item[result-id=" + res_id + "]").toggleClass("col-12 col-md-12 col-lg-10");
+        $(".result-row[result-id=" + res_id + "]").each(function(i, elem) {
+           $(elem).toggleClass("hidden");
+        });
+        let text = $(".toggle-info[target-id=" + res_id + "] .spoiler").text();
+        let newText = "Нажмите, чтобы раскрыть +Нажмите, чтобы скрыть -".replace(text, "");
+        $(".spoiler").text(newText);
+    });
+</script>
 
 {% endblock %}

@@ -12,6 +12,13 @@ body {
     font-weight: 300;
 }
 
+.spoiler {
+    font-size: 15px;
+    color: #9c9cff;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .font-light{
     color: var(--font-light)!important;
 }
