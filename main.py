@@ -25,6 +25,18 @@ login_manager.unauthorized_handler(callback=(lambda: redirect('/login')))
 app.config['SECRET_KEY'] = 'testing_system_key'
 
 
+def del_test(test_id):
+    db = db_session.create_session()
+    test = db.query(Test).get(test_id)
+    if test:
+        for q in test.questions:
+            for a in q.answers:
+                db.delete(a)
+            db.delete(q)
+        db.delete(test)
+    db.commit()
+
+
 def fill_db():
     session = db_session.create_session()
 
@@ -134,6 +146,7 @@ def add_type(name):
 
 
 def main():
+    # del_test(3)
     port = int(os.environ.get("PORT", 8000))
     app.run(host='0.0.0.0', port=port)
 
