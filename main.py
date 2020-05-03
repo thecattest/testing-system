@@ -486,6 +486,12 @@ def get_users():
 @app.route("/delete_result/<int:result_id>")
 @login_required
 def delete_result(result_id):
+    return render_template("error.html",
+                           text="Теперь так нельзя.",
+                           link="/statistics",
+                           button="Вернуться",
+                           other="/statistics",
+                           other_title="Статистика")
     db = db_session.create_session()
     result = db.query(Result).get(result_id)
     if not result or (not result.user == current_user and current_user.type_id != 1):
