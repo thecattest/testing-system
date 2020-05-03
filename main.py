@@ -530,6 +530,8 @@ def delete_user(user_id):
                                             "так как он является администратором одной или нескольких групп",
                                       link="/users",
                                       button="Вернуться")
+           if user.results != []:
+               user.results = []
            if user.groups != []:
                user.groups = []
         return redirect('/users')
