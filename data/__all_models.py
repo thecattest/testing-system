@@ -6,3 +6,4 @@ from .statistics import Result
 from .statistics_row import ResultRow
 from .groups import Group
 from .user_type import UserType
+from .notifications import Notification

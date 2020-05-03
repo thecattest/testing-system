@@ -23,6 +23,7 @@ class User(SqlAlchemyBase, UserMixin):
 
     results = orm.relation("Result", back_populates='user')
     user_type = orm.relation("UserType")
+    notifications = orm.relation("Notification", back_populates='user')
     created = orm.relation("User")
     tests = orm.relation("Test", back_populates='creator')
     created_groups = orm.relation("Group", back_populates='creator')
