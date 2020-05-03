@@ -625,7 +625,7 @@ def finish_test():
     st.is_finished = True
     st.end_date = datetime.datetime.now()
     db.commit()
-    return redirect("/statistics".format(st.test_id))
+    return redirect(f"/statistics/{st.test_id}".format(st.test_id))
 
 
 @app.route('/more')
