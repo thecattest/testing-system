@@ -206,7 +206,7 @@ def logout():
     return redirect("/")
 
 
-@app.route("/check")
+# @app.route("/check")
 @login_required
 def check():
     db = db_session.create_session()
@@ -214,7 +214,7 @@ def check():
     return "Ok"
 
 
-@app.route('/notify/<text>')
+# @app.route('/notify/<text>')
 def notify_users(text):
     db = db_session.create_session()
     users = db.query(User).all()
