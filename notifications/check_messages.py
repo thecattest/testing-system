@@ -7,7 +7,7 @@ class TokenError(BaseException):
         return "File with token not found"
 
 
-def check_updates(db):
+def check_updates(db, User):
     logger = logging.getLogger("Notifications_bot")
     logger.setLevel(logging.INFO)
 
@@ -17,33 +17,35 @@ def check_updates(db):
     logger.addHandler(fh)
 
     try:
-        from tg_token import TOKEN
+        from .tg_token import TOKEN
     except ImportError:
         print('Файл с токеном не найден')
         raise TokenError
     else:
-        updater = Updater(TOKEN)
+        updater = Updater(TOKEN, use_context=True)
         bot = updater.bot
+        bot.send_message(888848705, "bot")
         updates = bot.get_updates()
         for update in updates:
-            e = check_update(db, logger, update)
+            e = check_update(db, logger, User, update)
             if e:
                 bot.send_message(888848705, f"{type(e)}: {str(e)}")
 
 
-def check_update(db, logger, update):
+def check_update(db, logger, User, update):
     code = update.message.text.strip()
-    user = db.query(User).filter(User.code == code).first()
+    user = db.query(User).filter(User.secret_code == code).first()
     chat_id = update.message.chat.id
     if not user:
         logger.warning(f"Wrong code from {chat_id}")
         update.message.reply_text("Неверный код")
-    try:
-        user.chat_id = chat_id
-        db.commit()
-        update.message.reply_text(f"Аккаунт {user.nickname} привязан")
-        logger.info(f"Аккаунт {user.nickname} привязан к {chat_id}")
-    except Exception as e:
-        logger.error(f"{type(e)}: {str(e)}")
-        update.message.reply_text(f"Произошла ошибка")
-        return e
+    else:
+        try:
+            user.chat_id = chat_id
+            db.commit()
+            update.message.reply_text(f"Аккаунт {user.nickname} привязан")
+            logger.info(f"Аккаунт {user.nickname} привязан к {chat_id}")
+        except Exception as e:
+            logger.error(f"{type(e)}: {str(e)}")
+            update.message.reply_text(f"Произошла ошибка")
+            return e

@@ -210,7 +210,8 @@ def logout():
 @login_required
 def check():
     db = db_session.create_session()
-    check_messages.check_updates(db)
+    check_messages.check_updates(db, User)
+    return "Ok"
 
 
 @app.route("/")
