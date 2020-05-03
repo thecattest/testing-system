@@ -375,6 +375,7 @@ def create_user():
                 user.type_id = 2
             else:
                 user.type_id = 3
+            user.set_secret_code()
             db.add(user)
             db.commit()
             return redirect('/users')

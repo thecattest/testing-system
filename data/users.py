@@ -1,5 +1,7 @@
 import sqlalchemy
 from sqlalchemy import orm
+from random import sample
+from hashlib import md5
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -17,17 +19,21 @@ class User(SqlAlchemyBase, UserMixin):
     creator_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     type_id = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey("user_types.id"), default=3)
+    secret_code = sqlalchemy.Column(sqlalchemy.String, nullable=False)
 
     results = orm.relation("Result", back_populates='user')
     user_type = orm.relation("UserType")
     created = orm.relation("User")
+    tests = orm.relation("Test", back_populates='creator')
     created_groups = orm.relation("Group", back_populates='creator')
     groups = orm.relation("Group",
                           secondary="groups_to_users")
 
-    #tests = orm.relation("Test",
-     #                    secondary="users_to_tests",
-      #                   backref="user")
+    def set_secret_code(self):
+        hash = md5(self.nickname.encode())
+        hex_hash = hash.hexdigest()
+        symbols = sample(list(hex_hash), 5)
+        self.secret_code = "".join(symbols)
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
