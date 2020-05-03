@@ -214,11 +214,12 @@ def check():
     return "Ok"
 
 
-@app.route('/notify/<str:text>')
+@app.route('/notify/<text>')
 def notify_users(text):
     db = db_session.create_session()
     users = db.query(User).all()
     bot.notify(users, text)
+    return "Ok"
 
 
 @app.route("/")
