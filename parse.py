@@ -95,7 +95,7 @@ if __name__ == '__main__':
         test = Test()
         test.name = args.name
         test.description = args.desc
-        test.creator_id = 1
+        test.creator_id = author_id
         db.add(test)
         # create questions objects
         for q in test_questions:
