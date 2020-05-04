@@ -9,17 +9,13 @@ import sqlalchemy as sa
 
 
 if __name__ == '__main__':
-    try:
-        db_session.global_init(os.path.join(os.getcwd(), "db", "tests.sqlite"))
-    except sa.exc.OperationalError:
-        db_session.global_init("/home/ilyav/testing-system/db/tests.sqlite")
-
     parser = argparse.ArgumentParser(description="parse file with test")
-    parser.add_argument("file", help="path to file")
-    parser.add_argument("-s", "--save", action="store_true")
-    parser.add_argument("-n", "--name", help="test name")
-    parser.add_argument("-d", "--desc", help="test description")
-    parser.add_argument("-q", "--quiet", help="if provided, test object will not be printed", action="store_true")
+    parser.add_argument("file", help="path to file with test")
+    parser.add_argument("-s", "--save", help="save test", action="store_true")
+    parser.add_argument("-n", "--name", help="test name, required for saving")
+    parser.add_argument("-d", "--desc", help="test description, empty by default")
+    parser.add_argument("-a", "--author", help="test author id")
+    parser.add_argument("-q", "--quiet", help="do not print parsed", action="store_true")
 
     args = parser.parse_args()
 
@@ -72,27 +68,49 @@ if __name__ == '__main__':
         a = input('save test? y/n: ').lower().strip()
 
     if a == 'y':
+        # check test name
         if not args.name:
             print("Test name must be provided")
             exit(1)
+        # connect to db
+        try:
+            db_session.global_init(os.path.join(os.getcwd(), "db", "tests.sqlite"))
+        except sa.exc.OperationalError:
+            db_session.global_init("/home/ilyav/testing-system/db/tests.sqlite")
         db = db_session.create_session()
-
+        # check if author id is given and ask if not
+        if not args.author:
+            # get all users
+            authors = db.query(User).filter(User.type_id != 3).all()
+            # save their ids
+            ids = list(str(user.id) for user in authors)
+            # ask
+            print(*list(f"{user.nickname}\t{user.id}" for user in authors), sep="\n")
+            author_id = input("Author id: ")
+            while author_id not in ids:
+                author_id = input("Author id: ")
+        else:
+            author_id = args.author
+        # create test object
         test = Test()
         test.name = args.name
         test.description = args.desc
         test.creator_id = 1
         db.add(test)
-
+        # create questions objects
         for q in test_questions:
             question = Question()
             question.text = q["text"]
             question.test = test
             db.add(question)
+            # create answers objects
             for a in q["answers"]:
                 answer = Answer()
                 answer.text = a["text"]
                 answer.is_correct = a["is_correct"]
                 answer.question = question
                 db.add(answer)
+        # commit changes
         db.commit()
     print("test saved")
+    # you are great!
