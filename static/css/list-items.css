@@ -20,6 +20,17 @@
     background-color: var(--list-item-background-dark);
     color: var(--list-item-font);
 }
+
+.notification {
+    background-color: var(--list-item-notification-background);
+    border-radius: 5px;
+    margin: 10px 2px;
+}
+
+.notification a {
+    color: var(--list-item-notification-font);
+    text-decoration: underline;
+}
 /*
 .list-item-dark:hover,
 .list-group-item-action:active {

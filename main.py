@@ -160,6 +160,18 @@ def index():
         return redirect('/')
 
 
+@app.route('/notifications')
+@login_required
+def show_notifs():
+    db = db_session.create_session()
+    notifications = db.query(Notification).filter(Notification.user == current_user).all()
+    return render_template("notifications.html",
+                           title="Уведомления",
+                           notifications=notifications,
+                           other="/notifications",
+                           other_title="Уведомления")
+
+
 @app.route("/groups")
 @login_required
 def get_groups():

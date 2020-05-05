@@ -45,9 +45,11 @@
 
     --list-item-border: var(--c);
     --list-item-font: #fff;
+    --list-item-notification-font: #000;
     --list-item-dark-font-hover: #000;
     --list-item-background: var(--f);
     --list-item-background-dark: var(--e);
+    --list-item-notification-background: #bfbfbf;
     --list-item-background-dark-hover: var(--f);
     --list-item-profile-font-hover: #fff;
     --list-item-profile-background-hover: var(--f);
