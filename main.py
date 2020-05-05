@@ -186,9 +186,10 @@ def get_group(group_id):
             if current_user.type_id != 1 and current_user != group.creator:
                 edit = False
                 title = 'Просмотр'
-            if current_user.type_id != 3:
-                tests = db.query(Test).all()
-                tests = list(filter(lambda t: group not in t.groups, tests))
+            tests = db.query(Test).all()
+            tests = list(filter(lambda t: group not in t.groups, tests))
+            if current_user.type_id == 2:
+                tests = list(filter(lambda t: t.creator == current_user, tests))
             users = db.query(User).filter(User.type_id != 1,
                                           User != current_user).order_by(User.type_id).all()
             users = list(user for user in users if not user in group.users and user != group.creator)
