@@ -5,7 +5,7 @@
 <div class="row">
     <h2 class="header col-12">{{title}}</h2>
     <div class="row w-100 p-2">
-        {% if current_user.chat_id == '' %}
+        {% if not current_user.chat_id %}
         <div class="font-light col-12 col-md-10 col-lg-8 col-xl-6 mx-auto">
             <h4 class="m-2">Подключите ваш аккаунт телеграм для получения уведомлений.</h4>
             <p class="m-2">Отправьте в <a class="link" href="https://telegram.im/@tests_notifications_bot" target="_blank">чат</a> свой персональный код <b>{{current_user.secret_code}}</b> и нажмите кнопку</p>
