@@ -20,8 +20,9 @@
                         </b>
                     </p>
                 </div>
+                <h4 class="font-light">Пользователи</h4>
+                <h5 class="font-light">В группе</h5>
                 <ul class="list list-group pb-3">
-                    <h5>В группе</h5>
                     {% if group.users %}
                         {% for user in group.users %}
                         <li class="list-group-item py-2 d-flex justify-content-between align-items-center
@@ -42,13 +43,14 @@
                         <li class="list-group-item danger py-2">Пользователей ещё нет</li>
                     {% endif %}
                 </ul>
-                <hr>
-                <ul class="list list-group pb-3">
+                <h5 class="font-light">
                     {% if edit %}
-                    <h5>Добавить</h5>
+                        Добавить
                     {% else %}
-                    <h5>Не в группе</h5>
+                        Не в группе
                     {% endif %}
+                </h5>
+                <ul class="list list-group pb-3">
                     {% if users %}
                         {% for user in users %}
                         <li class="list-group-item py-2 d-flex justify-content-between align-items-center
@@ -69,12 +71,69 @@
                         <li class="list-group-item danger py-2">Все пользователи уже в группе</li>
                     {% endif %}
                 </ul>
+
+                <hr>
+                <h4 class="font-light">Тесты</h4>
+
+                <h5 class="font-light">Доступ разрешён</h5>
+                <ul class="list list-group pb-3">
+                    {% if group.tests %}
+                        {% for test in group.tests %}
+                        <li class="list-group-item py-2 d-flex justify-content-between align-items-center">
+                            <b>
+                                {% if test.creator == current_user or current_user.type_id == 1 %}
+                                <a href="/remove_test_from_group/{{test.id}}/{{group.id}}" title="Закрыть доступ" class="delete-link">
+                                    <i class="fas fa-minus-square"></i>
+                                </a>
+                                {% endif %}
+                                {% if current_user.type_id == 1 or current_user == test.creator %}
+                                <a class="font-dark" href="/test_to_groups/{{test.id}}">
+                                    {{test.name}}
+                                </a>
+                                {% else %}
+                                {{test.name}}
+                                {% endif %}
+                            </b>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item danger py-2">Нет доступа ни к одному тесту</li>
+                    {% endif %}
+                </ul>
+                <h5 class="font-light">
+                    Доступ запрещён
+                </h5>
+                <ul class="list list-group pb-3">
+                    {% if tests %}
+                        {% for test in tests %}
+                        <li class="list-group-item py-2 d-flex justify-content-between align-items-center">
+                            <b>
+                                {% if test.creator == current_user or current_user.type_id == 1 %}
+                                <a href="/add_test_to_group/{{test.id}}/{{group.id}}" title="Добавить" class="add-link">
+                                    <i class="fas fa-plus-square"></i>
+                                </a>
+                                {% endif %}
+                                {% if current_user.type_id == 1 or current_user == test.creator %}
+                                <a class="font-dark" href="/test_to_groups/{{test.id}}">
+                                    {{test.name}}
+                                </a>
+                                {% else %}
+                                {{test.name}}
+                                {% endif %}
+                            </b>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item danger py-2">У группы есть доступ ко всем тестам</li>
+                    {% endif %}
+                </ul>
+
                 <div class="text-center mb-3">
                     <a href="/groups" class="m-1 btn btn-primary"><i class="fas fa-chevron-left"></i> Вернуться</a>
                 </div>
             </div>
         </div>
-        {% elif code == 1%}
+        {% elif code == 1 %}
         <div class="alert alert-danger col-10 m-4">
             <h3>Пусто!</h3>
             <p>Похоже, такой группы нет</p>

@@ -20,8 +20,8 @@
                         </b>
                     </p>
                 </div>
+                <h5 class="font-light">Доступ разрешён</h5>
                 <ul class="list list-group pb-3">
-                    <h5>Доступ разрешён</h5>
                     {% if test.groups %}
                         {% for group in test.groups %}
                         <li class="list-group-item py-2 d-flex justify-content-between align-items-center">
@@ -31,7 +31,13 @@
                                     <i class="fas fa-minus-square"></i>
                                 </a>
                                 {% endif %}
+                                {% if current_user.type_id != 3 %}
+                                <a class="font-dark" href="/groups/{{group.id}}">
+                                    {{group.name}}
+                                </a>
+                                {% else %}
                                 {{group.name}}
+                                {% endif %}
                             </b>
                         </li>
                         {% endfor %}
@@ -39,13 +45,14 @@
                         <li class="list-group-item danger py-2">Ни у одной группы нет доступа</li>
                     {% endif %}
                 </ul>
-                <hr>
-                <ul class="list list-group pb-3">
+                <h5 class="font-light">
                     {% if edit %}
-                    <h5>Разрешить доступ</h5>
+                        Разрешить доступ
                     {% else %}
-                    <h5>Доступ запрещён</h5>
+                        Доступ запрещён
                     {% endif %}
+                </h5>
+                <ul class="list list-group pb-3">
                     {% if groups %}
                         {% for group in groups %}
                         <li class="list-group-item py-2 d-flex justify-content-between align-items-center">
@@ -55,7 +62,13 @@
                                     <i class="fas fa-plus-square"></i>
                                 </a>
                                 {% endif %}
+                                {% if current_user.type_id != 3 %}
+                                <a class="font-dark" href="/groups/{{group.id}}">
+                                    {{group.name}}
+                                </a>
+                                {% else %}
                                 {{group.name}}
+                                {% endif %}
                             </b>
                         </li>
                         {% endfor %}

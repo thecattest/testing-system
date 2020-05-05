@@ -27,7 +27,7 @@
                             href="/user_statistics/{{user.id}}">
                             {{user.nickname}}
                         </a>
-                        {% if user in current_user.created or current_user.type_id == 1 %}
+                        {% if user.type_id != 1 and (user in current_user.created or current_user.type_id == 1) %}
                             <a href="/delete_user/{{user.id}}" class="delete-link" title="Удалить"><i class="fas fa-trash-alt"></i></a>
                         {% endif %}
                     {% else %}

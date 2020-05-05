@@ -149,49 +149,60 @@ def index():
 @app.route("/groups")
 @login_required
 def get_groups():
-    code = 0
-    db = db_session.create_session()
-    groups = db.query(Group).all()
-    if current_user.type_id == 3:
-        groups = list(group for group in groups if current_user in group.users)
-    if not groups:
-        code = 1
-    return render_template("all_groups.html",
-                           title='Группы',
-                           groups=groups,
-                           other="/groups",
-                           other_title='Группы',
-                           code=code)
+    try:
+        code = 0
+        db = db_session.create_session()
+        groups = db.query(Group).all()
+        if current_user.type_id == 3:
+            groups = list(group for group in groups if current_user in group.users)
+        if not groups:
+            code = 1
+        return render_template("all_groups.html",
+                               title='Группы',
+                               groups=groups,
+                               other="/groups",
+                               other_title='Группы',
+                               code=code)
+    except sa.orm.exc.DetachedInstanceError:
+        return redirect("/groups")
 
 
 @app.route("/groups/<int:group_id>")
 @login_required
 def get_group(group_id):
-    code = 0
-    edit = True
-    title = 'Редактирование'
-    db = db_session.create_session()
-    group = db.query(Group).get(group_id)
-    users = []
-    if not group:
-        code = 1
-    elif current_user.type_id == 3:
-        code = 2
-    else:
-        if current_user.type_id != 1 and current_user != group.creator:
-            edit = False
-            title = 'Просмотр'
-        users = db.query(User).filter(User.type_id != 1,
-                                      User != current_user).order_by(User.type_id).all()
-        users = list(user for user in users if not user in group.users and user != group.creator)
-    return render_template("group.html",
-                           title=title,
-                           group=group,
-                           other="/groups",
-                           other_title='Группы',
-                           users=users,
-                           edit=edit,
-                           code=code)
+    try:
+        code = 0
+        edit = True
+        title = 'Редактирование'
+        db = db_session.create_session()
+        group = db.query(Group).get(group_id)
+        tests = []
+        users = []
+        if not group:
+            code = 1
+        elif current_user.type_id == 3:
+            code = 2
+        else:
+            if current_user.type_id != 1 and current_user != group.creator:
+                edit = False
+                title = 'Просмотр'
+            if current_user.type_id != 3:
+                tests = db.query(Test).all()
+                tests = list(filter(lambda t: group not in t.groups, tests))
+            users = db.query(User).filter(User.type_id != 1,
+                                          User != current_user).order_by(User.type_id).all()
+            users = list(user for user in users if not user in group.users and user != group.creator)
+        return render_template("group.html",
+                               title=title,
+                               group=group,
+                               other="/groups",
+                               other_title='Группы',
+                               users=users,
+                               tests=tests,
+                               edit=edit,
+                               code=code)
+    except sa.orm.exc.DetachedInstanceError:
+        return redirect(f"/groups/{group_id}")
 
 
 @app.route('/test_to_groups/<int:test_id>')
@@ -252,6 +263,20 @@ def add_group(test_id, group_id):
 def remove_group(test_id, group_id):
     remove_group_from_test(group_id, test_id)
     return redirect(f'/test_to_groups/{test_id}')
+
+
+@app.route("/add_test_to_group/<int:test_id>/<int:group_id>")
+@login_required
+def add_test(test_id, group_id):
+    add_group_to_test(group_id, test_id)
+    return redirect(f'/groups/{group_id}')
+
+
+@app.route("/remove_test_from_group/<int:test_id>/<int:group_id>")
+@login_required
+def remove_test(test_id, group_id):
+    remove_group_from_test(group_id, test_id)
+    return redirect(f'/groups/{group_id}')
 
 
 @app.route('/remove_user/<int:user_id>/<int:group_id>')
