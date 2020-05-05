@@ -37,6 +37,19 @@ def del_test(test_id):
     db.commit()
 
 
+def save_and_notify(user, text, link=None):
+    db = db_session.create_session()
+    notif = Notification()
+    notif.user_id = user.id
+    notif.text = text
+    notif.link = link
+    db.add(notif)
+    db.commit()
+    if link:
+        text += f'\nПосмотреть: {link}'
+    bot.notify(user, text)
+
+
 def main():
     # del_test(3)
     port = int(os.environ.get("PORT", 8000))
@@ -79,11 +92,9 @@ def add_group_to_test(group_id, test_id):
     if group and test and (current_user.type_id == 1 or current_user == test.creator):
         test.groups.append(group)
         for user in group.users:
-            notif = Notification()
-            notif.user_id = user.id
-            notif.text = f"Вам открыли доступ к тесту {test.name}"
-            notif.link = "/"
-            db.add(notif)
+            text = f"Вам открыли доступ к тесту {test.name}"
+            link = "/"
+            save_and_notify(user, text, link)
         db.commit()
 
 
@@ -94,11 +105,9 @@ def remove_group_from_test(group_id, test_id):
     if group and test and group in test.groups and (current_user.type_id == 1 or current_user == test.creator):
         test.groups.remove(group)
         for user in group.users:
-            notif = Notification()
-            notif.user_id = user.id
-            notif.text = f"У вас больше нет доступа к тесту {test.name}"
-            notif.link = "/"
-            db.add(notif)
+            text = f"У вас больше нет доступа к тесту {test.name}"
+            link = "/"
+            save_and_notify(user, text, link)
         db.commit()
 
 
@@ -130,14 +139,6 @@ def logout():
 def check():
     db = db_session.create_session()
     bot.check_updates(db, User)
-    return "Ok"
-
-
-# @app.route('/notify/<text>')
-def notify_users(text):
-    db = db_session.create_session()
-    users = db.query(User).all()
-    bot.notify(users, text)
     return "Ok"
 
 
@@ -314,11 +315,9 @@ def remove_user(user_id, group_id):
     group = db.query(Group).get(group_id)
     if user and group and user in group.users and (current_user.type_id == 1 or group.creator == current_user):
         group.users.remove(user)
-        notif = Notification()
-        notif.user_id = user.id
-        notif.text = f"Вас удалили из группы {group.name} ({group.creator.nickname})"
-        notif.link = "/groups"
-        db.add(notif)
+        text = f"Вас удалили из группы {group.name} ({group.creator.nickname})"
+        link = "/groups"
+        save_and_notify(user, text, link)
         db.commit()
     return redirect(f'/groups/{group_id}')
 
@@ -333,11 +332,9 @@ def add_user(user_id, group_id):
         if not user:
             return
         group.users.append(user)
-        notif = Notification()
-        notif.user_id = user.id
-        notif.text = f"Вас добавили в группу {group.name} ({group.creator.nickname})"
-        notif.link = "/groups"
-        db.add(notif)
+        text = f"Вас добавили в группу {group.name} ({group.creator.nickname})"
+        link = "/groups"
+        save_and_notify(user, text, link)
         db.commit()
     return redirect(f'/groups/{group_id}')
 

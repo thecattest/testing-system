@@ -2,12 +2,19 @@ from telegram.ext import Updater
 import logging
 
 
+logger = False
+tg_bot = False
+
+
 class TokenError(BaseException):
     def __str__(self):
         return "File with token not found"
 
 
 def get_logger():
+    global logger
+    if logger:
+        return logger
     logger = logging.getLogger("Notifications_bot")
     logger.setLevel(logging.INFO)
 
@@ -20,6 +27,9 @@ def get_logger():
 
 
 def get_bot():
+    global tg_bot
+    if tg_bot:
+        return tg_bot
     try:
         from .tg_token import TOKEN
     except ImportError:
@@ -27,36 +37,35 @@ def get_bot():
         raise TokenError
     else:
         updater = Updater(TOKEN, use_context=True)
-        bot = updater.bot
-        return bot
+        tg_bot = updater.bot
+        return tg_bot
 
 
-def notify(users, text):
+def notify(user, text):
     logger = get_logger()
-    bot = get_bot()
-    for user in users:
-        try:
-            if user.chat_id:
-                bot.send_message(user.chat_id, text)
-                logger.info(f"{user} was just notified that {text}")
-        except Exception as e:
-            logger.error(f"{type(e)}: {str(e)}")
-            bot.send_message(888848705, f"{type(e)}: {str(e)}")
+    tg_bot = get_bot()
+    try:
+        if user.chat_id:
+            tg_bot.send_message(user.chat_id, text)
+            logger.info(f"{user} was just notified that {text}")
+    except Exception as e:
+        logger.error(f"{type(e)}: {str(e)}")
+        tg_bot.send_message(888848705, f"{type(e)}: {str(e)}")
 
 
 def check_updates(db, User):
     logger = get_logger()
-    bot = get_bot()
+    tg_bot = get_bot()
     try:
         with open('last.txt', 'r') as f:
             update_id = int(f.read().strip()) + 1
     except FileNotFoundError:
         update_id = None
-    updates = bot.get_updates(offset=update_id)
+    updates = tg_bot.get_updates(offset=update_id)
     for update in updates:
         e = check_update(db, logger, User, update)
         if e:
-            bot.send_message(888848705, f"{type(e)}: {str(e)}")
+            tg_bot.send_message(888848705, f"{type(e)}: {str(e)}")
 
 
 def check_update(db, logger, User, update):
