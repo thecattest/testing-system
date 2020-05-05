@@ -28,7 +28,7 @@
 }
 
 .notification a {
-    color: var(--list-item-notification-font);
+    color: var(--list-item-notification-font)!important;
     text-decoration: underline;
 }
 /*

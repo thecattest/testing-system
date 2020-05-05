@@ -50,3 +50,15 @@
 2020-05-05 22:49:42,132 - Notifications_bot.INFO: marina ������� �������
 2020-05-05 22:52:38,460 - Notifications_bot.INFO: marina ������� �������
 2020-05-05 22:54:49,813 - Notifications_bot.INFO: marina ������� �������
+2020-05-05 20:01:59,109 - Notifications_bot.WARNING: Wrong code from 888848705
+2020-05-05 20:01:59,410 - Notifications_bot.INFO: Аккаунт student1 привязан к 888848705
+2020-05-05 20:12:06,247 - Notifications_bot.INFO: student1 was just notified that Вас удалили из группы Class A (teacher1)
+Посмотреть: ilyav.pythonanywhere.com/groups
+2020-05-05 20:12:12,330 - Notifications_bot.INFO: student1 was just notified that Вас добавили в группу Class A (teacher1)
+Посмотреть: ilyav.pythonanywhere.com/groups
+2020-05-05 20:12:25,724 - Notifications_bot.INFO: student1 was just notified that Вам открыли доступ к тесту Arithmetic 4
+Посмотреть: ilyav.pythonanywhere.com/
+2020-05-05 20:12:39,941 - Notifications_bot.INFO: student1 was just notified that У вас больше нет доступа к тесту Arithmetic 4
+Посмотреть: ilyav.pythonanywhere.com/
+2020-05-05 20:12:43,710 - Notifications_bot.INFO: student1 was just notified that У вас больше нет доступа к тесту Arithmetic 3
+Посмотреть: ilyav.pythonanywhere.com/

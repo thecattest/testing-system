@@ -4,7 +4,7 @@
 
 <div class="row">
     <h2 class="header col-12">{{title}}</h2>
-    <div class="row w-100 p-2">
+    <div class="col-12 row mx-auto">
         {% if not current_user.chat_id %}
         <div class="font-light col-12 col-md-10 col-lg-8 col-xl-6 mx-auto">
             <h4 class="m-2">Подключите ваш аккаунт телеграм для получения уведомлений.</h4>
@@ -16,9 +16,9 @@
         {% endif %}
     </div>
     {% if notifications %}
-    <div class="row">
-        <div class="col-12 col-md-10 col-lg-8 col-xl-6 mx-auto">
-            <ul class="list list-group pb-3">
+    <div class="col-12 row mx-auto">
+        <div class="col-12 col-md-10 col-lg-8 col-xl-6 p-2">
+            <ul class="list list-group pb-3 mx-auto">
                 {% for notif in notifications %}
                 <li class="list-group-item notification py-2 d-flex justify-content-between align-items-center">
                     <b>
