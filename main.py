@@ -37,8 +37,7 @@ def del_test(test_id):
     db.commit()
 
 
-def save_and_notify(user, text, link=None):
-    db = db_session.create_session()
+def save_and_notify(db, user, text, link=None):
     notif = Notification()
     notif.user_id = user.id
     notif.text = text
@@ -46,7 +45,7 @@ def save_and_notify(user, text, link=None):
     db.add(notif)
     db.commit()
     if link:
-        text += f'\nПосмотреть: {link}'
+        text += f'\nПосмотреть: ilyav.pythonanywhere.com{link}'
     bot.notify(user, text)
 
 
@@ -94,7 +93,7 @@ def add_group_to_test(group_id, test_id):
         for user in group.users:
             text = f"Вам открыли доступ к тесту {test.name}"
             link = "/"
-            save_and_notify(user, text, link)
+            save_and_notify(db, user, text, link)
         db.commit()
 
 
@@ -107,7 +106,7 @@ def remove_group_from_test(group_id, test_id):
         for user in group.users:
             text = f"У вас больше нет доступа к тесту {test.name}"
             link = "/"
-            save_and_notify(user, text, link)
+            save_and_notify(db, user, text, link)
         db.commit()
 
 
@@ -134,7 +133,7 @@ def logout():
     return redirect("/")
 
 
-# @app.route("/check")
+@app.route("/check")
 @login_required
 def check():
     db = db_session.create_session()
@@ -317,7 +316,7 @@ def remove_user(user_id, group_id):
         group.users.remove(user)
         text = f"Вас удалили из группы {group.name} ({group.creator.nickname})"
         link = "/groups"
-        save_and_notify(user, text, link)
+        save_and_notify(db, user, text, link)
         db.commit()
     return redirect(f'/groups/{group_id}')
 
@@ -334,7 +333,7 @@ def add_user(user_id, group_id):
         group.users.append(user)
         text = f"Вас добавили в группу {group.name} ({group.creator.nickname})"
         link = "/groups"
-        save_and_notify(user, text, link)
+        save_and_notify(db, user, text, link)
         db.commit()
     return redirect(f'/groups/{group_id}')
 

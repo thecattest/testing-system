@@ -31,3 +31,11 @@
 2020-05-03 18:04:28,329 - Notifications_bot.INFO: <User 2 teacher1> was just notified that hello
 2020-05-03 18:04:28,329 - Notifications_bot.INFO: <User 2 teacher1> was just notified that hello
 2020-05-03 18:04:28,329 - Notifications_bot.INFO: <User 2 teacher1> was just notified that hello
+2020-05-05 18:49:30,420 - Notifications_bot.INFO: Аккаунт student1 привязан к 888848705
+2020-05-05 18:49:30,439 - Notifications_bot.WARNING: Wrong code from 888848705
+2020-05-05 18:52:41,537 - Notifications_bot.INFO: <User 4 student1> was just notified that Вас удалили из группы Class A (teacher1)
+Посмотреть: /groups
+2020-05-05 18:53:31,541 - Notifications_bot.INFO: <User 4 student1> was just notified that Вас добавили в группу Class A (teacher1)
+Посмотреть: ilyav.pythonanywhere.com//groups
+2020-05-05 18:54:03,483 - Notifications_bot.INFO: <User 4 student1> was just notified that Вам открыли доступ к тесту Arithmetic 3
+Посмотреть: ilyav.pythonanywhere.com/
