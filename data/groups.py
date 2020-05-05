@@ -23,10 +23,10 @@ class Group(SqlAlchemyBase):
 
     creator = orm.relation("User")
     users = orm.relation("User",
-                          secondary="groups_to_users")
+                         secondary="groups_to_users")
     tests = orm.relation("Test",
-                          secondary="groups_to_tests",
-                          backref="group")
+                         secondary="groups_to_tests",
+                         backref="group")
 
     def __repr__(self):
         return f"<Group {self.id} {self.name} {self.creator.nickname}>"

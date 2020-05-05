@@ -4,6 +4,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from data import db_session
 import sqlalchemy as sa
 import os
+
 try:
     db_session.global_init(os.path.join(os.getcwd(), "db", "tests.sqlite"))
 except sa.exc.OperationalError:
@@ -16,7 +17,6 @@ from notifications import bot
 
 import datetime
 import random
-
 
 app = Flask(__name__)
 login_manager = LoginManager()
@@ -41,6 +41,8 @@ def main():
     # del_test(3)
     port = int(os.environ.get("PORT", 8000))
     app.run(host='0.0.0.0', port=port)
+    # from waitress import serve
+    # serve(app, host="0.0.0.0", port=8000)
 
 
 @login_manager.user_loader
@@ -76,6 +78,12 @@ def add_group_to_test(group_id, test_id):
     test = db.query(Test).get(test_id)
     if group and test and (current_user.type_id == 1 or current_user == test.creator):
         test.groups.append(group)
+        for user in group.users:
+            notif = Notification()
+            notif.user_id = user.id
+            notif.text = f"Вам открыли доступ к тесту {test.name}"
+            notif.link = "/"
+            db.add(notif)
         db.commit()
 
 
@@ -85,6 +93,12 @@ def remove_group_from_test(group_id, test_id):
     test = db.query(Test).get(test_id)
     if group and test and group in test.groups and (current_user.type_id == 1 or current_user == test.creator):
         test.groups.remove(group)
+        for user in group.users:
+            notif = Notification()
+            notif.user_id = user.id
+            notif.text = f"У вас больше нет доступа к тесту {test.name}"
+            notif.link = "/"
+            db.add(notif)
         db.commit()
 
 
@@ -288,6 +302,11 @@ def remove_user(user_id, group_id):
     group = db.query(Group).get(group_id)
     if user and group and user in group.users and (current_user.type_id == 1 or group.creator == current_user):
         group.users.remove(user)
+        notif = Notification()
+        notif.user_id = user.id
+        notif.text = f"Вас удалили из группы {group.name} ({group.creator.nickname})"
+        notif.link = "/groups"
+        db.add(notif)
         db.commit()
     return redirect(f'/groups/{group_id}')
 
@@ -302,6 +321,11 @@ def add_user(user_id, group_id):
         if not user:
             return
         group.users.append(user)
+        notif = Notification()
+        notif.user_id = user.id
+        notif.text = f"Вас добавили в группу {group.name} ({group.creator.nickname})"
+        notif.link = "/groups"
+        db.add(notif)
         db.commit()
     return redirect(f'/groups/{group_id}')
 
@@ -473,19 +497,19 @@ def delete_user(user_id):
         db = db_session.create_session()
         user = db.query(User).get(user_id)
         if user and user in current_user.created or current_user.type_id == 1:
-           if user.created_groups == []:
+            if not user.created_groups:
                 db.delete(user)
                 db.commit()
-           else:
-               return render_template("error.html",
-                                      text=f"Вы не можете удалить пользователя {user.nickname}, "
+            else:
+                return render_template("error.html",
+                                       text=f"Вы не можете удалить пользователя {user.nickname}, "
                                             "так как он является администратором одной или нескольких групп",
-                                      link="/users",
-                                      button="Вернуться")
-           if user.results != []:
-               user.results = []
-           if user.groups != []:
-               user.groups = []
+                                       link="/users",
+                                       button="Вернуться")
+            if user.results:
+                user.results = []
+            if user.groups:
+                user.groups = []
         return redirect('/users')
     except sa.orm.exc.DetachedInstanceError:
         return redirect(f'/delete_user/{user_id}')
@@ -563,7 +587,7 @@ def save_answer():
     db = db_session.create_session()
     result = db.query(Result).filter(Result.is_finished == False).first()
     question = db.query(ResultRow).filter(ResultRow.result == result,
-                                              ResultRow.q_id == q_id).first()
+                                          ResultRow.q_id == q_id).first()
     if not question:
         return redirect('/test')
     question.answer = answer

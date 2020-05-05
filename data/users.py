@@ -32,8 +32,8 @@ class User(SqlAlchemyBase, UserMixin):
                           secondary="groups_to_users")
 
     def set_secret_code(self):
-        hash = md5(self.nickname.encode())
-        hex_hash = hash.hexdigest()
+        n_hash = md5(self.nickname.encode())
+        hex_hash = n_hash.hexdigest()
         symbols = sample(list(hex_hash), 5)
         self.secret_code = "".join(symbols)
 
