@@ -10,25 +10,47 @@
         <div class="item" id="{{result.id}}">
             <div class="row mb-2 py-3 result-header">
                 <div class="col-12 text-wrap">
-                    <h4>
-                        {{result.test.name}} #{{result.id}}
-                        <!--
-                        {% if current_user.type_id == 3 %}
-                        <button type="button" class="close">
-                            <a href="/delete_result/{{result.id}}" title="Удалить" class="close-btn text-danger">&times;</a>
-                        </button>
-                        {% elif result.is_deleted %}
-                        <a class="text-danger" onclick="alert('Пользователь удалил этот результат из списка')" title="Пользователь удалил этот результат из списка"><i class="fas fa-trash-alt"></i></a>
-                        {% endif %}
-                        -->
-                    </h4>
+                    <a class="font-light" href="/statistics/{{result.test_id}}">
+                        <h4>
+                            {{result.test.name}} #{{result.id}}
+                            <!--
+                            {% if current_user.type_id == 3 %}
+                            <button type="button" class="close">
+                                <a href="/delete_result/{{result.id}}" title="Удалить" class="close-btn text-danger">&times;</a>
+                            </button>
+                            {% elif result.is_deleted %}
+                            <a class="text-danger" onclick="alert('Пользователь удалил этот результат из списка')" title="Пользователь удалил этот результат из списка"><i class="fas fa-trash-alt"></i></a>
+                            {% endif %}
+                            -->
+                        </h4>
+                    </a>
                     <a href="#{{result.id}}" class="toggle-info font-light" target-id="{{result.id}}">
                         [<span class="spoiler">Нажмите, чтобы раскрыть +</span>]
                     </a>
                     <hr>
                 </div>
                 <div class="col-8 col-sm-9 text-wrap">
-                    <h6>{% if result.user.nickname %}{{result.user.nickname}}{% else %}DELETED{% endif %}</h6>
+                    {% if result.user and
+                    (current_user == result.user or result.user in current_user.created or current_user.type_id == 1) %}
+                    <a class="font-light"
+                        href="/user_statistics/{{result.user.id}}">
+                        <h6>
+                            {% if result.user.nickname %}
+                                {{result.user.nickname}} {% if current_user == result.user %}(Вы){% endif %}
+                            {% else %}
+                                DELETED
+                            {% endif %}
+                        </h6>
+                    </a>
+                    {% else %}
+                        <h6>
+                            {% if result.user.nickname %}
+                                {{result.user.nickname}}
+                            {% else %}
+                                DELETED
+                            {% endif %}
+                        </h6>
+                    {% endif %}
                 </div>
                 <div class="col-4 col-sm-3 text-wrap">
                     <h6>{{result.finish_date}}</h6>

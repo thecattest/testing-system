@@ -37,114 +37,6 @@ def del_test(test_id):
     db.commit()
 
 
-def fill_db():
-    session = db_session.create_session()
-
-    test = Test()
-    test.name = "Arithmetic 1"
-    test.description = "The simplest questions for testing"
-    session.add(test)
-
-    questions = [
-        {
-            "text": "2 + 2",
-            "answers": [
-                {"text": "14", "is_correct": False},
-                {"text": "8", "is_correct": False},
-                {"text": "4", "is_correct": True},
-                {"text": "16 ", "is_correct": False}
-            ]
-        },
-        {
-            "text": "14 + 20",
-            "answers": [
-                {"text": "32", "is_correct": False},
-                {"text": "34", "is_correct": True},
-                {"text": "24", "is_correct": False},
-                {"text": "16 ", "is_correct": False}
-            ]
-        },
-        {
-            "text": "10 - 8",
-            "answers": [
-                {"text": "2", "is_correct": True},
-                {"text": "8", "is_correct": False},
-                {"text": "4", "is_correct": False},
-                {"text": "16 ", "is_correct": False}
-            ]
-        }
-    ]
-
-    for q in questions:
-        question = Question()
-        question.text = q["text"]
-        question.test = test
-        session.add(question)
-        for a in q["answers"]:
-            answer = Answer()
-            answer.text = a["text"]
-            answer.is_correct = a["is_correct"]
-            answer.question = question
-            session.add(answer)
-
-    test = Test()
-    test.name = "Arithmetic 2"
-    test.description = "A bit harder questions for testing"
-    session.add(test)
-
-    questions = [
-        {
-            "text": "14 - 5",
-            "answers": [
-                {"text": "14", "is_correct": False},
-                {"text": "8", "is_correct": False},
-                {"text": "11", "is_correct": True},
-                {"text": "16 ", "is_correct": False}
-            ]
-        },
-        {
-            "text": "23 + 0",
-            "answers": [
-                {"text": "32", "is_correct": False},
-                {"text": "23", "is_correct": True},
-                {"text": "24", "is_correct": False},
-                {"text": "16 ", "is_correct": False}
-            ]
-        },
-        {
-            "text": "5 + 7",
-            "answers": [
-                {"text": "12", "is_correct": True},
-                {"text": "8", "is_correct": False},
-                {"text": "4", "is_correct": False},
-                {"text": "16 ", "is_correct": False}
-            ]
-        }
-    ]
-
-    for q in questions:
-        question = Question()
-        question.text = q["text"]
-        question.test = test
-        session.add(question)
-        for a in q["answers"]:
-            answer = Answer()
-            answer.text = a["text"]
-            answer.is_correct = a["is_correct"]
-            answer.question = question
-            session.add(answer)
-
-    session.commit()
-
-
-def add_type(name):
-    session = db_session.create_session()
-    type = UserType()
-    type.name = name
-    session.add(type)
-    session.commit()
-
-
 def main():
     # del_test(3)
     port = int(os.environ.get("PORT", 8000))
@@ -173,7 +65,7 @@ def is_allowed(test, user):
 
 def test_started():
     db = db_session.create_session()
-    if db.query(Result).filter(Result.is_finished == False, Result.user == current_user).first():
+    if db.query(Result).filter(~Result.is_finished, Result.user == current_user).first():
         return True
     return False
 
@@ -201,8 +93,8 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         session = db_session.create_session()
-        user = session.query(User).filter(User.nickname == form.nickname.data.strip()).first()
-        if user and user.check_password(form.password.data):
+        user = session.query(User).filter(User.nickname == form.nickname.data.strip().lower()).first()
+        if user and user.check_password(form.password.data.strip()):
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
         return render_template("login.html",
@@ -399,9 +291,9 @@ def create_user():
         if form.validate_on_submit():
             db = db_session.create_session()
             user = User()
-            user.nickname = form.nickname.data
+            user.nickname = form.nickname.data.strip().lower()
             user.creator_id = current_user.id
-            user.set_password(form.password.data)
+            user.set_password(form.password.data.strip())
             if form.is_teacher.data:
                 user.type_id = 2
             else:
@@ -429,7 +321,7 @@ def get_test_statistics(test_id):
         if not test:
             code = 1
             return show_statistics(results, title=f"Такого теста нет", code=code)
-        elif current_user.type_id == 3:
+        elif test.creator != current_user:
             results = db.query(Result).filter(Result.test_id == test_id,
                                               Result.user_id == current_user.id,
                                               ~Result.is_deleted).all()
@@ -440,13 +332,15 @@ def get_test_statistics(test_id):
         results.reverse()
         return show_statistics(results, title=f"История по {test.name}", code=code)
     except sa.orm.exc.DetachedInstanceError:
-        return show_statistics(results, title=f"История по {test.name}", code=code)
+        return redirect(f"/statistics/{test_id}")
 
 
 @app.route("/user_statistics/<int:user_id>")
 @login_required
 def get_user_statistics(user_id):
     try:
+        if user_id == current_user.id:
+            return redirect("/statistics")
         code = 0
         results = []
         nickname = ""
@@ -454,8 +348,8 @@ def get_user_statistics(user_id):
         user = db.query(User).get(user_id)
         if not user:
             code = 3
-        elif (current_user.type_id == 3 and user_id != current_user.id) or \
-                (current_user.type_id == 2 and not user in current_user.created):
+        elif (current_user.type_id == 3 and user != current_user) or \
+                (current_user.type_id == 2 and user not in current_user.created and current_user != user):
             code = 2
         else:
             nickname = user.nickname
@@ -466,7 +360,7 @@ def get_user_statistics(user_id):
         results.reverse()
         return show_statistics(results, title=f"История {nickname}", code=code)
     except sa.orm.exc.DetachedInstanceError:
-        return show_statistics(results, title=f"История по {test.name}")
+        return redirect(f"/user_statistics/{user_id}")
 
 
 @app.route("/statistics")
@@ -476,9 +370,9 @@ def get_statistics():
         db = db_session.create_session()
         results = db.query(Result).filter(Result.user_id == current_user.id, ~Result.is_deleted).all()
         results.reverse()
-        return show_statistics(results, title="Ваша история")
+        return show_statistics(results, title="Моя история")
     except sa.orm.exc.DetachedInstanceError:
-        return show_statistics(results, title=f"История по {test.name}")
+        return redirect("/statistics")
 
 
 def show_statistics(results, title, code=0):
