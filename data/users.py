@@ -20,7 +20,7 @@ class User(SqlAlchemyBase, UserMixin):
     type_id = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey("user_types.id"), default=3)
     secret_code = sqlalchemy.Column(sqlalchemy.String, nullable=False)
-    chat_id = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    chat_id = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default='')
 
     results = orm.relation("Result", back_populates='user')
     user_type = orm.relation("UserType")

@@ -4,25 +4,38 @@
 
 <div class="row">
     <h2 class="header col-12">{{title}}</h2>
-    {% if notifications %}
-    <div class="col-12 col-md-10 col-lg-8 col-xl-6 mx-auto">
-        <ul class="list list-group pb-3">
-            {% for notif in notifications %}
-            <li class="list-group-item notification py-2 d-flex justify-content-between align-items-center">
-                <b>
-                    <a href="{{notif.link}}">
-                        {{notif.text}}
-                    </a>
-                </b>
-                {% if notif.link %}
-                {% endif %}
-            </li>
-            {% endfor %}
-        </ul>
+    <div class="row w-100 p-2">
+        {% if current_user.chat_id == '' %}
+        <div class="font-light col-12 col-md-10 col-lg-8 col-xl-6 mx-auto">
+            <h4 class="m-2">Подключите ваш аккаунт телеграм для получения уведомлений.</h4>
+            <p class="m-2">Отправьте в <a href="https://telegram.im/@tests_notifications_bot" target="_blank">чат</a> свой персональный код <b>{{current_user.secret_code}}</b> и нажмите кнопку</p>
+            <a class="btn btn-success mx-auto my-3" href="/check">Привязать аккаунт</a>
+        </div>
+        {% else %}
+        <p class="font-light mx-3 mt-1 mb-2">Аккаунт привязан.</p>
+        {% endif %}
     </div>
-    {% else %}
-    <div class="alert alert-primary col-12 col-md-10 col-lg-8 col-xl-6 mx-auto">
-        <h3>Уведомлений нет</h3>
+    {% if notifications %}
+    <div class="row">
+        <div class="col-12 col-md-10 col-lg-8 col-xl-6 mx-auto">
+            <ul class="list list-group pb-3">
+                {% for notif in notifications %}
+                <li class="list-group-item notification py-2 d-flex justify-content-between align-items-center">
+                    <b>
+                        <a href="{{notif.link}}">
+                            {{notif.text}}
+                        </a>
+                    </b>
+                    {% if notif.link %}
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <div class="alert alert-primary col-12 col-md-10 col-lg-8 col-xl-6 mx-auto">
+            <h3>Уведомлений нет</h3>
+        </div>
     </div>
     {% endif %}
 </div>

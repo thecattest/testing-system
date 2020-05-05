@@ -138,7 +138,7 @@ def logout():
 def check():
     db = db_session.create_session()
     bot.check_updates(db, User)
-    return "Ok"
+    return redirect('/notifications')
 
 
 @app.route("/")
