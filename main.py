@@ -145,7 +145,8 @@ def check():
 @login_required
 def disconnect():
     db = db_session.create_session()
-    bot.disconnect(db, current_user)
+    user = db.query(User).filter(User.id == current_user.id).first()
+    bot.disconnect(db, user)
     return redirect('/notifications')
 
 

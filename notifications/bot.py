@@ -57,7 +57,7 @@ def disconnect(db, user):
     logger = get_logger()
     tg_bot = get_bot()
     chat_id = user.chat_id
-    user.chat_id = ' '
+    user.chat_id = 0
     db.commit()
     tg_bot.send_message(chat_id, f"Аккаунт {user.nickname} успешно отвязан. Вы больше не будете получать уведомления")
     logger.info(f"{user.nickname} отвязал аккаунт")
