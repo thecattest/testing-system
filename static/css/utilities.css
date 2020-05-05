@@ -19,6 +19,11 @@ body {
     cursor: pointer;
 }
 
+.link {
+    color: var(--link-font);
+    text-decoration: underline;
+}
+
 .font-light{
     color: var(--font-light)!important;
 }

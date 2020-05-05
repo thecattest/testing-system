@@ -141,6 +141,14 @@ def check():
     return redirect('/notifications')
 
 
+@app.route('/disconnect')
+@login_required
+def disconnect():
+    db = db_session.create_session()
+    bot.disconnect(db, current_user)
+    return redirect('/notifications')
+
+
 @app.route("/")
 @app.route("/index")
 @app.route("/all_tests")

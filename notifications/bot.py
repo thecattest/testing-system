@@ -47,10 +47,20 @@ def notify(user, text):
     try:
         if user.chat_id:
             tg_bot.send_message(user.chat_id, text)
-            logger.info(f"{user} was just notified that {text}")
+            logger.info(f"{user.nickname} was just notified that {text}")
     except Exception as e:
         logger.error(f"{type(e)}: {str(e)}")
         tg_bot.send_message(888848705, f"{type(e)}: {str(e)}")
+
+
+def disconnect(db, user):
+    logger = get_logger()
+    tg_bot = get_bot()
+    chat_id = user.chat_id
+    db.commit()
+    user.chat_id = ''
+    tg_bot.send_message(chat_id, f"Аккаунт {user.nickname} успешно отвязан. Вы больше не будете получать уведомления")
+    logger.info(f"{user.nickname} отвязал аккаунт")
 
 
 def check_updates(db, User):
