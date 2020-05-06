@@ -326,7 +326,7 @@ def remove_user(user_id, group_id):
     group = db.query(Group).get(group_id)
     if user and group and user in group.users and (current_user.type_id == 1 or group.creator == current_user):
         group.users.remove(user)
-        text = f"Вас удалили из группы {group.name} ({group.creator.nickname})"
+        text = f"Вас исключили из группы {group.name} ({group.creator.nickname})"
         link = "/groups"
         save_and_notify(db, user, text, link)
         db.commit()
@@ -448,6 +448,7 @@ def get_statistics():
 def show_statistics(results, title, code=0):
     if not results and code == 0:
         code = 1
+    results = list(r for r in results if r.is_finished)
     for r in results:
         all_answers = list(a.answer == a.correct for a in r.rows)
         r.n_correct_answers = all_answers.count(True)
@@ -628,8 +629,12 @@ def finish_test():
         return redirect('/all_tests')
     st.is_finished = True
     st.end_date = datetime.datetime.now()
+
+    all_answers = list(a.answer == a.correct for a in st.rows)
+    n_cor = all_answers.count(True)
+    n_all = len(all_answers)
     user = st.test.creator
-    text = f"{current_user.nickname} прошёл тест {st.test.name}"
+    text = f"{current_user.nickname} завершил(а) тест {st.test.name} ({n_cor}/{n_all})"
     link = f"/statistics/{st.test_id}"
     save_and_notify(db, user, text, link)
     db.commit()
