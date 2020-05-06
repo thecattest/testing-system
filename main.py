@@ -173,7 +173,7 @@ def index():
 @login_required
 def show_notifs():
     db = db_session.create_session()
-    notifications = db.query(Notification).filter(Notification.user == current_user).all()
+    notifications = db.query(Notification).filter(Notification.user == current_user).order_by(Notification.id.desc()).all()
     return render_template("notifications.html",
                            title="Уведомления",
                            notifications=notifications,

@@ -17,17 +17,19 @@
     </div>
     {% if notifications %}
     <div class="col-12 row mx-auto">
-        <div class="col-12 col-md-10 col-lg-8 col-xl-6 p-2">
-            <ul class="list list-group pb-3 mx-auto">
+        <div class="col-12 col-md-10 col-lg-8 col-xl-6 p-2 mx-auto">
+            <ul class="list list-group pb-3">
                 {% for notif in notifications %}
                 <li class="list-group-item notification py-2 d-flex justify-content-between align-items-center">
                     <b>
+                        {% if notif.link %}
                         <a href="{{notif.link}}">
                             {{notif.text}}
                         </a>
+                        {% else %}
+                        {{notif.text}}
+                        {% endif %}
                     </b>
-                    {% if notif.link %}
-                    {% endif %}
                 </li>
                 {% endfor %}
             </ul>
