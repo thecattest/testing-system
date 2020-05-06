@@ -24,6 +24,16 @@ body {
     text-decoration: underline;
 }
 
+.link-danger {
+    color: var(--danger);
+    text-decoration: underline;
+}
+
+.link-danger:hover {
+    color: var(--font-light);
+    text-decoration: none;
+}
+
 .font-light{
     color: var(--font-light)!important;
 }

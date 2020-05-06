@@ -23,13 +23,23 @@
 
 .notification {
     background-color: var(--list-item-notification-background);
-    border-radius: 5px;
-    margin: 10px 2px;
+}
+
+.notification:hover {
+    background-color: var(--list-item-notification-background-hover);
 }
 
 .notification a {
     color: var(--list-item-notification-font)!important;
+    text-decoration: none;
+}
+
+.notification a:hover {
     text-decoration: underline;
+}
+
+.notification:hover a {
+    color: var(--list-item-notification-font-hover)!important;
 }
 /*
 .list-item-dark:hover,

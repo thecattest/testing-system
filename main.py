@@ -45,7 +45,7 @@ def save_and_notify(db, user, text, link=None):
     db.add(notif)
     db.commit()
     if link:
-        text += f'\nПосмотреть: ilyav.pythonanywhere.com{link}'
+        text += f'\nПосмотреть: https://ilyav.pythonanywhere.com{link}'
     bot.notify(user, text)
 
 
