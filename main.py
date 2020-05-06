@@ -173,10 +173,13 @@ def index():
 @login_required
 def show_notifs():
     db = db_session.create_session()
-    notifications = db.query(Notification).filter(Notification.user == current_user).order_by(Notification.id.desc()).all()
+    notifs = db.query(Notification).filter(Notification.user == current_user).order_by(Notification.id.desc()).all()
+    for notif in notifs:
+        d = notif.date
+        notif.formatted = d.strftime('%d.%m %H:%M')
     return render_template("notifications.html",
                            title="Уведомления",
-                           notifications=notifications,
+                           notifications=notifs,
                            other="/notifications",
                            other_title="Уведомления")
 
