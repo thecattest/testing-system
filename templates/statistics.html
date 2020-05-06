@@ -3,8 +3,8 @@
 {% block content %}
 
 <div class="row">
-    {% if code == 0 %}
     <h2 class="header col-12">{{title}}</h2>
+    {% if code == 0 %}
     {% for result in results %}
     <div class="result-item col-12 col-md-6 col-lg-4 mx-auto" result-id="{{result.id}}">
         <div class="item" id="{{result.id}}">
@@ -91,13 +91,13 @@
     </div>
     {% endfor %}
     {% elif code == 1 %}
-    <h2 class="header col-12">{{title}}</h2>
+    <h4 class="header col-12 header-alert">
+        Ничего нет
+    </h4>
     {% elif code == 2 %}
     {% include "go_away.html" %}
     {% elif code == 3 %}
-    <div class="alert alert-danger col-10 m-4">
-        <h2>Такого пользователя нет</h2>
-    </div>
+    <h4 class="header col-12 header-alert">Такого пользователя нет</h4>
     {% endif %}
 </div>
 

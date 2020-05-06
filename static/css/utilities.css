@@ -59,6 +59,15 @@ input, input:focus {
     color: var(--header-font);
 }
 
+.header-error {
+    color: #fff!important;
+    background-color: var(--b)!important;
+}
+
+.header-alert {
+    background-color: var(--header-alert-background);
+}
+
 .card-text {
     cursor: default;
 }

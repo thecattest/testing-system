@@ -10,7 +10,7 @@
              <hr>
             <h3 class="mb-3" style="color: #ff3030;">Подключите ваш аккаунт телеграм для получения уведомлений.</h3>
             <p class="mb-2">
-                Отправьте в <a class="link" href="https://telegram.im/@tests_notifications_bot" target="_blank">чат</a>
+                Отправьте <a class="link" href="tg://resolve?domain=tests_notifications_bot">боту</a> (tests_notifications_bot)
                 свой персональный код <b>{{current_user.secret_code}}</b> и <a class="link" href="/check">нажмите</a> для привязки
             </p>
             {% else %}
@@ -41,8 +41,8 @@
             </ul>
         </div>
         {% else %}
-        <div class="alert alert-primary col-12 col-md-10 col-lg-8 col-xl-6 mx-auto">
-            <h3>Уведомлений нет</h3>
+        <div class="header header-alert col-12">
+            <h4>Уведомлений нет</h4>
         </div>
     </div>
     {% endif %}

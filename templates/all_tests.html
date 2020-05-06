@@ -3,6 +3,7 @@
 {% block content %}
 <div class="row">
     <h2 class="header col-12">{{title}}</h2>
+    {% if tests %}
     <div class="col-12 col-lg-10 col-xl-12 mx-auto my-4">
         <div class="row tests">
             {% for test in tests %}
@@ -45,5 +46,10 @@
             {% endfor %}
         </div>
     </div>
+    {% else %}
+    <h4 class="header header-alert col-12">
+        У вас нет доступа ни к одному тесту
+    </h4>
+    {% endif %}
 </div>
 {% endblock %}

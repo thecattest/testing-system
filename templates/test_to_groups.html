@@ -82,10 +82,7 @@
             </div>
         </div>
         {% elif code == 1%}
-        <div class="alert alert-danger col-10 m-4">
-            <h3>Пусто!</h3>
-            <p>Похоже, такого теста нет</p>
-        </div>
+        <h4 class="header col-12 header-alert">Такого теста нет</h4>
         {% else %}
         {% include 'go_away.html' %}
         {% endif %}

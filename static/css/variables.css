@@ -59,6 +59,7 @@
     --list-item-danger: #dc3545;
 
     --header-background: var(--a);
+    --header-alert-background: #59739e;
     --header-font: #fff;
 
     --success: #3c7510;
