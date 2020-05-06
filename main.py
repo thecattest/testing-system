@@ -621,13 +621,17 @@ def finish_test():
     if not test_started():
         return redirect("/all_tests")
     db = db_session.create_session()
-    st = db.query(Result).filter(Result.is_finished == False).first()
-    if all(list(i.answer == None for i in st.rows)):
+    st = db.query(Result).filter(~Result.is_finished).first()
+    if all(list(i.answer is None for i in st.rows)):
         db.delete(st)
         db.commit()
         return redirect('/all_tests')
     st.is_finished = True
     st.end_date = datetime.datetime.now()
+    user = st.test.creator
+    text = f"{current_user.nickname} прошёл тест {st.test.name}"
+    link = f"/statistics/{st.test_id}"
+    save_and_notify(db, user, text, link)
     db.commit()
     return redirect(f"/statistics/{st.test_id}".format(st.test_id))
 
