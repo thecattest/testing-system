@@ -176,7 +176,7 @@ def show_notifs():
     notifs = db.query(Notification).filter(Notification.user == current_user).order_by(Notification.id.desc()).all()
     for notif in notifs:
         d = notif.date
-        notif.formatted = d.strftime('%d.%m %H:%M')
+        notif.formatted = d.strftime('%H:%M (%d.%m)')
     return render_template("notifications.html",
                            title="Уведомления",
                            notifications=notifs,
