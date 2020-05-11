@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+﻿from flask import Flask, render_template, request, redirect
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from data import db_session
@@ -50,11 +50,10 @@ def save_and_notify(db, user, text, link=None):
 
 
 def main():
-    # del_test(3)
-    port = int(os.environ.get("PORT", 8000))
-    app.run(host='0.0.0.0', port=port)
-    # from waitress import serve
-    # serve(app, host="0.0.0.0", port=8000)
+    # port = int(os.environ.get("PORT", 8000))
+    # app.run(host='0.0.0.0', port=port)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=8000)
 
 
 @login_manager.user_loader
