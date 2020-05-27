@@ -151,7 +151,7 @@ def disconnect():
 
 @app.route("/")
 @app.route("/index")
-@app.route("/all_tests")
+@app.route("/tests")
 @login_required
 def index():
     try:
@@ -517,7 +517,7 @@ def delete_user(user_id):
         return redirect(f'/delete_user/{user_id}')
 
 
-@app.route("/test/<int:test_id>")
+@app.route("/tests/<int:test_id>")
 @login_required
 def start_test(test_id):
     try:
@@ -529,7 +529,7 @@ def start_test(test_id):
             return render_template("error.html",
                                    text="Теста не существует или у вас нет прав доступа.",
                                    button="На главную",
-                                   link="/all_tests")
+                                   link="/tests")
         result = Result()
         result.test_id = test.id
         result.user_id = current_user.id
@@ -547,14 +547,14 @@ def start_test(test_id):
         db.commit()
         return redirect("/test")
     except sa.orm.exc.DetachedInstanceError:
-        return redirect(f'/test/{test_id}')
+        return redirect(f'/tests/{test_id}')
 
 
 @app.route("/test")
 @login_required
 def handle_test():
     if not is_test_started():
-        return redirect("/all_tests")
+        return redirect("/tests")
     db = db_session.create_session()
     result = db.query(Result).filter(~Result.is_finished).first()
     questions = db.query(ResultRow).filter(ResultRow.result_id == result.id).all()
@@ -601,13 +601,13 @@ def save_answer():
 @login_required
 def finish_test():
     if not is_test_started():
-        return redirect("/all_tests")
+        return redirect("/tests")
     db = db_session.create_session()
     st = db.query(Result).filter(~Result.is_finished).first()
     if all(list(i.answer is None for i in st.rows)):
         db.delete(st)
         db.commit()
-        return redirect('/all_tests')
+        return redirect('/tests')
     st.is_finished = True
     st.end_date = datetime.datetime.now()
 
