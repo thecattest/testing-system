@@ -379,7 +379,7 @@ def create_user():
                            code=code)
 
 
-@app.route("/statistics/<int:test_id>")
+@app.route("/stat/<int:test_id>")
 @login_required
 def get_test_statistics(test_id):
     try:
@@ -401,15 +401,15 @@ def get_test_statistics(test_id):
         results.reverse()
         return show_statistics(results, title=f"История по {test.name}", code=code)
     except sa.orm.exc.DetachedInstanceError:
-        return redirect(f"/statistics/{test_id}")
+        return redirect(f"/stat/{test_id}")
 
 
-@app.route("/user_statistics/<int:user_id>")
+@app.route("/user_stat/<int:user_id>")
 @login_required
 def get_user_statistics(user_id):
     try:
         if user_id == current_user.id:
-            return redirect("/statistics")
+            return redirect("/stat")
         code = 0
         results = []
         nickname = ""
@@ -429,10 +429,10 @@ def get_user_statistics(user_id):
         results.reverse()
         return show_statistics(results, title=f"История {nickname}", code=code)
     except sa.orm.exc.DetachedInstanceError:
-        return redirect(f"/user_statistics/{user_id}")
+        return redirect(f"/user_stat/{user_id}")
 
 
-@app.route("/statistics")
+@app.route("/stat")
 @login_required
 def get_statistics():
     try:
@@ -441,7 +441,7 @@ def get_statistics():
         results.reverse()
         return show_statistics(results, title="Моя история")
     except sa.orm.exc.DetachedInstanceError:
-        return redirect("/statistics")
+        return redirect("/stat")
 
 
 def show_statistics(results, title, code=0):
@@ -616,10 +616,10 @@ def finish_test():
     n_all = len(all_answers)
     user = st.test.creator
     text = f"{current_user.nickname} завершил(а) тест {st.test.name} ({n_cor}/{n_all})"
-    link = f"/statistics/{st.test_id}"
+    link = f"/stat/{st.test_id}"
     save_and_notify(db, user, text, link)
     db.commit()
-    return redirect(f"/statistics/{st.test_id}")
+    return redirect(f"/stat/{st.test_id}")
 
 
 @app.route('/more')

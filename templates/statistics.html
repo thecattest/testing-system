@@ -10,7 +10,7 @@
         <div class="item" id="{{result.id}}">
             <div class="row mb-2 py-3 result-header">
                 <div class="col-12 text-wrap">
-                    <a class="font-light" href="/statistics/{{result.test_id}}">
+                    <a class="font-light" href="/stat/{{result.test_id}}">
                         <h4>
                             {{result.test.name}} #{{result.id}}
                             <!--
@@ -33,7 +33,7 @@
                     {% if result.user and
                     (current_user == result.user or result.user in current_user.created or current_user.type_id == 1) %}
                     <a class="font-light"
-                        href="/user_statistics/{{result.user.id}}">
+                        href="/user_stat/{{result.user.id}}">
                         <h6>
                             {% if result.user.nickname %}
                                 {{result.user.nickname}} {% if current_user == result.user %}(Вы){% endif %}
