@@ -142,21 +142,11 @@ def logout():
     return redirect("/")
 
 
-@app.route("/check")
-@login_required
-def check():
-    db = db_session.create_session()
-    bot.check_updates(db, User)
-    return redirect('/notifications')
-
-
-@app.route('/disconnect')
-@login_required
-def disconnect():
-    db = db_session.create_session()
-    user = db.query(User).filter(User.id == current_user.id).first()
-    bot.disconnect(db, user)
-    return redirect('/notifications')
+"""
+====================
+TESTS
+====================
+"""
 
 
 @app.route("/")
@@ -178,19 +168,116 @@ def index():
         return redirect('/')
 
 
-@app.route('/notifications')
+@app.route("/test")
 @login_required
-def show_notifs():
+def handle_test():
+    if not is_test_started():
+        return redirect("/tests")
     db = db_session.create_session()
-    notifs = db.query(Notification).filter(Notification.user == current_user).order_by(Notification.id.desc()).all()
-    for notif in notifs:
-        d = notif.date
-        notif.formatted = d.strftime('%H:%M (%d.%m)')
-    return render_template("notifications.html",
-                           title="Уведомления",
-                           notifications=notifs,
-                           other="/notifications",
-                           other_title="Уведомления")
+    result = db.query(Result).filter(~Result.is_finished).first()
+    questions = db.query(ResultRow).filter(ResultRow.result_id == result.id).all()
+    result.n_questions = len(questions)
+    questions = list(q for q in questions if q.answer is None)
+    result.current_n = result.n_questions - len(questions) + 1
+    if questions:
+        q_id = random.choice(questions).q_id
+        question = db.query(Question).get(q_id)
+        question.n_questions = result.n_questions
+        question.current_n = result.current_n
+        if question:
+            return render_template("question.html",
+                                   title=result.test.name,
+                                   question=question,
+                                   all_tests="active")
+        return render_template("error.html",
+                               text="Произошла ошибка. Скорее всего, тест был удалён.",
+                               button="На главную",
+                               link="/finish_test")
+    return redirect("/finish_test")
+
+
+@app.route("/tests/<int:test_id>")
+@login_required
+def start_test(test_id):
+    try:
+        if is_test_started():
+            return redirect('/test')
+        db = db_session.create_session()
+        test = db.query(Test).get(test_id)
+        if not test or not is_allowed(test, current_user):
+            return render_template("error.html",
+                                   text="Теста не существует или у вас нет прав доступа.",
+                                   button="На главную",
+                                   link="/tests")
+        result = Result()
+        result.test_id = test.id
+        result.user_id = current_user.id
+        db.add(result)
+        for q in test.questions:
+            row = ResultRow()
+            row.result = result
+            row.text = q.text
+            row.q_id = q.id
+            for a in q.answers:
+                if a.is_correct:
+                    row.correct = a.text
+                    break
+            db.add(row)
+        db.commit()
+        return redirect("/test")
+    except sa.orm.exc.DetachedInstanceError:
+        return redirect(f'/tests/{test_id}')
+
+
+@app.route("/save_answer", methods=["GET", "POST"])
+@login_required
+def save_answer():
+    try:
+        q_id = request.form["question_id"]
+        answer = request.form["answer"]
+    except KeyError:
+        return redirect('/test')
+    db = db_session.create_session()
+    result = db.query(Result).filter(~Result.is_finished).first()
+    question = db.query(ResultRow).filter(ResultRow.result == result,
+                                          ResultRow.q_id == q_id).first()
+    if not question:
+        return redirect('/test')
+    question.answer = answer
+    db.commit()
+    return redirect('/test')
+
+
+@app.route("/finish_test")
+@login_required
+def finish_test():
+    if not is_test_started():
+        return redirect("/tests")
+    db = db_session.create_session()
+    st = db.query(Result).filter(~Result.is_finished).first()
+    if all(list(i.answer is None for i in st.rows)):
+        db.delete(st)
+        db.commit()
+        return redirect('/tests')
+    st.is_finished = True
+    st.end_date = datetime.datetime.now()
+
+    all_answers = list(a.answer == a.correct for a in st.rows)
+    n_cor = all_answers.count(True)
+    n_all = len(all_answers)
+    user = st.test.creator
+    text = f"{current_user.nickname} завершил(а) тест {st.test.name} ({n_cor}/{n_all})"
+    link = f"/stat/{st.test_id}"
+    save_and_notify(db, user, text, link)
+    db.commit()
+    return redirect(f"/stat/{st.test_id}")
+
+
+"""
+====================
+GROUPS
+====================
+"""
 
 
 @app.route("/groups")
@@ -253,6 +340,161 @@ def get_group(group_id):
         return redirect(f"/groups/{group_id}")
 
 
+@app.route("/groups/add", methods=['GET', 'POST'])
+@login_required
+def create_group():
+    if current_user.type_id != 3:
+        form = CreateGroupForm()
+        if form.validate_on_submit():
+            name = form.name.data
+            db = db_session.create_session()
+            group = Group()
+            group.creator_id = current_user.id
+            group.name = name
+            db.add(group)
+            db.commit()
+            return redirect(f'/groups/{group.id}')
+        return render_template("create_group.html",
+                               other="/groups",
+                               other_title='Группы',
+                               form=form)
+    else:
+        return redirect('/more')
+
+
+@app.route('/groups/delete/<int:group_id>')
+@login_required
+def delete_group(group_id):
+    db = db_session.create_session()
+    group = db.query(Group).get(group_id)
+    if group and (group.creator == current_user or current_user.type_id == 1):
+        group.users = []
+        group.tests = []
+        db.delete(group)
+        db.commit()
+    return redirect('/groups')
+
+
+"""
+====================
+USERS
+====================
+"""
+
+
+@app.route('/users')
+@login_required
+def get_users():
+    try:
+        code = 0
+        if current_user.type_id == 3:
+            code = 1
+        db = db_session.create_session()
+        users = db.query(User).order_by(User.type_id).all()
+        return render_template('users.html',
+                               title='Пользователи',
+                               users=users,
+                               other="/users",
+                               other_title='Пользователи',
+                               code=code)
+    except sa.orm.exc.DetachedInstanceError:
+        return redirect('/users')
+
+
+@app.route("/user/add", methods=['GET', 'POST'])
+@login_required
+def create_user():
+    code = 0
+    form = RegisterForm()
+    if current_user.type_id == 3:
+        code = 1
+    else:
+        if form.validate_on_submit():
+            db = db_session.create_session()
+            user = User()
+            user.nickname = form.nickname.data.strip().lower()
+            user.creator_id = current_user.id
+            user.set_password(form.password.data.strip())
+            if form.is_teacher.data:
+                user.type_id = 2
+            else:
+                user.type_id = 3
+            user.set_secret_code()
+            db.add(user)
+            db.commit()
+            return redirect('/users')
+    return render_template('register.html',
+                           title='Создать',
+                           form=form,
+                           other="/user/add",
+                           other_title='Регистрация',
+                           code=code)
+
+
+@app.route("/user/delete/<int:user_id>")
+@login_required
+def delete_user(user_id):
+    try:
+        db = db_session.create_session()
+        user = db.query(User).get(user_id)
+        if user and user in current_user.created or current_user.type_id == 1:
+            if not user.created_groups:
+                db.delete(user)
+                db.commit()
+            else:
+                return render_template("error.html",
+                                       text=f"Вы не можете удалить пользователя {user.nickname}, "
+                                            "так как он является администратором одной или нескольких групп",
+                                       link="/users",
+                                       button="Вернуться")
+            if user.results:
+                user.results = []
+            if user.groups:
+                user.groups = []
+        return redirect('/users')
+    except sa.orm.exc.DetachedInstanceError:
+        return redirect(f'/user/delete/{user_id}')
+
+
+@app.route('/user/group/remove/<int:user_id>/<int:group_id>')
+@login_required
+def remove_user(user_id, group_id):
+    db = db_session.create_session()
+    user = db.query(User).get(user_id)
+    group = db.query(Group).get(group_id)
+    if user and group and user in group.users and (current_user.type_id == 1 or group.creator == current_user):
+        group.users.remove(user)
+        text = f"Вас исключили из группы {group.name} ({group.creator.nickname})"
+        link = "/groups"
+        save_and_notify(db, user, text, link)
+        db.commit()
+    return redirect(f'/groups/{group_id}')
+
+
+@app.route('/user/group/add/<int:user_id>/<int:group_id>')
+@login_required
+def add_user(user_id, group_id):
+    db = db_session.create_session()
+    group = db.query(Group).get(group_id)
+    if group and (current_user.type_id == 1 or current_user == group.creator):
+        user = db.query(User).get(user_id)
+        if not user:
+            return
+        group.users.append(user)
+        text = f"Вас добавили в группу {group.name} ({group.creator.nickname})"
+        link = "/groups"
+        save_and_notify(db, user, text, link)
+        db.commit()
+    return redirect(f'/groups/{group_id}')
+
+
+"""
+====================
+ACCESS
+====================
+"""
+
+
 @app.route('/access/test/<int:test_id>')
 def show_test_to_groups(test_id):
     code = 0
@@ -275,28 +517,6 @@ def show_test_to_groups(test_id):
                            other=f"/access/test/{test_id}",
                            other_title="Доступ",
                            code=code)
-
-
-@app.route("/groups/add", methods=['GET', 'POST'])
-@login_required
-def create_group():
-    if current_user.type_id != 3:
-        form = CreateGroupForm()
-        if form.validate_on_submit():
-            name = form.name.data
-            db = db_session.create_session()
-            group = Group()
-            group.creator_id = current_user.id
-            group.name = name
-            db.add(group)
-            db.commit()
-            return redirect(f'/groups/{group.id}')
-        return render_template("create_group.html",
-                               other="/groups",
-                               other_title='Группы',
-                               form=form)
-    else:
-        return redirect('/more')
 
 
 @app.route("/access/group/add/<int:test_id>/<int:group_id>")
@@ -327,66 +547,23 @@ def remove_test(test_id, group_id):
     return redirect(f'/groups/{group_id}')
 
 
-@app.route('/remove_user/<int:user_id>/<int:group_id>')
+"""
+====================
+STATISTICS
+====================
+"""
+
+
+@app.route("/stat")
 @login_required
-def remove_user(user_id, group_id):
-    db = db_session.create_session()
-    user = db.query(User).get(user_id)
-    group = db.query(Group).get(group_id)
-    if user and group and user in group.users and (current_user.type_id == 1 or group.creator == current_user):
-        group.users.remove(user)
-        text = f"Вас исключили из группы {group.name} ({group.creator.nickname})"
-        link = "/groups"
-        save_and_notify(db, user, text, link)
-        db.commit()
-    return redirect(f'/groups/{group_id}')
-
-
-@app.route('/add_user/<int:user_id>/<int:group_id>')
-@login_required
-def add_user(user_id, group_id):
-    db = db_session.create_session()
-    group = db.query(Group).get(group_id)
-    if group and (current_user.type_id == 1 or current_user == group.creator):
-        user = db.query(User).get(user_id)
-        if not user:
-            return
-        group.users.append(user)
-        text = f"Вас добавили в группу {group.name} ({group.creator.nickname})"
-        link = "/groups"
-        save_and_notify(db, user, text, link)
-        db.commit()
-    return redirect(f'/groups/{group_id}')
-
-
-@app.route("/register", methods=['GET', 'POST'])
-@login_required
-def create_user():
-    code = 0
-    form = RegisterForm()
-    if current_user.type_id == 3:
-        code = 1
-    else:
-        if form.validate_on_submit():
-            db = db_session.create_session()
-            user = User()
-            user.nickname = form.nickname.data.strip().lower()
-            user.creator_id = current_user.id
-            user.set_password(form.password.data.strip())
-            if form.is_teacher.data:
-                user.type_id = 2
-            else:
-                user.type_id = 3
-            user.set_secret_code()
-            db.add(user)
-            db.commit()
-            return redirect('/users')
-    return render_template('register.html',
-                           title='Создать',
-                           form=form,
-                           other="/register",
-                           other_title='Регистрация',
-                           code=code)
+def get_statistics():
+    try:
+        db = db_session.create_session()
+        results = db.query(Result).filter(Result.user_id == current_user.id, ~Result.is_deleted).all()
+        results.reverse()
+        return show_statistics(results, title="Моя история")
+    except sa.orm.exc.DetachedInstanceError:
+        return redirect("/stat")
 
 
 @app.route("/stat/<int:test_id>")
@@ -400,12 +577,12 @@ def get_test_statistics(test_id):
         if not test:
             code = 1
             return show_statistics(results, title=f"Такого теста нет", code=code)
-        elif test.creator != current_user:
+        elif current_user.type_id == 1 or test.creator == current_user:
+            results = db.query(Result).filter(Result.test_id == test_id).all()
+        elif current_user.type_id != 1 and test.creator != current_user:
             results = db.query(Result).filter(Result.test_id == test_id,
                                               Result.user_id == current_user.id,
                                               ~Result.is_deleted).all()
-        elif current_user.type_id == 1 or test.creator == current_user:
-            results = db.query(Result).filter(Result.test_id == test_id).all()
         else:
             code = 2
         results.reverse()
@@ -442,18 +619,6 @@ def get_user_statistics(user_id):
         return redirect(f"/stat/user/{user_id}")
 
 
-@app.route("/stat")
-@login_required
-def get_statistics():
-    try:
-        db = db_session.create_session()
-        results = db.query(Result).filter(Result.user_id == current_user.id, ~Result.is_deleted).all()
-        results.reverse()
-        return show_statistics(results, title="Моя история")
-    except sa.orm.exc.DetachedInstanceError:
-        return redirect("/stat")
-
-
 def show_statistics(results, title, code=0):
     if not results and code == 0:
         code = 1
@@ -470,166 +635,11 @@ def show_statistics(results, title, code=0):
                            statistics='active')
 
 
-@app.route('/users')
-@login_required
-def get_users():
-    try:
-        code = 0
-        if current_user.type_id == 3:
-            code = 1
-        db = db_session.create_session()
-        users = db.query(User).order_by(User.type_id).all()
-        return render_template('users.html',
-                               title='Пользователи',
-                               users=users,
-                               other="/users",
-                               other_title='Пользователи',
-                               code=code)
-    except sa.orm.exc.DetachedInstanceError:
-        return redirect('/users')
-
-
-@app.route('/groups/delete/<int:group_id>')
-@login_required
-def delete_group(group_id):
-    db = db_session.create_session()
-    group = db.query(Group).get(group_id)
-    if group and (group.creator == current_user or current_user.type_id == 1):
-        group.users = []
-        group.tests = []
-        db.delete(group)
-        db.commit()
-    return redirect('/groups')
-
-
-@app.route("/delete_user/<int:user_id>")
-@login_required
-def delete_user(user_id):
-    try:
-        db = db_session.create_session()
-        user = db.query(User).get(user_id)
-        if user and user in current_user.created or current_user.type_id == 1:
-            if not user.created_groups:
-                db.delete(user)
-                db.commit()
-            else:
-                return render_template("error.html",
-                                       text=f"Вы не можете удалить пользователя {user.nickname}, "
-                                            "так как он является администратором одной или нескольких групп",
-                                       link="/users",
-                                       button="Вернуться")
-            if user.results:
-                user.results = []
-            if user.groups:
-                user.groups = []
-        return redirect('/users')
-    except sa.orm.exc.DetachedInstanceError:
-        return redirect(f'/delete_user/{user_id}')
-
-
-@app.route("/tests/<int:test_id>")
-@login_required
-def start_test(test_id):
-    try:
-        if is_test_started():
-            return redirect('/test')
-        db = db_session.create_session()
-        test = db.query(Test).get(test_id)
-        if not test or not is_allowed(test, current_user):
-            return render_template("error.html",
-                                   text="Теста не существует или у вас нет прав доступа.",
-                                   button="На главную",
-                                   link="/tests")
-        result = Result()
-        result.test_id = test.id
-        result.user_id = current_user.id
-        db.add(result)
-        for q in test.questions:
-            row = ResultRow()
-            row.result = result
-            row.text = q.text
-            row.q_id = q.id
-            for a in q.answers:
-                if a.is_correct:
-                    row.correct = a.text
-                    break
-            db.add(row)
-        db.commit()
-        return redirect("/test")
-    except sa.orm.exc.DetachedInstanceError:
-        return redirect(f'/tests/{test_id}')
-
-
-@app.route("/test")
-@login_required
-def handle_test():
-    if not is_test_started():
-        return redirect("/tests")
-    db = db_session.create_session()
-    result = db.query(Result).filter(~Result.is_finished).first()
-    questions = db.query(ResultRow).filter(ResultRow.result_id == result.id).all()
-    result.n_questions = len(questions)
-    questions = list(q for q in questions if q.answer is None)
-    result.current_n = result.n_questions - len(questions) + 1
-    if questions:
-        q_id = random.choice(questions).q_id
-        question = db.query(Question).get(q_id)
-        question.n_questions = result.n_questions
-        question.current_n = result.current_n
-        if question:
-            return render_template("question.html",
-                                   title=result.test.name,
-                                   question=question,
-                                   all_tests="active")
-        return render_template("error.html",
-                               text="Произошла ошибка. Скорее всего, тест был удалён.",
-                               button="На главную",
-                               link="/finish_test")
-    return redirect("/finish_test")
-
-
-@app.route("/save_answer", methods=["GET", "POST"])
-@login_required
-def save_answer():
-    try:
-        q_id = request.form["question_id"]
-        answer = request.form["answer"]
-    except KeyError:
-        return redirect('/test')
-    db = db_session.create_session()
-    result = db.query(Result).filter(~Result.is_finished).first()
-    question = db.query(ResultRow).filter(ResultRow.result == result,
-                                          ResultRow.q_id == q_id).first()
-    if not question:
-        return redirect('/test')
-    question.answer = answer
-    db.commit()
-    return redirect('/test')
-
-
-@app.route("/finish_test")
-@login_required
-def finish_test():
-    if not is_test_started():
-        return redirect("/tests")
-    db = db_session.create_session()
-    st = db.query(Result).filter(~Result.is_finished).first()
-    if all(list(i.answer is None for i in st.rows)):
-        db.delete(st)
-        db.commit()
-        return redirect('/tests')
-    st.is_finished = True
-    st.end_date = datetime.datetime.now()
-
-    all_answers = list(a.answer == a.correct for a in st.rows)
-    n_cor = all_answers.count(True)
-    n_all = len(all_answers)
-    user = st.test.creator
-    text = f"{current_user.nickname} завершил(а) тест {st.test.name} ({n_cor}/{n_all})"
-    link = f"/stat/{st.test_id}"
-    save_and_notify(db, user, text, link)
-    db.commit()
-    return redirect(f"/stat/{st.test_id}")
+"""
+====================
+MENU
+====================
+"""
 
 
 @app.route('/more')
@@ -641,6 +651,45 @@ def more():
                                more='active')
     except sa.orm.exc.DetachedInstanceError:
         return redirect('/more')
+
+
+"""
+====================
+NOTIFICATIONS
+====================
+"""
+
+
+@app.route("/check")
+@login_required
+def check():
+    db = db_session.create_session()
+    bot.check_updates(db, User)
+    return redirect('/notifications')
+
+
+@app.route('/disconnect')
+@login_required
+def disconnect():
+    db = db_session.create_session()
+    user = db.query(User).filter(User.id == current_user.id).first()
+    bot.disconnect(db, user)
+    return redirect('/notifications')
+
+
+@app.route('/notifications')
+@login_required
+def show_notifs():
+    db = db_session.create_session()
+    notifs = db.query(Notification).filter(Notification.user == current_user).order_by(Notification.id.desc()).all()
+    for notif in notifs:
+        d = notif.date
+        notif.formatted = d.strftime('%H:%M (%d.%m)')
+    return render_template("notifications.html",
+                           title="Уведомления",
+                           notifications=notifs,
+                           other="/notifications",
+                           other_title="Уведомления")
 
 
 if __name__ == '__main__':

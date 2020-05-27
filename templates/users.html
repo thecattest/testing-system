@@ -12,7 +12,7 @@
     <h2 class="header col-12">Все пользователи</h2>
     {% if current_user.type_id in (1, 2) %}
     <div class="col-12 text-center mb-3">
-        <a href="/register" class="m-1 btn btn-success">Новый пользователь <i class="fas fa-plus-square"></i></a>
+        <a href="/user/add" class="m-1 btn btn-success">Новый пользователь <i class="fas fa-plus-square"></i></a>
     </div>
     {% endif %}
     {% if code == 0%}
@@ -28,7 +28,7 @@
                             {{user.nickname}}
                         </a>
                         {% if user.type_id != 1 and (user in current_user.created or current_user.type_id == 1) %}
-                            <a href="/delete_user/{{user.id}}" class="delete-link" title="Удалить"><i class="fas fa-trash-alt"></i></a>
+                            <a href="/user/delete/{{user.id}}" class="delete-link" title="Удалить"><i class="fas fa-trash-alt"></i></a>
                         {% endif %}
                     {% else %}
                         {{user.nickname}}

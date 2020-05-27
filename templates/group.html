@@ -32,7 +32,7 @@
                                 ">
                                     <b>
                                         {% if edit %}
-                                        <a href="/remove_user/{{user.id}}/{{group.id}}" title="Исключить" class="delete-link">
+                                        <a href="/user/group/remove/{{user.id}}/{{group.id}}" title="Исключить" class="delete-link">
                                             <i class="fas fa-user-minus"></i>
                                         </a>
                                         {% endif %}
@@ -60,7 +60,7 @@
                                 ">
                                     <b>
                                         {% if edit %}
-                                        <a href="/add_user/{{user.id}}/{{group.id}}" title="Добавить" class="add-link">
+                                        <a href="/user/group/add/{{user.id}}/{{group.id}}" title="Добавить" class="add-link">
                                             <i class="fas fa-user-plus"></i>
                                         </a>
                                         {% endif %}
