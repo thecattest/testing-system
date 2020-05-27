@@ -89,7 +89,7 @@
                                         </a>
                                         {% endif %}
                                         {% if current_user.type_id == 1 or current_user == test.creator %}
-                                        <a class="font-dark" href="/test_to_groups/{{test.id}}">
+                                        <a class="font-dark" href="/access/test/{{test.id}}">
                                             {{test.name}}
                                         </a>
                                         {% else %}
@@ -116,7 +116,7 @@
                                         </a>
                                         {% endif %}
                                         {% if current_user.type_id == 1 or current_user == test.creator %}
-                                        <a class="font-dark" href="/test_to_groups/{{test.id}}">
+                                        <a class="font-dark" href="/access/test/{{test.id}}">
                                             {{test.name}}
                                         </a>
                                         {% else %}

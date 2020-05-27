@@ -36,7 +36,7 @@
                             История <i class="fas fa-history"></i>
                         </a>
                         {% if test.creator == current_user or current_user.type_id == 1 %}
-                        <a href="/test_to_groups/{{test.id}}" class="px-3 py-1 btn-start btn btn-secondary">
+                        <a href="/access/test/{{test.id}}" class="px-3 py-1 btn-start btn btn-secondary">
                             Доступ <i class="fas fa-users-cog"></i>
                         </a>
                         {% endif %}

@@ -243,7 +243,7 @@ def get_group(group_id):
         return redirect(f"/groups/{group_id}")
 
 
-@app.route('/test_to_groups/<int:test_id>')
+@app.route('/access/test/<int:test_id>')
 def show_test_to_groups(test_id):
     code = 0
     groups = []
@@ -262,7 +262,7 @@ def show_test_to_groups(test_id):
                            test=test,
                            edit=edit,
                            groups=groups,
-                           other=f"/test_to_groups/{test_id}",
+                           other=f"/access/test/{test_id}",
                            other_title="Доступ",
                            code=code)
 
@@ -293,14 +293,14 @@ def create_group():
 @login_required
 def add_group(test_id, group_id):
     add_group_to_test(group_id, test_id)
-    return redirect(f'/test_to_groups/{test_id}')
+    return redirect(f'/access/test/{test_id}')
 
 
 @app.route("/remove_group_from_test/<int:test_id>/<int:group_id>")
 @login_required
 def remove_group(test_id, group_id):
     remove_group_from_test(group_id, test_id)
-    return redirect(f'/test_to_groups/{test_id}')
+    return redirect(f'/access/test/{test_id}')
 
 
 @app.route("/add_test_to_group/<int:test_id>/<int:group_id>")
