@@ -78,7 +78,17 @@ def is_allowed(test, user):
 
 def is_test_started():
     db = db_session.create_session()
-    if db.query(Result).filter(~Result.is_finished, Result.user == current_user).first():
+    if db.query(Result).filter(~Result.is_finished,
+                               Result.user == current_user).first():
+        return True
+    return False
+
+
+def is_training_started():
+    db = db_session.create_session()
+    if db.query(Result).filter(~Result.is_finished,
+                               Result.user == current_user,
+                               Result.is_training).first():
         return True
     return False
 

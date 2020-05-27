@@ -10,7 +10,7 @@ class Answer(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     text = sqlalchemy.Column(sqlalchemy.String, nullable=False)
-    is_correct = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False, default=False)
+    is_correct = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False, default=0)
     question_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("questions.id"))
 
     question = orm.relation("Question")

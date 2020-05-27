@@ -12,8 +12,9 @@ class Result(SqlAlchemyBase):
                            primary_key=True, autoincrement=True)
     test_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('tests.id'))
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id'))
-    is_finished = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
-    is_deleted = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
+    is_training = sqlalchemy.Column(sqlalchemy.Boolean, default=0)
+    is_finished = sqlalchemy.Column(sqlalchemy.Boolean, default=0)
+    is_deleted = sqlalchemy.Column(sqlalchemy.Boolean, default=0)
     end_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
 
     test = orm.relation("Test")
