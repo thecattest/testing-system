@@ -84,7 +84,7 @@
                                 <li class="list-group-item py-2 d-flex justify-content-between align-items-center">
                                     <b>
                                         {% if test.creator == current_user or current_user.type_id == 1 %}
-                                        <a href="/remove_test_from_group/{{test.id}}/{{group.id}}" title="Закрыть доступ" class="delete-link">
+                                        <a href="/access/test/remove/{{test.id}}/{{group.id}}" title="Закрыть доступ" class="delete-link">
                                             <i class="fas fa-minus-square"></i>
                                         </a>
                                         {% endif %}
@@ -111,7 +111,7 @@
                                 <li class="list-group-item py-2 d-flex justify-content-between align-items-center">
                                     <b>
                                         {% if test.creator == current_user or current_user.type_id == 1 %}
-                                        <a href="/add_test_to_group/{{test.id}}/{{group.id}}" title="Добавить" class="add-link">
+                                        <a href="/access/test/add/{{test.id}}/{{group.id}}" title="Добавить" class="add-link">
                                             <i class="fas fa-plus-square"></i>
                                         </a>
                                         {% endif %}

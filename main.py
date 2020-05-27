@@ -289,28 +289,28 @@ def create_group():
         return redirect('/more')
 
 
-@app.route("/add_group_to_test/<int:test_id>/<int:group_id>")
+@app.route("/access/group/add/<int:test_id>/<int:group_id>")
 @login_required
 def add_group(test_id, group_id):
     add_group_to_test(group_id, test_id)
     return redirect(f'/access/test/{test_id}')
 
 
-@app.route("/remove_group_from_test/<int:test_id>/<int:group_id>")
+@app.route("/access/group/remove/<int:test_id>/<int:group_id>")
 @login_required
 def remove_group(test_id, group_id):
     remove_group_from_test(group_id, test_id)
     return redirect(f'/access/test/{test_id}')
 
 
-@app.route("/add_test_to_group/<int:test_id>/<int:group_id>")
+@app.route("/access/test/add/<int:test_id>/<int:group_id>")
 @login_required
 def add_test(test_id, group_id):
     add_group_to_test(group_id, test_id)
     return redirect(f'/groups/{group_id}')
 
 
-@app.route("/remove_test_from_group/<int:test_id>/<int:group_id>")
+@app.route("/access/test/remove/<int:test_id>/<int:group_id>")
 @login_required
 def remove_test(test_id, group_id):
     remove_group_from_test(group_id, test_id)
