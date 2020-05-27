@@ -255,7 +255,7 @@ def finish_test():
     if not is_test_started():
         return redirect("/tests")
     db = db_session.create_session()
-    st = db.query(Result).filter(~Result.is_finished).first()
+    st = db.query(Result).filter(~Result.is_finished, ~Result.is_training).first()
     if all(list(i.answer is None for i in st.rows)):
         db.delete(st)
         db.commit()
@@ -341,6 +341,23 @@ def start_training(test_id):
         return redirect("/training")
     except sa.orm.exc.DetachedInstanceError:
         return redirect(f'/training/start/{test_id}')
+
+
+@app.route("/training/finish")
+@login_required
+def finish_training():
+    if not is_training_started():
+        return redirect("/tests")
+    db = db_session.create_session()
+    st = db.query(Result).filter(~Result.is_finished, Result.is_training).first()
+    if all(list(i.answer is None for i in st.rows)):
+        db.delete(st)
+        db.commit()
+        return redirect('/tests')
+    st.is_finished = True
+    st.end_date = datetime.datetime.now()
+    db.commit()
+    return redirect(f"/tests")
 
 
 """
