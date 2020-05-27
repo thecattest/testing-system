@@ -267,7 +267,7 @@ def show_test_to_groups(test_id):
                            code=code)
 
 
-@app.route("/create_group", methods=['GET', 'POST'])
+@app.route("/groups/add", methods=['GET', 'POST'])
 @login_required
 def create_group():
     if current_user.type_id != 3:
@@ -479,7 +479,7 @@ def get_users():
         return redirect('/users')
 
 
-@app.route('/delete_group/<int:group_id>')
+@app.route('/groups/delete/<int:group_id>')
 @login_required
 def delete_group(group_id):
     db = db_session.create_session()
