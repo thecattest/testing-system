@@ -76,7 +76,7 @@ def is_allowed(test, user):
            or current_user.type_id == 1
 
 
-def test_started():
+def is_test_started():
     db = db_session.create_session()
     if db.query(Result).filter(~Result.is_finished, Result.user == current_user).first():
         return True
@@ -155,7 +155,7 @@ def disconnect():
 @login_required
 def index():
     try:
-        if test_started():
+        if is_test_started():
             return redirect('/test')
         db = db_session.create_session()
         tests = db.query(Test).all()
@@ -229,7 +229,7 @@ def get_group(group_id):
                 tests = list(filter(lambda t: t.creator == current_user, tests))
             users = db.query(User).filter(User.type_id != 1,
                                           User != current_user).order_by(User.type_id).all()
-            users = list(user for user in users if not user in group.users and user != group.creator)
+            users = list(user for user in users if user not in group.users and user != group.creator)
         return render_template("group.html",
                                title=title,
                                group=group,
@@ -479,24 +479,6 @@ def get_users():
         return redirect('/users')
 
 
-@app.route("/delete_result/<int:result_id>")
-@login_required
-def delete_result(result_id):
-    return render_template("error.html",
-                           text="Теперь так нельзя.",
-                           link="/statistics",
-                           button="Вернуться",
-                           other="/statistics",
-                           other_title="Статистика")
-    db = db_session.create_session()
-    result = db.query(Result).get(result_id)
-    if not result or (not result.user == current_user and current_user.type_id != 1):
-        return redirect('/statistics')
-    result.is_deleted = True
-    db.commit()
-    return redirect(f'/statistics/{result.test_id}')
-
-
 @app.route('/delete_group/<int:group_id>')
 @login_required
 def delete_group(group_id):
@@ -539,7 +521,7 @@ def delete_user(user_id):
 @login_required
 def start_test(test_id):
     try:
-        if test_started():
+        if is_test_started():
             return redirect('/test')
         db = db_session.create_session()
         test = db.query(Test).get(test_id)
@@ -570,11 +552,11 @@ def start_test(test_id):
 
 @app.route("/test")
 @login_required
-def test():
-    if not test_started():
+def handle_test():
+    if not is_test_started():
         return redirect("/all_tests")
     db = db_session.create_session()
-    result = db.query(Result).filter(Result.is_finished == False).first()
+    result = db.query(Result).filter(~Result.is_finished).first()
     questions = db.query(ResultRow).filter(ResultRow.result_id == result.id).all()
     result.n_questions = len(questions)
     questions = list(q for q in questions if q.answer is None)
@@ -605,7 +587,7 @@ def save_answer():
     except KeyError:
         return redirect('/test')
     db = db_session.create_session()
-    result = db.query(Result).filter(Result.is_finished == False).first()
+    result = db.query(Result).filter(~Result.is_finished).first()
     question = db.query(ResultRow).filter(ResultRow.result == result,
                                           ResultRow.q_id == q_id).first()
     if not question:
@@ -618,7 +600,7 @@ def save_answer():
 @app.route("/finish_test")
 @login_required
 def finish_test():
-    if not test_started():
+    if not is_test_started():
         return redirect("/all_tests")
     db = db_session.create_session()
     st = db.query(Result).filter(~Result.is_finished).first()
@@ -637,7 +619,7 @@ def finish_test():
     link = f"/statistics/{st.test_id}"
     save_and_notify(db, user, text, link)
     db.commit()
-    return redirect(f"/statistics/{st.test_id}".format(st.test_id))
+    return redirect(f"/statistics/{st.test_id}")
 
 
 @app.route('/more')
