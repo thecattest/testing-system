@@ -6,9 +6,7 @@
     <h2 class="header col-12">Авторизация</h2>
     <div class="col-12 col-md-10 col-lg-8 col-xl-6 mx-auto my-4">
         {% if message %}
-        <div class="alert alert-danger">
-            <h3>{{message}}</h3>
-        </div>
+        <h4 class="header col-12 header-error">{{message}}</h4>
         {% endif %}
         <form method="post">
         {{form.hidden_tag()}}
