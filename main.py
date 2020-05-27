@@ -189,7 +189,7 @@ def handle_test():
         question.current_n = result.current_n
         if question:
             return render_template("question.html",
-                                   title=result.test.name,
+                                   title=result.test.name + " - тест",
                                    question=question,
                                    all_tests="active")
         return render_template("error.html",
@@ -301,7 +301,7 @@ def handle_training():
         question.current_n = result.current_n
         if question:
             return render_template("training_question.html",
-                                   title=result.test.name,
+                                   title=result.test.name + " - тренировка",
                                    question=question,
                                    all_tests="active")
         return render_template("error.html",
