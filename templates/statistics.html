@@ -33,7 +33,7 @@
                     {% if result.user and
                     (current_user == result.user or result.user in current_user.created or current_user.type_id == 1) %}
                     <a class="font-light"
-                        href="/user_stat/{{result.user.id}}">
+                        href="/stat/user/{{result.user.id}}">
                         <h6>
                             {% if result.user.nickname %}
                                 {{result.user.nickname}} {% if current_user == result.user %}(Вы){% endif %}

@@ -404,7 +404,7 @@ def get_test_statistics(test_id):
         return redirect(f"/stat/{test_id}")
 
 
-@app.route("/user_stat/<int:user_id>")
+@app.route("/stat/user/<int:user_id>")
 @login_required
 def get_user_statistics(user_id):
     try:
@@ -429,7 +429,7 @@ def get_user_statistics(user_id):
         results.reverse()
         return show_statistics(results, title=f"История {nickname}", code=code)
     except sa.orm.exc.DetachedInstanceError:
-        return redirect(f"/user_stat/{user_id}")
+        return redirect(f"/stat/user/{user_id}")
 
 
 @app.route("/stat")

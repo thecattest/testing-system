@@ -24,7 +24,7 @@
                 <b>
                     {% if user in current_user.created or current_user.type_id == 1 %}
                         <a class="{% if current_user == user %} font-light {% else %} font-dark {% endif %}"
-                            href="/user_stat/{{user.id}}">
+                            href="/stat/user/{{user.id}}">
                             {{user.nickname}}
                         </a>
                         {% if user.type_id != 1 and (user in current_user.created or current_user.type_id == 1) %}
