@@ -158,6 +158,8 @@ def index():
     try:
         if is_test_started():
             return redirect('/test')
+        if is_training_started():
+            return redirect('/training')
         db = db_session.create_session()
         tests = db.query(Test).all()
         tests = list(test for test in tests if is_allowed(test, current_user))
@@ -298,7 +300,7 @@ def handle_training():
         question.n_questions = result.n_questions
         question.current_n = result.current_n
         if question:
-            return render_template("question.html",
+            return render_template("training_question.html",
                                    title=result.test.name,
                                    question=question,
                                    all_tests="active")
