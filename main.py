@@ -275,6 +275,53 @@ def finish_test():
 
 """
 ====================
+TRAINING
+====================
+"""
+
+
+@app.route("/training")
+@login_required
+def handle_training():
+    pass
+
+
+@app.route("/training/start/<int:test_id>")
+@login_required
+def start_training(test_id):
+    try:
+        if is_training_started():
+            return redirect('/training')
+        db = db_session.create_session()
+        test = db.query(Test).get(test_id)
+        if not test or not is_allowed(test, current_user):
+            return render_template("error.html",
+                                   text="Теста не существует или у вас нет прав доступа.",
+                                   button="На главную",
+                                   link="/tests")
+        result = Result()
+        result.test_id = test.id
+        result.user_id = current_user.id
+        result.is_training = True
+        db.add(result)
+        for q in test.questions:
+            row = ResultRow()
+            row.result = result
+            row.text = q.text
+            row.q_id = q.id
+            for a in q.answers:
+                if a.is_correct:
+                    row.correct = a.text
+                    break
+            db.add(row)
+        db.commit()
+        return redirect("/training")
+    except sa.orm.exc.DetachedInstanceError:
+        return redirect(f'/training/start/{test_id}')
+
+
+"""
+====================
 GROUPS
 ====================
 """
