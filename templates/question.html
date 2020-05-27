@@ -18,7 +18,7 @@
                     <div class="progress-bar bg-success" style="width: {{ 100 / question.n_questions * question.current_n }}%;"></div>
                 </div>
             </div>
-            <form action="/save_answer" class="question-form" method="post">
+            <form action="/test/save_answer" class="question-form" method="post">
                 <input type="hidden" name="question_id" value="{{question.id}}">
                 <div class="form-group">
                     <div class="question-header px-2 text-wrap">
@@ -39,7 +39,7 @@
                     {% endfor %}
                 </div>
                 <div class="form-group text-center mb-0">
-                    <a href="/finish_test" class="mx-auto my-1 btn btn-danger"><i class="ml-2 fas fa-chevron-left"></i> Выйти</a>
+                    <a href="/test/finish" class="mx-auto my-1 btn btn-danger"><i class="ml-2 fas fa-chevron-left"></i> Выйти</a>
                     <button type="submit" class="mx-auto my-1 btn btn-success" disabled>Следующий <i class="ml-2 fas fa-chevron-right"></i></button>
                 </div>
             </form>

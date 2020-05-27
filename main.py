@@ -192,11 +192,11 @@ def handle_test():
         return render_template("error.html",
                                text="Произошла ошибка. Скорее всего, тест был удалён.",
                                button="На главную",
-                               link="/finish_test")
-    return redirect("/finish_test")
+                               link="/test/finish")
+    return redirect("/test/finish")
 
 
-@app.route("/tests/<int:test_id>")
+@app.route("/test/start/<int:test_id>")
 @login_required
 def start_test(test_id):
     try:
@@ -226,10 +226,10 @@ def start_test(test_id):
         db.commit()
         return redirect("/test")
     except sa.orm.exc.DetachedInstanceError:
-        return redirect(f'/tests/{test_id}')
+        return redirect(f'/test/start/{test_id}')
 
 
-@app.route("/save_answer", methods=["GET", "POST"])
+@app.route("/test/save_answer", methods=["GET", "POST"])
 @login_required
 def save_answer():
     try:
@@ -248,7 +248,7 @@ def save_answer():
     return redirect('/test')
 
 
-@app.route("/finish_test")
+@app.route("/test/finish")
 @login_required
 def finish_test():
     if not is_test_started():
