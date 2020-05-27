@@ -79,7 +79,8 @@ def is_allowed(test, user):
 def is_test_started():
     db = db_session.create_session()
     if db.query(Result).filter(~Result.is_finished,
-                               Result.user == current_user).first():
+                               Result.user == current_user,
+                               ~Result.is_training).first():
         return True
     return False
 
@@ -174,7 +175,7 @@ def handle_test():
     if not is_test_started():
         return redirect("/tests")
     db = db_session.create_session()
-    result = db.query(Result).filter(~Result.is_finished).first()
+    result = db.query(Result).filter(~Result.is_finished, ~Result.is_training).first()
     questions = db.query(ResultRow).filter(ResultRow.result_id == result.id).all()
     result.n_questions = len(questions)
     questions = list(q for q in questions if q.answer is None)
@@ -283,7 +284,29 @@ TRAINING
 @app.route("/training")
 @login_required
 def handle_training():
-    pass
+    if not is_training_started():
+        return redirect("/tests")
+    db = db_session.create_session()
+    result = db.query(Result).filter(~Result.is_finished, Result.is_training).first()
+    questions = db.query(ResultRow).filter(ResultRow.result_id == result.id).all()
+    result.n_questions = len(questions)
+    questions = list(q for q in questions if q.answer is None)
+    result.current_n = result.n_questions - len(questions) + 1
+    if questions:
+        q_id = random.choice(questions).q_id
+        question = db.query(Question).get(q_id)
+        question.n_questions = result.n_questions
+        question.current_n = result.current_n
+        if question:
+            return render_template("question.html",
+                                   title=result.test.name,
+                                   question=question,
+                                   all_tests="active")
+        return render_template("error.html",
+                               text="Произошла ошибка. Скорее всего, тест был удалён.",
+                               button="На главную",
+                               link="/training/finish")
+    return redirect("/training/finish")
 
 
 @app.route("/training/start/<int:test_id>")
