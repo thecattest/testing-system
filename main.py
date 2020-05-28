@@ -1,4 +1,4 @@
-﻿from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from data import db_session
@@ -6,9 +6,9 @@ import sqlalchemy as sa
 import os
 
 try:
-    db_session.global_init(os.path.join(os.getcwd(), "db", "tests.sqlite"))
-except sa.exc.OperationalError:
     db_session.global_init("/home/ilyav/testing-system/db/tests.sqlite")
+except sa.exc.OperationalError:
+    db_session.global_init(os.path.join(os.getcwd(), "db", "tests.sqlite"))
 
 from data.__all_models import *
 from forms.__all_forms import *
