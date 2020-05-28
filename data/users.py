@@ -23,6 +23,7 @@ class User(SqlAlchemyBase, UserMixin):
     chat_id = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
 
     results = orm.relation("Result", back_populates='user')
+    trainings = orm.relation("Training", back_populates='user')
     user_type = orm.relation("UserType")
     notifications = orm.relation("Notification", back_populates='user')
     created = orm.relation("User")

@@ -24,6 +24,7 @@ class Test(SqlAlchemyBase):
     creator = orm.relation("User")
     questions = orm.relation("Question", back_populates='test')
     statistics = orm.relation("Result", back_populates='test')
+    trainings = orm.relation("Training", back_populates='test')
     groups = orm.relation("Group",
                           secondary="groups_to_tests")
 

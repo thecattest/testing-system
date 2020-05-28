@@ -79,17 +79,15 @@ def is_allowed(test, user):
 def is_test_started():
     db = db_session.create_session()
     if db.query(Result).filter(~Result.is_finished,
-                               Result.user == current_user,
-                               ~Result.is_training).first():
+                               Result.user == current_user).first():
         return True
     return False
 
 
 def is_training_started():
     db = db_session.create_session()
-    if db.query(Result).filter(~Result.is_finished,
-                               Result.user == current_user,
-                               Result.is_training).first():
+    if db.query(Training).filter(~Training.is_finished,
+                                 Training.user == current_user).first():
         return True
     return False
 
@@ -177,7 +175,7 @@ def handle_test():
     if not is_test_started():
         return redirect("/tests")
     db = db_session.create_session()
-    result = db.query(Result).filter(~Result.is_finished, ~Result.is_training).first()
+    result = db.query(Result).filter(~Result.is_finished).first()
     questions = db.query(ResultRow).filter(ResultRow.result_id == result.id).all()
     result.n_questions = len(questions)
     questions = list(q for q in questions if q.answer is None)
@@ -257,7 +255,7 @@ def finish_test():
     if not is_test_started():
         return redirect("/tests")
     db = db_session.create_session()
-    st = db.query(Result).filter(~Result.is_finished, ~Result.is_training).first()
+    st = db.query(Result).filter(~Result.is_finished).first()
     if all(list(i.answer is None for i in st.rows)):
         db.delete(st)
         db.commit()
@@ -289,19 +287,19 @@ def handle_training():
     if not is_training_started():
         return redirect("/tests")
     db = db_session.create_session()
-    result = db.query(Result).filter(~Result.is_finished, Result.is_training).first()
-    questions = db.query(ResultRow).filter(ResultRow.result_id == result.id).all()
-    result.n_questions = len(questions)
+    training = db.query(Training).filter(~Training.is_finished).first()
+    questions = db.query(TrainingQuestion).filter(TrainingQuestion.training_id == training.id).all()
+    training.n_questions = len(questions)
     questions = list(q for q in questions if q.answer is None)
-    result.current_n = result.n_questions - len(questions) + 1
+    training.current_n = training.n_questions - len(questions) + 1
     if questions:
         q_id = random.choice(questions).q_id
         question = db.query(Question).get(q_id)
-        question.n_questions = result.n_questions
-        question.current_n = result.current_n
+        question.n_questions = training.n_questions
+        question.current_n = training.current_n
         if question:
             return render_template("training_question.html",
-                                   title=result.test.name + " - тренировка",
+                                   title=training.test.name + " - тренировка",
                                    question=question,
                                    all_tests="active")
         return render_template("error.html",
@@ -324,21 +322,20 @@ def start_training(test_id):
                                    text="Теста не существует или у вас нет прав доступа.",
                                    button="На главную",
                                    link="/tests")
-        result = Result()
-        result.test_id = test.id
-        result.user_id = current_user.id
-        result.is_training = True
-        db.add(result)
+        training = Training()
+        training.test_id = test.id
+        training.user_id = current_user.id
+        db.add(training)
         for q in test.questions:
-            row = ResultRow()
-            row.result = result
-            row.text = q.text
-            row.q_id = q.id
+            question = TrainingQuestion()
+            question.training = training
+            question.text = q.text
+            question.q_id = q.id
             for a in q.answers:
                 if a.is_correct:
-                    row.correct = a.text
+                    question.correct = a.text
                     break
-            db.add(row)
+            db.add(question)
         db.commit()
         return redirect("/training")
     except sa.orm.exc.DetachedInstanceError:
@@ -351,13 +348,13 @@ def finish_training():
     if not is_training_started():
         return redirect("/tests")
     db = db_session.create_session()
-    st = db.query(Result).filter(~Result.is_finished, Result.is_training).first()
-    if all(list(i.answer is None for i in st.rows)):
-        db.delete(st)
+    training = db.query(Training).filter(~Training.is_finished).first()
+    if all(list(i.answer is None for i in training.questions)):
+        db.delete(training)
         db.commit()
         return redirect('/tests')
-    st.is_finished = True
-    st.end_date = datetime.datetime.now()
+    training.is_finished = True
+    training.end_date = datetime.datetime.now()
     db.commit()
     return redirect(f"/tests")
 
@@ -648,7 +645,7 @@ STATISTICS
 def get_statistics():
     try:
         db = db_session.create_session()
-        results = db.query(Result).filter(Result.user_id == current_user.id, ~Result.is_deleted).all()
+        results = db.query(Result).filter(Result.user_id == current_user.id).all()
         results.reverse()
         return show_statistics(results, title="Моя история")
     except sa.orm.exc.DetachedInstanceError:
@@ -670,8 +667,7 @@ def get_test_statistics(test_id):
             results = db.query(Result).filter(Result.test_id == test_id).all()
         elif current_user.type_id != 1 and test.creator != current_user:
             results = db.query(Result).filter(Result.test_id == test_id,
-                                              Result.user_id == current_user.id,
-                                              ~Result.is_deleted).all()
+                                              Result.user_id == current_user.id).all()
         else:
             code = 2
         results.reverse()
@@ -699,7 +695,7 @@ def get_user_statistics(user_id):
         else:
             nickname = user.nickname
             if current_user.type_id == 3:
-                results = db.query(Result).filter(Result.user_id == user_id, ~Result.is_deleted).all()
+                results = db.query(Result).filter(Result.user_id == user_id).all()
             else:
                 results = db.query(Result).filter(Result.user_id == user_id).all()
         results.reverse()

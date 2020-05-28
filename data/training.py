@@ -5,8 +5,8 @@ import datetime
 from .db_session import SqlAlchemyBase
 
 
-class Result(SqlAlchemyBase):
-    __tablename__ = 'result'
+class Training(SqlAlchemyBase):
+    __tablename__ = 'training'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
@@ -17,7 +17,7 @@ class Result(SqlAlchemyBase):
 
     test = orm.relation("Test")
     user = orm.relation('User')
-    rows = orm.relation("ResultRow", back_populates="result")
+    questions = orm.relation("TrainingQuestion", back_populates="training")
 
     def __repr__(self):
-        return f"<Result {self.id} {self.name} {self.is_finished}>"
+        return f"<Training {self.id} {self.name} {self.is_finished}>"
