@@ -5,10 +5,17 @@ from data import db_session
 import sqlalchemy as sa
 import os
 
-try:
-    db_session.global_init("/home/ilyav/testing-system/db/tests.sqlite")
-except sa.exc.OperationalError:
-    db_session.global_init(os.path.join(os.getcwd(), "db", "tests.sqlite"))
+
+paths = ["/home/ilyav/testing-system/db/tests.sqlite",
+         os.path.join(os.getcwd(), "db", "tests.sqlite")]
+db_path = paths[0]
+
+for path in paths:
+    if os.path.exists(path):
+        db_path = path
+        break
+
+db_session.global_init(db_path)
 
 from data.__all_models import *
 from forms.__all_forms import *
