@@ -18,7 +18,8 @@
     --test-background: var(--d);
 
     --question-border: var(--a);
-    --question-border-chosen: var(--b); /*#57c700;*/
+    --question-border-chosen: #00499a;
+    --question-background-chosen: #727a9e;
     --question-background: var(--c);
     --question-answer-background: var(--f);
     --question-chosen: #659e3a;
