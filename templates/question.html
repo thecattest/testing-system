@@ -41,7 +41,14 @@
                 </div>
                 <div class="form-group text-center mb-0">
                     <a href="/test/finish" class="mx-auto my-1 btn btn-danger"><i class="ml-2 fas fa-chevron-left"></i> Выйти</a>
-                    <button type="submit" class="mx-auto my-1 btn btn-success" disabled>Следующий <i class="ml-2 fas fa-chevron-right"></i></button>
+                    <button type="submit" class="mx-auto my-1 btn btn-success" disabled>
+                        {% if question.current_n == question.n_questions %}
+                        Завершить!
+                        {% else %}
+                        Дальше
+                        <i class="fas fa-chevron-right"></i>
+                        {% endif %}
+                    </button>
                 </div>
             </form>
         </div>

@@ -38,3 +38,12 @@
     border-color: var(--question-border-chosen);
 }
 
+.wrong-answer {
+    border-color: var(--question-wrong-answer-border);
+    background: var(--question-wrong-answer-background);
+}
+
+.correct-answer {
+    border-color: var(--question-correct-answer-border);
+    background: var(--question-correct-answer-background);
+}

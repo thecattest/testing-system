@@ -26,6 +26,11 @@
     --question-font-header: #e0e0e0;
     --question-answer-font: #000;
 
+    --question-correct-answer-background: #729e75;
+    --question-correct-answer-border: #009a0c;
+    --question-wrong-answer-background: #9e7272;
+    --question-wrong-answer-border: #9a0039;
+
     --result-border: var(--f);
     --result-background-dark: var(--a);
     --result-background-light: var(--c);

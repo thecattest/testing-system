@@ -8,8 +8,15 @@
         <div class="question-container p-4 m-2">
             <div class="question-pre-header mb-3 mx-auto">
                 <div class="row">
+                    {% if check %}
+                    <h3 class="col-12">
+                        <i>Проверка</i>
+                    </h3>
+                    {% endif %}
                     <div class="pl-3 question-pre-header-text text-left col-6">
-                        <h3>Вопрос</h3>
+                        <h3>
+                            Вопрос
+                        </h3>
                     </div>
                     <div class="pr-3 question-pre-header-number text-right col-6">
                         <h3>{{question.current_n}}/{{question.n_questions}}</h3>
@@ -19,8 +26,11 @@
                     <div class="progress-bar bg-success" style="width: {{ 100 / question.n_questions * question.current_n }}%;"></div>
                 </div>
             </div>
-            <form action="/test/save_answer" class="question-form" method="post">
+            <form action="/training/check" class="question-form" method="post">
                 <input type="hidden" name="question_id" value="{{question.id}}">
+                <input type="hidden" name="n_questions" value="{{question.n_questions}}">
+                <input type="hidden" name="current_n" value="{{question.current_n}}">
+
                 <div class="form-group">
                     <div class="question-header px-2 text-wrap">
                         {{question.text}}
@@ -29,11 +39,24 @@
                 <div class="form-group form-row text-center align-items-center">
                     {% for answer in question.answers %}
                     <div class="col-12">
-                        <div class="answer">
+                        <div class="answer
+                        {% if check and answer.text == question.chosen and answer.is_correct %}
+                        correct-answer
+                        {% elif check and answer.text == question.chosen and not answer.is_correct %}
+                        wrong-answer
+                        {% endif %}">
                             <input type="radio" id="{{answer.id}}" value="{{answer.text}}"
                                    name="answer" class="hidden" required>
                             <label for="{{answer.id}}" class="text-wrap">
                                 {{answer.text}}
+                                {% if check and answer.text == question.chosen %}
+                                    <br>
+                                    {% if answer.is_correct %}
+                                    <small>Верно!</small>
+                                    {% else %}
+                                    <small>Неправильно!</small>
+                                    {% endif %}
+                                {% endif %}
                             </label>
                         </div>
                     </div>
@@ -44,16 +67,28 @@
                         <i class="ml-2 fas fa-chevron-left"></i>
                         Выйти
                     </a>
+                    {% if check %}
+                    <a href="/training" class="mx-auto my-1 btn btn-success">
+                        {% if question.current_n == question.n_questions %}
+                        Завершить!
+                        {% else %}
+                        Дальше
+                        <i class="fas fa-chevron-right"></i>
+                        {% endif %}
+                    </a>
+                    {% else %}
                     <button type="submit" class="mx-auto my-1 btn btn-secondary" disabled>
                         Проверить
                         <i class="far fa-check-square"></i>
                     </button>
+                    {% endif %}
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+{% if not check %}
 <script>
     $(".answer").click(function(){
         $(".answer").removeClass("chosen")
@@ -61,4 +96,5 @@
         $('button[type=submit]').attr('disabled', false)
     })
 </script>
+{% endif %}
 {% endblock %}

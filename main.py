@@ -287,11 +287,14 @@ def handle_training():
     if not is_training_started():
         return redirect("/tests")
     db = db_session.create_session()
+
     training = db.query(Training).filter(~Training.is_finished).first()
     questions = db.query(TrainingQuestion).filter(TrainingQuestion.training_id == training.id).all()
+
     training.n_questions = len(questions)
     questions = list(q for q in questions if q.answer is None)
     training.current_n = training.n_questions - len(questions) + 1
+
     if questions:
         q_id = random.choice(questions).q_id
         question = db.query(Question).get(q_id)
@@ -357,6 +360,51 @@ def finish_training():
     training.end_date = datetime.datetime.now()
     db.commit()
     return redirect(f"/tests")
+
+
+@app.route("/training/check", methods=["GET", "POST"])
+@login_required
+def check_answer():
+    try:
+        q_id = request.form["question_id"]
+        answer = request.form["answer"]
+
+        n_questions = int(request.form["n_questions"])
+        current_n = int(request.form["current_n"])
+    except KeyError:
+        return redirect('/training')
+
+    db = db_session.create_session()
+
+    training = db.query(Training).filter(~Training.is_finished).first()
+
+    question = db.query(TrainingQuestion).filter(TrainingQuestion.training == training,
+                                                 TrainingQuestion.q_id == q_id).first()
+    test_question = db.query(Question).filter(Question.id == q_id).first()
+
+    if not question:
+        return redirect('/training')
+    if not test_question:
+        return render_template("error.html",
+                               text="Произошла ошибка. Скорее всего, тест был удалён.",
+                               button="На главную",
+                               link="/training/finish")
+
+    test_question.n_questions = n_questions
+    test_question.current_n = current_n
+    test_question.chosen = answer
+
+    if question.correct == answer:
+        question.answer = answer
+    else:
+        question.mistakes += 1
+    db.commit()
+
+    return render_template("training_question.html",
+                           title=training.test.name + " - тренировка",
+                           question=test_question,
+                           check=True,
+                           all_tests="active")
 
 
 """
