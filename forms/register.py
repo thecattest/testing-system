@@ -13,6 +13,6 @@ class RegisterForm(FlaskForm):
                                                    EqualTo('password_confirmation', message='Пароли должны совпадать')])
     password_confirmation = PasswordField('Подтвердите пароль', validators=[DataRequired()])
 
-    is_teacher = BooleanField('Может создавать тесты')
+    is_teacher = BooleanField('Может создавать тесты и пользователей')
 
     submit = SubmitField('Сохранить')
